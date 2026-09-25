@@ -3,14 +3,14 @@ import type { Release } from '../data/schema';
 import { Disc } from './Disc';
 import s from './Deck.module.css';
 
-export const DECK_MS = 1_500;
+export const DECK_MS = 2_800;
 const SPIN = ['◐', '◓', '◑', '◒'];
 
 type Phase = 'open' | 'loaded' | 'close' | 'read' | 'play';
 
 /**
  * «Удиви меня» (ADR 0008): Hi-Fi дека — лоток выезжает, диск ложится, на дисплее READING, затем номер
- * и название выбранного релиза. Около 1,5 с; нажатие в любом месте сразу вызывает onDone.
+ * и название выбранного релиза. Около 2,8 с, неспешно; нажатие в любом месте сразу вызывает onDone.
  */
 export function Deck({ pick, onDone }: { pick: Release; onDone: () => void }) {
   const [phase, setPhase] = useState<Phase>('open');
@@ -24,13 +24,13 @@ export function Deck({ pick, onDone }: { pick: Release; onDone: () => void }) {
 
   useEffect(() => {
     const t = [
-      setTimeout(() => setPhase('loaded'), 330),
-      setTimeout(() => setPhase('close'), 620),
-      setTimeout(() => setPhase('read'), 920),
-      setTimeout(() => setPhase('play'), 1_250),
+      setTimeout(() => setPhase('loaded'), 600),
+      setTimeout(() => setPhase('close'), 1_150),
+      setTimeout(() => setPhase('read'), 1_700),
+      setTimeout(() => setPhase('play'), 2_300),
       setTimeout(finish, DECK_MS),
     ];
-    const spinner = setInterval(() => setSpin((x) => x + 1), 90);
+    const spinner = setInterval(() => setSpin((x) => x + 1), 130);
     return () => {
       t.forEach(clearTimeout);
       clearInterval(spinner);
