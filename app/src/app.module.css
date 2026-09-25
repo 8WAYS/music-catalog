@@ -6,23 +6,25 @@
   font-size: 22px;
   margin: var(--s6) 0 var(--s3);
 }
+/* Нижняя панель, а не тост: без крестика закрытия — её не листают мимо, обновление стоит принять */
 .update {
   position: fixed;
-  left: 50%;
-  top: calc(env(safe-area-inset-top) + var(--s3));
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
-  gap: var(--s3);
-  padding: 6px 6px 6px var(--s4);
-  border-radius: var(--radius-pill);
+  justify-content: center;
+  gap: var(--s4);
+  flex-wrap: wrap;
+  padding: var(--s4) var(--s5) calc(env(safe-area-inset-bottom) + var(--s4));
   background: var(--surface-glass);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -12px 28px -16px rgba(0, 0, 0, 0.5);
   font-weight: 600;
   font-size: 14px;
-  z-index: 40;
-  white-space: nowrap;
+  text-align: center;
 }

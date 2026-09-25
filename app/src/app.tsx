@@ -59,8 +59,8 @@ export function App() {
         <Screen />
       </main>
       {pendingUpdate.value && (
-        <div class={s.update} role="status">
-          <span>Доступно обновление</span>
+        <div class={s.update} role="alert">
+          <span>Доступно обновление приложения</span>
           <button type="button" class="btn btn-primary" onClick={() => pendingUpdate.value?.()}>
             Обновить
           </button>
