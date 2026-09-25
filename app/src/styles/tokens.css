@@ -32,15 +32,9 @@
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
   --cover-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.9);
   --aura-opacity: 0.4;
-  --chrome: linear-gradient(
-    172deg,
-    #ffffff 0%,
-    #c9cfd6 34%,
-    #7c848f 48%,
-    #eef0f3 52%,
-    #b8bec6 70%,
-    #ffffff 100%
-  );
+  /* Строго вертикально (не по диагонали — иначе полоса блика съезжает на широком заголовке
+     с именем владельца) и без резкого перепада яркости — чтобы блик не перебивал буквы */
+  --chrome: linear-gradient(180deg, #cdd2d9 0%, #f5f6f8 38%, #9aa1ac 50%, #f5f6f8 62%, #cdd2d9 100%);
 
   /* Перламутр — спектр, разбавленный белым: выбранный тег, звёздочка, «Удиви меня» */
   --pearl: conic-gradient(from var(--holo), #f3d9e7, #f2ead3, #d9efe4, #d6e5f3, #e4dbf4, #f3d9e7);
@@ -127,16 +121,7 @@
   --shadow: 0 10px 30px rgba(20, 24, 40, 0.16);
   --cover-shadow: 0 10px 22px -12px rgba(20, 24, 40, 0.55);
   --aura-opacity: 0.55;
-  --chrome: linear-gradient(
-    172deg,
-    #14161c 0%,
-    #4a515c 30%,
-    #c9ced6 47%,
-    #ffffff 50%,
-    #5d6570 60%,
-    #1a1d24 80%,
-    #6b7380 100%
-  );
+  --chrome: linear-gradient(180deg, #2a2e37 0%, #4d5561 38%, #171920 50%, #4d5561 62%, #2a2e37 100%);
   color-scheme: light;
 }
 
