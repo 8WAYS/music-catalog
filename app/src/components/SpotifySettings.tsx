@@ -47,6 +47,10 @@ export function SpotifySettings() {
     return (
       <div class={s.actions}>
         <p class={s.muted}>Подключено — при добавлении релиза можно искать и в Spotify.</p>
+        <p class={s.hint}>
+          Поиск отвечает, только если на аккаунте, где создано приложение в кабинете Spotify, есть Premium —
+          иначе Spotify отказывает всем запросам (ограничение самого Spotify, ADR 0010).
+        </p>
         <button type="button" class="btn" onClick={() => void disconnect()}>
           Отключить
         </button>
@@ -57,7 +61,8 @@ export function SpotifySettings() {
     <form class={s.form} onSubmit={connect}>
       <p class={s.hint}>
         Ищет альбомы и треклисты в Spotify — вдобавок к iTunes (обложки Spotify не отдаёт напрямую браузеру,
-        останутся из iTunes или свои). Создай приложение на{' '}
+        останутся из iTunes или свои). Нужна активная <strong>Spotify Premium</strong> на аккаунте, где
+        создано приложение в кабинете, — без неё Spotify отказывает всем запросам поиска. Создай приложение на{' '}
         <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer">
           developer.spotify.com
         </a>{' '}
