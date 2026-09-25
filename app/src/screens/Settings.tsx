@@ -1,3 +1,4 @@
+import { BackupSettings } from '../components/BackupSettings';
 import { Icon } from '../components/Icon';
 import { ClaimOwnership, PublishSettings } from '../components/PublishSettings';
 import { goBack } from '../router';
@@ -29,7 +30,7 @@ const THEMES: { id: ThemePref; label: string }[] = [
   { id: 'system', label: 'Как в системе' },
 ];
 
-/** Настройки (раздел 6.5). Публикация — этап 5, резервные копии — этап 6. */
+/** Настройки (раздел 6.5). */
 export function Settings() {
   const owner = isOwner.value;
 
@@ -134,6 +135,13 @@ export function Settings() {
           <section class={s.group}>
             <h2>Публикация</h2>
             <PublishSettings />
+          </section>
+        )}
+
+        {owner && (
+          <section class={s.group}>
+            <h2>Резервные копии</h2>
+            <BackupSettings />
           </section>
         )}
 

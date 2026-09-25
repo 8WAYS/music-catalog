@@ -1,0 +1,10 @@
+.muted {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
