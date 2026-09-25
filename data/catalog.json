@@ -1,0 +1,83 @@
+{
+  "version": 2,
+  "revision": 13,
+  "publishedAt": "2026-09-25T17:07:18.195Z",
+  "owner": {
+    "name": "Wailee"
+  },
+  "tags": [
+    {
+      "id": "7a86942b-500c-45ca-a4b5-c542714c66af",
+      "name": "Кач",
+      "group": "mood"
+    },
+    {
+      "id": "4fc48c79-0268-4fb7-aa7b-48bb95883a1b",
+      "name": "Лега",
+      "group": "mood"
+    },
+    {
+      "id": "6d749ad8-4502-407f-b37a-1f9393a8e27c",
+      "name": "Ночь",
+      "group": "time"
+    }
+  ],
+  "releases": [
+    {
+      "id": "b647bda7-bd35-4933-a334-61e1886decfd",
+      "title": "Рельсы",
+      "artist": "Поларойд",
+      "type": "single",
+      "tagIds": [
+        "7a86942b-500c-45ca-a4b5-c542714c66af"
+      ],
+      "tracks": [],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/43263409?ref_id=08274469-0FF6-4B23-8CED-954DA8BE248C&utm_medium=copy_link"
+        },
+        {
+          "service": "spotify",
+          "url": "https://open.spotify.com/album/2poxSiHcvquhsitLjgIetJ?si=iRjfNaecQOi8Q9GsvxK0Hw&utm_source=copy-link"
+        }
+      ],
+      "createdAt": "2026-09-25T16:03:17.444Z",
+      "updatedAt": "2026-09-25T16:08:00.652Z",
+      "year": 2026,
+      "cover": "covers/b647bda7-bd35-4933-a334-61e1886decfd.jpg",
+      "coverColors": {
+        "bg": "#231615",
+        "accent": "#53b4c6",
+        "text": "#f2eae9"
+      }
+    },
+    {
+      "id": "fcfc90b9-9a33-4d8e-93bd-9f3abf617dd8",
+      "title": "половина таблетки",
+      "artist": "cardinparis",
+      "type": "single",
+      "tagIds": [
+        "6d749ad8-4502-407f-b37a-1f9393a8e27c"
+      ],
+      "tracks": [],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/38448487/track/143479281?ref_id=7CD7E580-13C0-4B45-A232-49F3D580F2B8&utm_medium=copy_link"
+        }
+      ],
+      "createdAt": "2026-09-25T16:27:15.115Z",
+      "updatedAt": "2026-09-25T16:39:26.805Z",
+      "year": 2025,
+      "itunesId": 1843219808,
+      "cover": "covers/fcfc90b9-9a33-4d8e-93bd-9f3abf617dd8.jpg",
+      "coverColors": {
+        "bg": "#231615",
+        "accent": "#b17773",
+        "text": "#f2e9e9"
+      },
+      "description": "Груснааа"
+    }
+  ]
+}
