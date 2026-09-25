@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 32,
-  "publishedAt": "2026-09-25T22:02:41.559Z",
+  "revision": 33,
+  "publishedAt": "2026-09-25T22:04:40.521Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -344,6 +344,29 @@
         "bg": "#1e1d1a",
         "accent": "#7bc653",
         "text": "#f2efe9"
+      }
+    },
+    {
+      "id": "07253db1-552d-4f8f-8771-7bebb90a14e1",
+      "title": "цветы с бульвара",
+      "artist": "liberum",
+      "type": "single",
+      "tagIds": [],
+      "tracks": [],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/43910490/track/155656518?ref_id=BCFCA5E8-9A61-4595-B44E-75B0737F35AD&utm_medium=copy_link"
+        }
+      ],
+      "createdAt": "2026-09-25T22:03:09.170Z",
+      "updatedAt": "2026-09-25T22:04:33.237Z",
+      "year": 2026,
+      "cover": "covers/07253db1-552d-4f8f-8771-7bebb90a14e1.jpg",
+      "coverColors": {
+        "bg": "#2b0d0d",
+        "accent": "#f15050",
+        "text": "#f2e9e9"
       }
     }
   ]
