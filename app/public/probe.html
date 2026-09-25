@@ -145,12 +145,11 @@
     </section>
 
     <section>
-      <h2>2. Cover Art Archive — CORS и WebP <span class="st" id="ca-st">не проверено</span></h2>
-      <p class="lead" style="margin: 0">Берёт MBID группы релизов из шага 1 (или введи вручную).</p>
-      <label>MBID группы релизов<input id="ca-mbid" placeholder="заполнится после поиска" /></label>
-      <button id="ca-go">Загрузить обложку</button>
-      <img id="ca-img" alt="" hidden />
-      <pre id="ca-out"></pre>
+      <h2>2. iTunes — обложка, CORS и WebP <span class="st" id="it-st">не проверено</span></h2>
+      <p class="lead" style="margin: 0">Ищет альбом по полям из шага 1, от MusicBrainz не зависит.</p>
+      <button id="it-go">Найти обложку</button>
+      <img id="it-img" alt="" hidden />
+      <pre id="it-out"></pre>
     </section>
 
     <section>
@@ -241,7 +240,6 @@
             log('mb-out', `• ${g.title} — ${g['artist-credit']?.[0]?.name} (${g['first-release-date'] ?? '?'}, ${g['primary-type']}) ${g.id}`),
           );
           if (!groups.length) throw new Error('пустой результат');
-          $('ca-mbid').value = groups[0].id;
 
           await new Promise((r) => setTimeout(r, 1100)); // лимит 1 запрос/с
           const rel = await mbFetch(`${MB}/release?release-group=${groups[0].id}&status=official&fmt=json&limit=5`, 'mb-out');
@@ -260,19 +258,28 @@
         }
       };
 
-      // ---------- 2. Cover Art Archive ----------
-      $('ca-go').onclick = async () => {
-        $('ca-out').textContent = '';
-        const mbid = $('ca-mbid').value.trim();
-        if (!mbid) return log('ca-out', 'Сначала шаг 1 или MBID');
+      // ---------- 2. iTunes: поиск и обложка ----------
+      $('it-go').onclick = async () => {
+        $('it-out').textContent = '';
         try {
-          const t0 = performance.now();
-          log('ca-out', 'Загружаю…');
-          const res = await fetch(`https://coverartarchive.org/release-group/${mbid}/front-500`, {
-            mode: 'cors',
-            signal: timeout(),
-          });
-          log('ca-out', `fetch → ${res.status}, ${res.headers.get('content-type')}, за ${ms(t0)} (итоговый адрес: ${res.url})`);
+          const term = `${$('mb-artist').value} ${$('mb-title').value}`.trim();
+          let t0 = performance.now();
+          log('it-out', 'Ищу…');
+          const found = await fetch(
+            `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=album&limit=5`,
+            { signal: timeout() },
+          );
+          log('it-out', `поиск → ${found.status} за ${ms(t0)}`);
+          if (!found.ok) throw new Error('HTTP ' + found.status);
+          const albums = (await found.json()).results ?? [];
+          albums.forEach((a) => log('it-out', `• ${a.collectionName} — ${a.artistName} (${a.releaseDate?.slice(0, 4) ?? '?'})`));
+          if (!albums[0]?.artworkUrl100) throw new Error('пустой результат');
+          // Размер задаётся в адресе: 100x100bb → 600x600bb
+          const art = albums[0].artworkUrl100.replace(/\/\d+x\d+bb\./, '/600x600bb.');
+
+          t0 = performance.now();
+          const res = await fetch(art, { mode: 'cors', signal: timeout() });
+          log('it-out', `обложка → ${res.status}, ${res.headers.get('content-type')}, за ${ms(t0)} (${new URL(res.url).host})`);
           if (!res.ok) throw new Error('HTTP ' + res.status);
           const blob = await res.blob();
           const bmp = await createImageBitmap(blob);
@@ -281,14 +288,14 @@
           c.getContext('2d').drawImage(bmp, 0, 0, 600, 600);
           c.getContext('2d').getImageData(0, 0, 1, 1); // упадёт, если canvas «загрязнён» без CORS
           const out = await new Promise((r) => c.toBlob(r, 'image/webp', 0.82));
-          log('ca-out', `Исходник ${Math.round(blob.size / 1024)} КБ → ${out.type}, ${Math.round(out.size / 1024)} КБ`);
-          if (out.type !== 'image/webp') log('ca-out', 'Браузер не кодирует WebP — приложение сохранит JPEG');
-          $('ca-img').src = URL.createObjectURL(out);
-          $('ca-img').hidden = false;
-          status('ca', true, `CORS ок, кодирование: ${out.type}`);
+          log('it-out', `Исходник ${Math.round(blob.size / 1024)} КБ → ${out.type}, ${Math.round(out.size / 1024)} КБ`);
+          if (out.type !== 'image/webp') log('it-out', 'Браузер не кодирует WebP — приложение сохранит JPEG');
+          $('it-img').src = URL.createObjectURL(out);
+          $('it-img').hidden = false;
+          status('it', true, `${albums.length} результатов, CORS ок, кодирование: ${out.type}`);
         } catch (e) {
-          log('ca-out', 'Ошибка: ' + errText(e));
-          status('ca', false, errText(e));
+          log('it-out', 'Ошибка: ' + errText(e));
+          status('it', false, errText(e));
         }
       };
 
@@ -372,7 +379,7 @@
       };
 
       // ---------- Отчёт ----------
-      const NAMES = { mb: 'MusicBrainz', ca: 'Cover Art Archive', gh: 'GitHub API', pg: 'GitHub Pages' };
+      const NAMES = { mb: 'MusicBrainz', it: 'iTunes (обложки)', gh: 'GitHub API', pg: 'GitHub Pages' };
       function renderReport() {
         $('report').textContent = [
           '## Результаты проверки',

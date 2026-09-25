@@ -107,15 +107,11 @@ export function Settings() {
           <h2>О приложении</h2>
           <p class={s.muted}>Музыкальная картотека · версия {__APP_VERSION__}</p>
           <p class={s.muted}>
-            Метаданные и обложки —{' '}
+            Метаданные —{' '}
             <a href="https://musicbrainz.org" target="_blank" rel="noopener noreferrer">
               MusicBrainz
-            </a>{' '}
-            и{' '}
-            <a href="https://coverartarchive.org" target="_blank" rel="noopener noreferrer">
-              Cover Art Archive
             </a>
-            .
+            , обложки — iTunes.
           </p>
         </section>
       </div>
