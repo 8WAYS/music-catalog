@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 16,
-  "publishedAt": "2026-09-25T18:38:25.708Z",
+  "revision": 20,
+  "publishedAt": "2026-09-25T18:39:08.603Z",
   "owner": {
     "name": ""
   },
@@ -115,7 +115,7 @@
           "position": 2,
           "title": "MP5",
           "durationSec": 160,
-          "favorite": false
+          "favorite": true
         },
         {
           "id": "8f20d244-8944-4858-9a4e-4de89d68baf4",
@@ -230,9 +230,14 @@
           "favorite": false
         }
       ],
-      "links": [],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/17612345?ref_id=BA0DFDA3-F4A7-4C0C-901E-5BB148EF532D&utm_medium=copy_link"
+        }
+      ],
       "createdAt": "2026-09-25T18:38:15.522Z",
-      "updatedAt": "2026-09-25T18:38:18.050Z",
+      "updatedAt": "2026-09-25T18:39:08.525Z",
       "year": 2021,
       "itunesId": 1711600555,
       "cover": "covers/07a69893-f0c3-4aab-85db-91e989dd208c.jpg",
