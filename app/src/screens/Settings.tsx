@@ -107,11 +107,11 @@ export function Settings() {
           <h2>О приложении</h2>
           <p class={s.muted}>Музыкальная картотека · версия {__APP_VERSION__}</p>
           <p class={s.muted}>
-            Метаданные —{' '}
-            <a href="https://musicbrainz.org" target="_blank" rel="noopener noreferrer">
-              MusicBrainz
+            Данные об альбомах и обложки —{' '}
+            <a href="https://www.apple.com/apple-music/" target="_blank" rel="noopener noreferrer">
+              iTunes / Apple Music
             </a>
-            , обложки — iTunes.
+            .
           </p>
         </section>
       </div>

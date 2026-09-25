@@ -22,7 +22,7 @@ function Screen() {
     case 'edit':
       return owner ? <Editor key={r.id} id={r.id} /> : <Release id={r.id} />;
     case 'new':
-    case 'add': // экран поиска MusicBrainz — этап 4
+    case 'add': // экран поиска iTunes — этап 4 (ADR 0004)
       return owner ? <Editor key="new" /> : <Home />;
     case 'settings':
       return <Settings />;
