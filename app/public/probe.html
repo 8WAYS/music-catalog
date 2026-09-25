@@ -194,7 +194,9 @@
       const TIMEOUT = 20000;
       const timeout = () => AbortSignal.timeout(TIMEOUT);
       const errText = (e) =>
-        e.name === 'TimeoutError' ? `таймаут ${TIMEOUT / 1000} с — нет ответа` : `${e.name}: ${e.message}`;
+        // Safari сообщает о таймауте как AbortError
+        e.name === 'TimeoutError' || e.name === 'AbortError'
+          ? `таймаут ${TIMEOUT / 1000} с — нет ответа` : `${e.name}: ${e.message}`;
       const status = (key, ok, note) => {
         results[key] = { ok, note: `${note} (${netState()})` };
         const el = $(key + '-st');
