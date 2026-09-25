@@ -13,6 +13,15 @@ export interface QueueTask {
   attempts: number;
 }
 
+/**
+ * Обложка в IndexedDB — байты и тип, а не Blob: WebKit в приватном режиме (и в Playwright)
+ * не умеет класть Blob в IndexedDB. Старые записи-Blob читаются как есть.
+ */
+export interface StoredCover {
+  type: string;
+  data: ArrayBuffer;
+}
+
 export interface CatalogDB extends DBSchema {
   releases: {
     key: string;
@@ -20,7 +29,7 @@ export interface CatalogDB extends DBSchema {
     indexes: { artist: string; year: number; createdAt: string; tagIds: string };
   };
   tags: { key: string; value: Tag; indexes: { name: string } };
-  covers: { key: string; value: Blob };
+  covers: { key: string; value: StoredCover | Blob };
   meta: { key: MetaKey; value: unknown };
   queue: { key: number; value: QueueTask };
 }

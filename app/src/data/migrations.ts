@@ -7,7 +7,19 @@ type Migration = (raw: Record<string, unknown>) => Record<string, unknown>;
  * При несовместимом изменении формата: FORMAT_VERSION++ и добавить сюда шаг N → N+1.
  */
 export const MIGRATIONS: Record<number, Migration> = {
-  // 1: (raw) => ({ ...raw, version: 2, ... }),
+  // 1 → 2: MusicBrainz заменён на iTunes (ADR 0004). mbid в iTunes не переводится — убираем.
+  1: (raw) => ({
+    ...raw,
+    version: 2,
+    releases: Array.isArray(raw.releases)
+      ? raw.releases.map((r: unknown) => {
+          if (!r || typeof r !== 'object') return r;
+          const rest = { ...(r as Record<string, unknown>) };
+          delete rest.mbid;
+          return rest;
+        })
+      : raw.releases,
+  }),
 };
 
 export function migrateCatalog(input: unknown): Catalog {

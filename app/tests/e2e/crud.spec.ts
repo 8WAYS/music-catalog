@@ -4,6 +4,7 @@ test('пустая картотека → добавить альбом вруч
   await page.goto('./');
   await expect(page.getByRole('heading', { name: 'Картотека пуста' })).toBeVisible();
   await page.getByRole('link', { name: 'Добавить альбом' }).click();
+  await page.getByRole('button', { name: 'Заполнить вручную' }).click();
 
   await page.getByLabel('Название', { exact: true }).fill('In Rainbows');
   await page.getByLabel('Исполнитель').fill('Radiohead');

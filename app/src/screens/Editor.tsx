@@ -16,7 +16,8 @@ import {
 } from '../data/schema';
 import { processCover } from '../services/image';
 import { goBack, href, navigate, setLeaveGuard } from '../router';
-import { confirmDialog, releasesById, repo, toast, toastError } from '../store/app';
+import { confirmDialog, releasesById, repo, takeEditorSeed, toast, toastError } from '../store/app';
+import { resetAddSearch } from './AddSearch';
 import s from './Editor.module.css';
 
 type CoverDraft = { blob: Blob; url: string; colors: CoverColors } | 'remove' | null;
@@ -24,9 +25,13 @@ type CoverDraft = { blob: Blob; url: string; colors: CoverColors } | 'remove' | 
 /** Редактор релиза (раздел 6.4): #/new и #/edit/<id>. */
 export function Editor({ id }: { id?: string }) {
   const original = id ? releasesById.value.get(id) : undefined;
-  const initial = useMemo(() => original ?? createRelease(), [id]);
+  // Новый релиз может прийти с полями и обложкой из поиска iTunes (#/add)
+  const [seed] = useState(() => (id ? null : takeEditorSeed()));
+  const initial = useMemo(() => original ?? createRelease(seed?.release), [id]);
   const [draft, setDraft] = useState<Release>(initial);
-  const [cover, setCover] = useState<CoverDraft>(null);
+  const [cover, setCover] = useState<CoverDraft>(() =>
+    seed?.cover ? { ...seed.cover, url: URL.createObjectURL(seed.cover.blob) } : null,
+  );
   const [busy, setBusy] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<{ title?: string; artist?: string; year?: string }>({});
@@ -34,6 +39,7 @@ export function Editor({ id }: { id?: string }) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const dirty =
+    !!seed ||
     cover !== null ||
     yearText !== (initial.year ? String(initial.year) : '') ||
     JSON.stringify(draft) !== JSON.stringify(initial);
@@ -113,6 +119,7 @@ export function Editor({ id }: { id?: string }) {
       }
       await repo().saveRelease(next);
       setLeaveGuard(null);
+      if (!original) resetAddSearch();
       toast(original ? 'Сохранено' : 'Релиз добавлен');
       navigate(href.release(next.id), { replace: true });
     } catch (e) {

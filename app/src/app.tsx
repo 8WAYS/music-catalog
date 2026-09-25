@@ -1,6 +1,7 @@
 import { signal } from '@preact/signals';
 import { ConfirmDialog, Toasts } from './components/Overlays';
 import { route } from './router';
+import { AddSearch } from './screens/AddSearch';
 import { Editor } from './screens/Editor';
 import { Home } from './screens/Home';
 import { Release } from './screens/Release';
@@ -22,8 +23,9 @@ function Screen() {
     case 'edit':
       return owner ? <Editor key={r.id} id={r.id} /> : <Release id={r.id} />;
     case 'new':
-    case 'add': // экран поиска iTunes — этап 4 (ADR 0004)
       return owner ? <Editor key="new" /> : <Home />;
+    case 'add':
+      return owner ? <AddSearch /> : <Home />;
     case 'settings':
       return <Settings />;
     default:

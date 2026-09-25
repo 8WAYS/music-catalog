@@ -1,6 +1,6 @@
 // Модель данных (раздел 4 документации). Структура совпадает с будущими таблицами базы.
 
-export const FORMAT_VERSION = 1;
+export const FORMAT_VERSION = 2;
 
 export const RELEASE_TYPES = ['album', 'ep', 'single'] as const;
 export type ReleaseType = (typeof RELEASE_TYPES)[number];
@@ -65,7 +65,8 @@ export interface Release {
   tagIds: string[];
   tracks: Track[];
   links: Link[];
-  mbid?: string;
+  /** collectionId альбома в iTunes, если заполнен из поиска (ADR 0004) */
+  itunesId?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -127,6 +128,8 @@ export function validateRelease(r: unknown, path = 'release'): string[] {
   if (o.year !== undefined && (!Number.isInteger(o.year) || o.year < 1900 || o.year > 2100))
     issues.push(`${path}.year: некорректный год`);
   if (o.cover !== undefined && !isStr(o.cover)) issues.push(`${path}.cover: должна быть строкой`);
+  if (o.itunesId !== undefined && (!Number.isInteger(o.itunesId) || o.itunesId <= 0))
+    issues.push(`${path}.itunesId: нужно положительное целое`);
   if (o.coverColors !== undefined) {
     const c = o.coverColors;
     if (!c || !HEX_RE.test(c.bg) || !HEX_RE.test(c.accent) || !HEX_RE.test(c.text))

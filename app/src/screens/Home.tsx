@@ -116,7 +116,7 @@ export function Home() {
               <Icon name="dice" size={20} /> Удиви меня
             </button>
             {owner && (
-              <a class={`${s.dockBtn} ${s.add}`} href={href.new()} aria-label="Добавить релиз">
+              <a class={`${s.dockBtn} ${s.add}`} href={href.add()} aria-label="Добавить релиз">
                 <Icon name="plus" size={24} />
               </a>
             )}
@@ -153,7 +153,7 @@ function EmptyCatalog({ owner }: { owner: boolean }) {
           : 'Владелец ещё ничего не добавил.'}
       </p>
       {owner && (
-        <a class="btn btn-primary" href={href.new()}>
+        <a class="btn btn-primary" href={href.add()}>
           <Icon name="plus" size={20} /> Добавить альбом
         </a>
       )}

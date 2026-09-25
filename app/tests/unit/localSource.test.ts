@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { LocalSource } from '../../src/data/localSource';
-import { createRelease, createTrack, newId, ValidationError } from '../../src/data/schema';
+import { FORMAT_VERSION, createRelease, createTrack, newId, ValidationError } from '../../src/data/schema';
 
 let repo: LocalSource;
 let n = 0;
@@ -61,7 +61,9 @@ describe('LocalSource', () => {
     const r = await repo.saveRelease(createRelease({ title: 'a', artist: 'b' }));
     await repo.saveCover(r.id, new Blob(['x'], { type: 'image/webp' }));
     await repo.saveRelease({ ...r, cover: `covers/${r.id}.webp` });
-    expect(await repo.getCover(r.id)).toBeDefined();
+    const stored = await repo.getCover(r.id);
+    expect(stored?.type).toBe('image/webp');
+    expect(await stored?.text()).toBe('x');
     await repo.deleteRelease(r.id);
     expect(await repo.getCover(r.id)).toBeUndefined();
     expect(await repo.getRelease(r.id)).toBeUndefined();
@@ -80,7 +82,7 @@ describe('LocalSource', () => {
     await repo.saveRelease(createRelease({ title: 'a', artist: 'b', tagIds: [t.id] }));
     await repo.setMeta('ownerName', 'Wailee');
     const snap = await repo.snapshot();
-    expect(snap).toMatchObject({ version: 1, revision: 2, owner: { name: 'Wailee' } });
+    expect(snap).toMatchObject({ version: FORMAT_VERSION, revision: 2, owner: { name: 'Wailee' } });
     expect(snap.tags).toHaveLength(1);
     expect(snap.releases).toHaveLength(1);
   });

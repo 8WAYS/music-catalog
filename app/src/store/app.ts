@@ -2,7 +2,7 @@ import { computed, signal } from '@preact/signals';
 import { LocalSource } from '../data/localSource';
 import { RemoteSource } from '../data/remoteSource';
 import type { Mode, Repository } from '../data/repository';
-import type { Release, Tag } from '../data/schema';
+import type { CoverColors, Release, Tag } from '../data/schema';
 
 // ---------- Данные ----------
 
@@ -77,6 +77,27 @@ export async function initWith(r: Repository, m: Mode): Promise<void> {
   r.subscribe(() => void refresh());
   await refresh();
   ready.value = true;
+}
+
+// ---------- Черновик для редактора ----------
+
+/** Что передать в редактор нового релиза: поля и обложка из поиска или набранное вручную. */
+export interface EditorSeed {
+  release: Partial<Release>;
+  cover?: { blob: Blob; colors: CoverColors };
+}
+
+let editorSeed: EditorSeed | null = null;
+
+export function setEditorSeed(seed: EditorSeed | null): void {
+  editorSeed = seed;
+}
+
+/** Забрать черновик один раз: при повторном открытии редактор снова пустой. */
+export function takeEditorSeed(): EditorSeed | null {
+  const s = editorSeed;
+  editorSeed = null;
+  return s;
 }
 
 // ---------- Тосты ----------

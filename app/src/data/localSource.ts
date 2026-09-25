@@ -121,7 +121,9 @@ export class LocalSource implements Repository {
   // ---------- Обложки ----------
 
   async getCover(releaseId: string): Promise<Blob | undefined> {
-    return this.db.get('covers', releaseId);
+    const v = await this.db.get('covers', releaseId);
+    if (!v || v instanceof Blob) return v;
+    return new Blob([v.data], { type: v.type });
   }
 
   async coverUrl(release: Release): Promise<string | undefined> {
@@ -139,7 +141,9 @@ export class LocalSource implements Repository {
 
   /** Сохраняет обложку. Поле cover у релиза выставляет вызывающий код (coverPath). */
   async saveCover(releaseId: string, blob: Blob): Promise<void> {
-    await this.db.put('covers', blob, releaseId);
+    // Байты читаем до транзакции: IndexedDB закрывает её на первом await
+    const data = await blob.arrayBuffer();
+    await this.db.put('covers', { type: blob.type, data }, releaseId);
     this.revokeUrl(releaseId);
   }
 
