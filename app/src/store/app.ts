@@ -5,7 +5,9 @@ import type { Mode, Repository } from '../data/repository';
 import { decideMode, type Published } from '../data/mode';
 import type { GitHubConfig } from '../services/github';
 import { importPublished } from '../services/publisher';
+import { handleAuthCallback } from '../services/spotifyAuth';
 import { connect, startSync } from './sync';
+import { initSpotifyStatus } from './spotify';
 import type { CoverColors, Release, Tag } from '../data/schema';
 
 // ---------- Данные ----------
@@ -88,6 +90,8 @@ export const publishedOnSite = signal<Published>('unknown');
 export async function init(): Promise<void> {
   try {
     const local = await LocalSource.open();
+    // Возврат со страницы входа в Spotify (?code=…) — обрабатываем один раз, до остального (ADR 0010)
+    await handleAuthCallback(local);
     const [token, localReleases, localTags] = await Promise.all([
       local.getMeta('token'),
       local.getReleases(),
@@ -104,6 +108,7 @@ export async function init(): Promise<void> {
     if (mode.value === 'owner') {
       repository = local;
       startSync(local);
+      void initSpotifyStatus(local);
     } else {
       local.close();
       repository = new RemoteSource();

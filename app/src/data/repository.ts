@@ -18,6 +18,12 @@ export interface MetaValues {
   publishedAt: string;
   /** Git-хэш data/catalog.json после нашей последней публикации — по нему видно чужие изменения */
   catalogSha: string;
+  /** Spotify PKCE (ADR 0010): без secret, только на устройстве владельца */
+  spotifyClientId: string;
+  spotifyAccessToken: string;
+  spotifyRefreshToken: string;
+  /** Момент истечения access-токена, ms since epoch */
+  spotifyTokenExpiresAt: number;
 }
 export type MetaKey = keyof MetaValues;
 

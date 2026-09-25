@@ -1,6 +1,7 @@
 import { BackupSettings } from '../components/BackupSettings';
 import { Icon } from '../components/Icon';
 import { ClaimOwnership, PublishSettings } from '../components/PublishSettings';
+import { SpotifySettings } from '../components/SpotifySettings';
 import { goBack } from '../router';
 import {
   isOwner,
@@ -130,6 +131,13 @@ export function Settings() {
             />
           </label>
         </section>
+
+        {owner && (
+          <section class={s.group}>
+            <h2>Источники</h2>
+            <SpotifySettings />
+          </section>
+        )}
 
         {owner && (
           <section class={s.group}>

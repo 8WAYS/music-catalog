@@ -67,6 +67,8 @@ export interface Release {
   links: Link[];
   /** collectionId альбома в iTunes, если заполнен из поиска (ADR 0004) */
   itunesId?: number;
+  /** id альбома в Spotify, если заполнен из поиска (ADR 0010) */
+  spotifyId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -130,6 +132,8 @@ export function validateRelease(r: unknown, path = 'release'): string[] {
   if (o.cover !== undefined && !isStr(o.cover)) issues.push(`${path}.cover: должна быть строкой`);
   if (o.itunesId !== undefined && (!Number.isInteger(o.itunesId) || o.itunesId <= 0))
     issues.push(`${path}.itunesId: нужно положительное целое`);
+  if (o.spotifyId !== undefined && (!isStr(o.spotifyId) || !o.spotifyId.trim()))
+    issues.push(`${path}.spotifyId: должна быть непустой строкой`);
   if (o.coverColors !== undefined) {
     const c = o.coverColors;
     if (!c || !HEX_RE.test(c.bg) || !HEX_RE.test(c.accent) || !HEX_RE.test(c.text))

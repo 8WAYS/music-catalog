@@ -1,3 +1,23 @@
+.sourceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.sourceBtn {
+  min-height: var(--tap);
+  padding: 0 var(--s4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: transparent;
+  font-weight: 600;
+  font-size: 14px;
+}
+.sourceBtn[aria-checked='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: transparent;
+}
+
 .form {
   display: grid;
   gap: var(--s3);

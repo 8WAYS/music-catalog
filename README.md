@@ -39,7 +39,7 @@ app/            приложение (собирается GitHub Actions)
   public/probe.html   страница этапа 0 — проверка внешних API с телефона
   src/data/           модель, Repository, IndexedDB (localSource), catalog.json (remoteSource), миграции
   src/services/       обложки (сжатие, палитра), ссылки, поиск и фильтры (search.ts), iTunes (itunes.ts),
-                      резервные копии (backup.ts)
+                      Spotify (spotify.ts, spotifyAuth.ts), резервные копии (backup.ts)
   src/screens/        Home, AddSearch, Release, Editor, Settings
   src/components/     Cover, TagChip, TagInput, TrackEditor, LinksEditor, диалоги
 data/           опубликованные данные картотеки (пишет приложение, этап 5)
