@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 31,
-  "publishedAt": "2026-09-25T20:12:30.706Z",
+  "revision": 32,
+  "publishedAt": "2026-09-25T20:13:40.449Z",
   "owner": {
     "name": ""
   },
@@ -99,8 +99,14 @@
         }
       ],
       "createdAt": "2026-09-25T17:42:34.794Z",
-      "updatedAt": "2026-09-25T17:43:29.912Z",
-      "year": 2026
+      "updatedAt": "2026-09-25T20:13:31.334Z",
+      "year": 2026,
+      "cover": "covers/53f4263f-2106-4aea-9feb-43ecb0bf91c4.jpg",
+      "coverColors": {
+        "bg": "#232315",
+        "accent": "#e57ea7",
+        "text": "#f2f2e9"
+      }
     },
     {
       "id": "07a69893-f0c3-4aab-85db-91e989dd208c",
