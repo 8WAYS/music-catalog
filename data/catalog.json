@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 34,
-  "publishedAt": "2026-09-25T22:37:30.006Z",
+  "revision": 36,
+  "publishedAt": "2026-09-25T22:41:24.917Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -337,7 +337,7 @@
         }
       ],
       "createdAt": "2026-09-25T20:08:00.128Z",
-      "updatedAt": "2026-09-25T20:12:23.739Z",
+      "updatedAt": "2026-09-25T22:41:17.685Z",
       "year": 2026,
       "cover": "covers/23acac90-378c-4eb5-afc6-3d23ed6bacee.jpg",
       "coverColors": {
