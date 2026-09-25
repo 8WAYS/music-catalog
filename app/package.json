@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "icons": "node scripts/build-icons.mjs",
     "prepare": "cd .. && husky app/githooks || exit 0"
   },
   "dependencies": {
