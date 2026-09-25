@@ -94,6 +94,23 @@ describe('ошибки — понятным текстом', () => {
     ['токен истёк', () => Promise.resolve(json({}, 401)), 'authExpired', /Вход в Spotify истёк/],
     ['лимит', () => Promise.resolve(json({}, 429)), 'limit', /подожди/],
     ['сбой сервера', () => Promise.resolve(json({}, 500)), 'http', /ошибкой 500/],
+    [
+      'запрещено — с текстом причины от Spotify',
+      () =>
+        Promise.resolve(
+          json(
+            {
+              error: {
+                status: 403,
+                message: 'Only users listed in the Developer Dashboard can use this app',
+              },
+            },
+            403,
+          ),
+        ),
+      'http',
+      /Spotify отказал: Only users listed/,
+    ],
     ['не JSON', () => Promise.resolve(new Response('<html>')), 'http', /непонятный ответ/],
   ])('%s', async (_, respond, kind, text) => {
     const { fn } = fakeFetch([[/./, respond]]);

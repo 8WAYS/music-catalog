@@ -70,7 +70,16 @@ async function call<T>(url: string, token: string, fetchFn: Fetch): Promise<T> {
     throw new SpotifyError('authExpired', 'Вход в Spotify истёк — зайди заново в настройках.');
   if (res.status === 429)
     throw new SpotifyError('limit', 'Слишком много запросов к Spotify — подожди немного.');
-  if (!res.ok) throw new SpotifyError('http', `Spotify ответил ошибкой ${res.status}. Попробуй позже.`);
+  if (!res.ok) {
+    // Тело ошибки — {error: {status, message}}; message часто прямо называет причину
+    // (например, что приложение в Development Mode и аккаунт не в списке пользователей)
+    const body = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
+    const reason = body?.error?.message;
+    throw new SpotifyError(
+      'http',
+      reason ? `Spotify отказал: ${reason}` : `Spotify ответил ошибкой ${res.status}. Попробуй позже.`,
+    );
+  }
   try {
     return (await res.json()) as T;
   } catch {
