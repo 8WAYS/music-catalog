@@ -26,8 +26,6 @@ export function LinksEditor({ value, onChange }: Props) {
     setError('');
   };
 
-  const preview = draft.trim() ? detectService(normalizeUrl(draft)) : null;
-
   return (
     <div class={s.wrap}>
       {value.map((l, i) => (
@@ -66,7 +64,7 @@ export function LinksEditor({ value, onChange }: Props) {
           }}
         />
         <button type="button" class="btn" onClick={add} disabled={!draft.trim()}>
-          {preview && preview !== 'other' ? LINK_SERVICE_LABEL[preview] : 'Добавить'}
+          Добавить
         </button>
       </div>
       {error && (

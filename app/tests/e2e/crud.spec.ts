@@ -69,3 +69,17 @@ test('без названия сохранить нельзя', async ({ page })
   await expect(page.getByText('Без названия никак')).toBeVisible();
   await expect(page.getByText('Укажи исполнителя')).toBeVisible();
 });
+
+test('длинная ссылка «Слушать» не растягивает страницу', async ({ page }) => {
+  await page.goto('./#/new');
+  await page.getByText('Ссылки «Слушать»').click();
+  const input = page.getByLabel('Добавить ссылку');
+  const noOverflow = () =>
+    page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+
+  await input.fill('https://music.yandex.ru/album/1234567/track/7654321?utm_source=share_very_long_tail');
+  expect(await noOverflow()).toBe(true);
+  await input.press('Enter');
+  await expect(page.getByText('Яндекс Музыка')).toBeVisible();
+  expect(await noOverflow()).toBe(true);
+});

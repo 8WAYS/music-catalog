@@ -1,8 +1,11 @@
 .wrap {
   display: grid;
+  /* minmax(0, …): длинный адрес не должен растягивать колонку и всю форму */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s2);
 }
 .item {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--s3);
@@ -44,6 +47,10 @@
 .add {
   display: flex;
   gap: var(--s2);
+}
+.add > input {
+  flex: 1;
+  min-width: 0;
 }
 .add > button {
   flex: none;
