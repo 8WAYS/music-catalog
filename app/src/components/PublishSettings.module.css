@@ -55,11 +55,11 @@
 /* Иначе с animation-duration: 1ms (base.css) бесконечная пульсация не остановится, а замелькает */
 @media (prefers-reduced-motion: reduce) {
   .status[data-status='publishing'] .dot {
-    animation: none;
+    animation-iteration-count: 1;
   }
 }
 :global(:root[data-motion='reduce']) .status[data-status='publishing'] .dot {
-  animation: none;
+  animation-iteration-count: 1;
 }
 .status[data-status='error'] .dot,
 .status[data-status='conflict'] .dot {

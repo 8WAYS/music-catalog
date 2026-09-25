@@ -323,12 +323,12 @@
 @media (prefers-reduced-motion: reduce) {
   .surprise::before,
   .sync[data-status='publishing'] .syncDot {
-    animation: none;
+    animation-iteration-count: 1;
   }
 }
 :global(:root[data-motion='reduce']) .surprise::before,
 :global(:root[data-motion='reduce']) .sync[data-status='publishing'] .syncDot {
-  animation: none;
+  animation-iteration-count: 1;
 }
 .add {
   width: 48px;

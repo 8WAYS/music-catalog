@@ -89,16 +89,21 @@
 :global(html.transitioning) .print[data-spin='true'] {
   animation-play-state: paused;
 }
-/* Иначе с animation-duration: 1ms (base.css) бесконечное вращение не остановится, а станет бешеным */
+/*
+ * Иначе с animation-duration: 1ms (base.css) бесконечное вращение не остановится, а станет
+ * бешеным. animation-iteration-count, а не animation: none — на карточке релиза .disc делит
+ * DOM-элемент с disc-out из Release.module.css (диск выезжает из-за обложки); animation: none
+ * отменил бы и её, диск застревал бы спрятанным за обложкой.
+ */
 @media (prefers-reduced-motion: reduce) {
   .disc,
   .print[data-spin='true'] {
-    animation: none;
+    animation-iteration-count: 1;
   }
 }
 :global(:root[data-motion='reduce']) .disc,
 :global(:root[data-motion='reduce']) .print[data-spin='true'] {
-  animation: none;
+  animation-iteration-count: 1;
 }
 .print span {
   position: absolute;
