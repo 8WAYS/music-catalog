@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 29,
-  "publishedAt": "2026-09-25T20:05:26.195Z",
+  "revision": 30,
+  "publishedAt": "2026-09-25T20:11:33.172Z",
   "owner": {
     "name": ""
   },
@@ -252,6 +252,87 @@
         "accent": "#a08b27",
         "text": "#e9ebf2"
       }
+    },
+    {
+      "id": "23acac90-378c-4eb5-afc6-3d23ed6bacee",
+      "title": "AUTISM",
+      "artist": "cardinparis",
+      "type": "album",
+      "tagIds": [
+        "7a86942b-500c-45ca-a4b5-c542714c66af",
+        "75424a05-2858-41d5-abe9-46b8fa909edd"
+      ],
+      "tracks": [
+        {
+          "id": "3b87a0ff-53fe-4cb0-a840-b25f23a3a6ce",
+          "position": 1,
+          "title": "аутизм",
+          "favorite": false
+        },
+        {
+          "id": "bf5de5d4-a95f-428c-905a-96b62ff0f351",
+          "position": 2,
+          "title": "я жив",
+          "favorite": false
+        },
+        {
+          "id": "1ed42d44-776b-4fd0-9b0a-987f2d64a7f8",
+          "position": 3,
+          "title": "сергей",
+          "favorite": false
+        },
+        {
+          "id": "a2315616-3ef2-42c4-a523-ede5ece4d875",
+          "position": 4,
+          "title": "холодно",
+          "favorite": false
+        },
+        {
+          "id": "06161888-d4f2-4437-ad1c-dcd8d46177cc",
+          "position": 5,
+          "title": "порно",
+          "favorite": false
+        },
+        {
+          "id": "509d3b29-a44e-4031-9c9e-fe2f763d5ef2",
+          "position": 6,
+          "title": "папа",
+          "favorite": false
+        },
+        {
+          "id": "3c51aa67-6a4d-4c23-b5bf-b0453ec5d91f",
+          "position": 7,
+          "title": "боль алкоголь",
+          "favorite": false
+        },
+        {
+          "id": "0d611079-f5ef-4be3-980d-785985833b6a",
+          "position": 8,
+          "title": "ты сигареты",
+          "favorite": false
+        },
+        {
+          "id": "5d237899-21b4-47fb-872e-f35d4fe79b0e",
+          "position": 9,
+          "title": "любовь",
+          "favorite": true
+        },
+        {
+          "id": "172c413b-fc1d-49eb-9c5d-54a9e4f3e44a",
+          "position": 10,
+          "title": "курю с тобой сегодня",
+          "favorite": false
+        }
+      ],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/43411747?ref_id=0348B9FD-E644-41F7-82A7-F60E01155BBB&utm_medium=copy_link"
+        }
+      ],
+      "createdAt": "2026-09-25T20:08:00.128Z",
+      "updatedAt": "2026-09-25T20:11:25.401Z",
+      "year": 2026
     }
   ]
 }
