@@ -89,6 +89,17 @@
 :global(html.transitioning) .print[data-spin='true'] {
   animation-play-state: paused;
 }
+/* Иначе с animation-duration: 1ms (base.css) бесконечное вращение не остановится, а станет бешеным */
+@media (prefers-reduced-motion: reduce) {
+  .disc,
+  .print[data-spin='true'] {
+    animation: none;
+  }
+}
+:global(:root[data-motion='reduce']) .disc,
+:global(:root[data-motion='reduce']) .print[data-spin='true'] {
+  animation: none;
+}
 .print span {
   position: absolute;
   top: 25%;

@@ -319,6 +319,17 @@
 :global(html.transitioning) .surprise::before {
   animation-play-state: paused;
 }
+/* Иначе с animation-duration: 1ms (base.css) бесконечные анимации не остановятся, а замелькают */
+@media (prefers-reduced-motion: reduce) {
+  .surprise::before,
+  .sync[data-status='publishing'] .syncDot {
+    animation: none;
+  }
+}
+:global(:root[data-motion='reduce']) .surprise::before,
+:global(:root[data-motion='reduce']) .sync[data-status='publishing'] .syncDot {
+  animation: none;
+}
 .add {
   width: 48px;
   padding: 0;

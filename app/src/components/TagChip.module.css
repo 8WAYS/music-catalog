@@ -35,6 +35,15 @@
 :global(html.transitioning) .active {
   animation-play-state: paused;
 }
+/* Иначе с animation-duration: 1ms (base.css) бесконечный перелив не остановится, а замелькает */
+@media (prefers-reduced-motion: reduce) {
+  .active {
+    animation: none;
+  }
+}
+:global(:root[data-motion='reduce']) .active {
+  animation: none;
+}
 .group {
   color: var(--text-muted);
   font-size: 12px;

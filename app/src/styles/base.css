@@ -225,12 +225,20 @@ html.transitioning .aura {
   animation-duration: 220ms;
 }
 
+/*
+ * Бесконечные декоративные анимации (аура, перламутр, диск) не просто ускоряются
+ * до 1мс ниже — с animation-iteration-count: infinite это значит «крутится вечно,
+ * но за 1мс на оборот», то есть визуально бешено быстро, а не «выключено». Поэтому
+ * каждая infinite-анимация в проекте должна быть явно перечислена здесь с animation: none.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .aura {
+  .aura,
+  .pearl {
     animation: none;
   }
 }
-:root[data-motion='reduce'] .aura {
+:root[data-motion='reduce'] .aura,
+:root[data-motion='reduce'] .pearl {
   animation: none;
 }
 
