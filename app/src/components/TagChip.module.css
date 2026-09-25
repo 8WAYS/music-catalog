@@ -32,6 +32,9 @@
   box-shadow: 0 3px 10px -5px rgba(20, 24, 40, 0.45);
   animation: holo 12s linear infinite;
 }
+:global(html.transitioning) .active {
+  animation-play-state: paused;
+}
 .group {
   color: var(--text-muted);
   font-size: 12px;

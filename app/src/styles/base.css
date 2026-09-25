@@ -205,6 +205,10 @@ textarea.input {
   animation: aura-drift 30s ease-in-out infinite alternate;
   transition: opacity 400ms;
 }
+/* На время смены экрана фоновые анимации не крутятся — не отнимают кадр у самого перехода (router.ts) */
+html.transitioning .aura {
+  animation-play-state: paused;
+}
 @keyframes aura-drift {
   to {
     transform: translate(-5%, 3%) rotate(6deg);

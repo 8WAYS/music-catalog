@@ -316,6 +316,9 @@
   animation: holo 12s linear infinite;
   pointer-events: none;
 }
+:global(html.transitioning) .surprise::before {
+  animation-play-state: paused;
+}
 .add {
   width: 48px;
   padding: 0;

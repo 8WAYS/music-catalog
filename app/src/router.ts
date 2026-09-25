@@ -151,21 +151,32 @@ function withTransition(apply: () => void, resetScroll: boolean): void {
     applied = true;
     apply();
   };
+  // Аура, диск и перламутр крутятся постоянно — на слабом GPU это конкурирует с самим
+  // переходом за кадр и даёт рывки (особенно заметно на подсевшем аккумуляторе, iOS сам
+  // снижает производительность). На время перехода фоновые анимации ставим на паузу.
+  document.documentElement.classList.add('transitioning');
+  let unpaused = false;
+  const finish = () => {
+    settle();
+    if (unpaused) return;
+    unpaused = true;
+    document.documentElement.classList.remove('transitioning');
+  };
   try {
     const t = document.startViewTransition(async () => {
       run();
       // Preact перерисовывает после смены сигнала асинхронно — ждём, пока новый экран окажется в DOM
       await new Promise((r) => setTimeout(r, 0));
     });
-    t.finished.then(settle).catch(settle);
+    t.finished.then(finish).catch(finish);
   } catch {
     run();
-    settle();
+    finish();
   }
   // Страховка: браузер не вызвал обновление (бывает в WebKit вне Safari) — экран всё равно сменится
   setTimeout(() => {
     run();
-    settle();
+    finish();
   }, 400);
 }
 

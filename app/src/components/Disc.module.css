@@ -84,6 +84,11 @@
 .print[data-spin='true'] {
   animation: spin linear infinite;
 }
+/* На время смены экрана — пауза, не отнимает кадр у самого перехода (router.ts) */
+:global(html.transitioning) .disc,
+:global(html.transitioning) .print[data-spin='true'] {
+  animation-play-state: paused;
+}
 .print span {
   position: absolute;
   top: 25%;
