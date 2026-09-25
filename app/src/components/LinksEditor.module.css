@@ -1,0 +1,55 @@
+.wrap {
+  display: grid;
+  gap: var(--s2);
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding-left: var(--s3);
+  min-height: 48px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.badge {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+.badge[data-service='yandex'] {
+  background: #ffcc00;
+  color: #1a1a1a;
+}
+.badge[data-service='vk'] {
+  background: #0077ff;
+  color: #fff;
+}
+.badge[data-service='spotify'] {
+  background: #1ed760;
+  color: #0c1f12;
+}
+.url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.add {
+  display: flex;
+  gap: var(--s2);
+}
+.add > button {
+  flex: none;
+}
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 14px;
+}

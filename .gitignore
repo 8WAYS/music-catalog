@@ -1,0 +1,7 @@
+node_modules/
+app/dist/
+app/dev-dist/
+app/test-results/
+app/playwright-report/
+app/coverage/
+.DS_Store

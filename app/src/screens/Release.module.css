@@ -1,0 +1,209 @@
+.card {
+  min-height: 100dvh;
+  --card-accent: var(--accent);
+}
+/* Цвета карточки из обложки: градиент от bg к --bg (раздел 7.2) */
+.tinted {
+  background: linear-gradient(180deg, var(--card-bg) 0, var(--card-bg) 280px, var(--bg) 90vh);
+  color: var(--card-text);
+}
+:root[data-theme='light'] .tinted {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card-accent) 24%, var(--bg)) 0,
+    var(--bg) 65vh
+  );
+  color: var(--text);
+}
+
+.bar {
+  position: relative;
+  z-index: 1;
+}
+
+.layout {
+  display: grid;
+  gap: var(--s5);
+  margin-top: var(--s2);
+}
+.hero {
+  width: min(78vw, 420px);
+  justify-self: center;
+}
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(280px, 420px) 1fr;
+    gap: var(--s7);
+    align-items: start;
+  }
+  .hero {
+    width: 100%;
+    position: sticky;
+    top: var(--s5);
+  }
+}
+
+.info {
+  display: grid;
+  gap: var(--s3);
+  align-content: start;
+  min-width: 0;
+}
+.kicker {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.title {
+  font-size: clamp(30px, 8vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.artist {
+  margin: -4px 0 0;
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: var(--s2);
+}
+.listen {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: var(--tap);
+  padding: 0 var(--s4) 0 var(--s3);
+  border-radius: var(--radius-pill);
+  background: var(--card-accent);
+  color: #111;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+.listen:nth-child(n + 2) {
+  background: color-mix(in srgb, var(--card-accent) 18%, transparent);
+  color: inherit;
+}
+
+.description {
+  margin: var(--s2) 0 0;
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  --chip-bg: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.tracks {
+  margin-top: var(--s4);
+}
+.tracksHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+}
+.tracksHead h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.tracksHead span {
+  font-size: 13px;
+  opacity: 0.65;
+  white-space: nowrap;
+}
+.trackList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.track {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 48px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 7%, transparent);
+}
+.pos {
+  width: 22px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  opacity: 0.5;
+  flex: none;
+}
+.trackTitle {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: var(--s2) 0;
+}
+.fav .trackTitle {
+  font-weight: 600;
+}
+.dur {
+  font-size: 13px;
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+}
+.star {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  margin-right: -10px;
+  border: 0;
+  background: none;
+  color: color-mix(in srgb, currentColor 35%, transparent);
+  flex: none;
+}
+.star[aria-pressed='true'] {
+  color: var(--card-accent);
+}
+.star[aria-pressed='true'] svg {
+  animation: star-pop 420ms var(--ease-spring);
+}
+@keyframes star-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.starStatic {
+  color: var(--card-accent);
+  display: grid;
+  place-items: center;
+  width: 32px;
+}
+.fill {
+  justify-self: start;
+  margin-top: var(--s3);
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  border-color: transparent;
+}
+.missing {
+  color: var(--text-muted);
+}

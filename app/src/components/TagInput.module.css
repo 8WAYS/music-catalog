@@ -1,0 +1,47 @@
+.wrap {
+  display: grid;
+  gap: var(--s3);
+}
+.selected,
+.suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.suggest {
+  --chip-bg: transparent;
+  --chip-line: var(--line);
+}
+.new {
+  min-height: 36px;
+  padding: 0 var(--s3);
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+.create {
+  padding: var(--s3);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.create p {
+  margin: 0 0 var(--s3);
+  font-size: 15px;
+}
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.groupBtn {
+  min-height: var(--tap);
+  padding: 0 var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-weight: 600;
+  font-size: 14px;
+}

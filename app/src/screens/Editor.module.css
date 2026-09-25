@@ -1,0 +1,154 @@
+.form {
+  display: grid;
+  gap: var(--s3);
+  max-width: 720px;
+  margin: var(--s3) auto 0;
+}
+.main {
+  display: grid;
+  gap: var(--s4);
+  margin-bottom: var(--s3);
+}
+@media (min-width: 640px) {
+  .main {
+    grid-template-columns: 200px 1fr;
+    align-items: start;
+  }
+}
+.coverBox {
+  display: grid;
+  gap: var(--s1);
+  justify-items: center;
+}
+.coverBtn {
+  width: min(56vw, 220px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+}
+@media (min-width: 640px) {
+  .coverBtn {
+    width: 100%;
+  }
+}
+.coverEmpty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  border: 1.5px dashed var(--line);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 14px;
+}
+.coverRemove {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.fields {
+  display: grid;
+  gap: var(--s3);
+}
+.row {
+  display: flex;
+  gap: var(--s2);
+}
+.segmented {
+  display: flex;
+  flex: 1;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  min-width: 0;
+}
+.segmented label {
+  flex: 1;
+  position: relative;
+}
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+}
+.segmented span {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition:
+    background 150ms,
+    color 150ms;
+}
+.segmented input:checked + span {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--focus);
+}
+.year {
+  width: 92px;
+  flex: none;
+}
+.year input {
+  text-align: center;
+}
+.err {
+  font-style: normal;
+  font-size: 13px;
+  color: var(--danger);
+}
+input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.section {
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  border: 1px solid var(--line);
+}
+.section > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 56px;
+  padding: 0 var(--s4);
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+.section > summary::-webkit-details-marker {
+  display: none;
+}
+.summary {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 14px;
+}
+.chev {
+  margin-left: auto;
+  color: var(--text-muted);
+  transition: transform 200ms var(--ease-out);
+}
+.section[open] .chev {
+  transform: rotate(180deg);
+}
+.sectionBody {
+  padding: 0 var(--s4) var(--s4);
+}
+.delete {
+  justify-self: center;
+  margin-top: var(--s5);
+}

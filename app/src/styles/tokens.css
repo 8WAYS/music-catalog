@@ -1,0 +1,59 @@
+/* Дизайн-токены (раздел 7.1). Тёмная тема по умолчанию. */
+:root {
+  --bg: #0f0e0d;
+  --surface: #1a1816;
+  --surface-2: #23201d;
+  --surface-glass: rgba(26, 24, 22, 0.72);
+  --text: #f2ede6;
+  --text-muted: #a39b90;
+  --line: #2c2926;
+  --accent: #d9823b;
+  --accent-text: #1a0f06;
+  --danger: #e5604f;
+  --focus: #f2c48d;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  --radius: 14px;
+  --radius-cover: 8px;
+  --radius-pill: 999px;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+
+  --font-display: 'Unbounded Variable', 'Onest Variable', system-ui, sans-serif;
+  --font-text: 'Onest Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Пружина для звёздочки (linear() с запасным вариантом) */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --tap: 44px;
+
+  color-scheme: dark;
+}
+
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-spring: linear(0, 0.35 8%, 0.95 18%, 1.18 27%, 1.2 32%, 1.05 45%, 0.97 58%, 1.01 75%, 1);
+  }
+}
+
+:root[data-theme='light'] {
+  --bg: #f6f2ec;
+  --surface: #fffdf9;
+  --surface-2: #efe9e1;
+  --surface-glass: rgba(255, 253, 249, 0.78);
+  --text: #1d1a17;
+  --text-muted: #6a6158;
+  --line: #e2dbd1;
+  --accent: #b5601c;
+  --accent-text: #ffffff;
+  --danger: #c23b2b;
+  --focus: #8a4510;
+  --shadow: 0 10px 30px rgba(60, 40, 20, 0.14);
+  color-scheme: light;
+}

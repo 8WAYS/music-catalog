@@ -1,0 +1,28 @@
+.splash {
+  min-height: 100dvh;
+  background: var(--bg);
+}
+.errorTitle {
+  font-size: 22px;
+  margin: var(--s6) 0 var(--s3);
+}
+.update {
+  position: fixed;
+  left: 50%;
+  top: calc(env(safe-area-inset-top) + var(--s3));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: 6px 6px 6px var(--s4);
+  border-radius: var(--radius-pill);
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 40;
+  white-space: nowrap;
+}

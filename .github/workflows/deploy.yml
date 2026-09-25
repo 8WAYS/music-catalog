@@ -1,0 +1,68 @@
+name: Deploy to GitHub Pages
+
+# Код (app/) и данные (data/) в одном репозитории.
+# Коммит данных из приложения тоже запускает деплой; сборка кода берётся из кэша.
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', 'data/**', '.github/workflows/deploy.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Кэш сборки по хэшу app/
+        id: dist-cache
+        uses: actions/cache@v4
+        with:
+          path: app/dist
+          key: dist-${{ hashFiles('app/**', '!app/node_modules/**') }}
+
+      - uses: actions/setup-node@v5
+        if: steps.dist-cache.outputs.cache-hit != 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Сборка приложения
+        if: steps.dist-cache.outputs.cache-hit != 'true'
+        working-directory: app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Сайт = сборка + данные
+        run: |
+          mkdir -p site
+          cp -r app/dist/. site/
+          mkdir -p site/data
+          cp -r data/. site/data/
+          rm -f site/data/covers/.gitkeep
+          [ -f CNAME ] && cp CNAME site/ || true
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
