@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 22,
-  "publishedAt": "2026-09-25T18:41:32.685Z",
+  "revision": 29,
+  "publishedAt": "2026-09-25T20:05:26.195Z",
   "owner": {
     "name": ""
   },
@@ -121,7 +121,7 @@
           "position": 2,
           "title": "MP5",
           "durationSec": 160,
-          "favorite": true
+          "favorite": false
         },
         {
           "id": "8f20d244-8944-4858-9a4e-4de89d68baf4",
@@ -243,7 +243,7 @@
         }
       ],
       "createdAt": "2026-09-25T18:38:15.522Z",
-      "updatedAt": "2026-09-25T18:39:08.525Z",
+      "updatedAt": "2026-09-25T20:05:01.485Z",
       "year": 2021,
       "itunesId": 1711600555,
       "cover": "covers/07a69893-f0c3-4aab-85db-91e989dd208c.jpg",
