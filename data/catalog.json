@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 39,
-  "publishedAt": "2026-09-25T23:47:49.986Z",
+  "revision": 45,
+  "publishedAt": "2026-09-25T23:48:03.556Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -186,13 +186,13 @@
           "id": "5709ea79-a66d-42f8-93c5-77bd3f9fd6b4",
           "position": 16,
           "title": "этот трек стоил 2.000.000 (эйфория)",
-          "favorite": true
+          "favorite": false
         },
         {
           "id": "feb0a7d0-db35-406a-9a64-e653afa2d981",
           "position": 17,
           "title": "модели и мы",
-          "favorite": true
+          "favorite": false
         }
       ],
       "links": [
@@ -202,7 +202,7 @@
         }
       ],
       "createdAt": "2026-09-25T17:42:34.794Z",
-      "updatedAt": "2026-09-25T23:47:48.933Z",
+      "updatedAt": "2026-09-25T23:47:57.040Z",
       "year": 2026,
       "cover": "covers/53f4263f-2106-4aea-9feb-43ecb0bf91c4.jpg",
       "coverColors": {
