@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 51,
-  "publishedAt": "2026-09-25T23:48:24.393Z",
+  "revision": 54,
+  "publishedAt": "2026-09-25T23:50:23.075Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -424,7 +424,7 @@
           "id": "5d237899-21b4-47fb-872e-f35d4fe79b0e",
           "position": 9,
           "title": "любовь",
-          "favorite": true
+          "favorite": false
         },
         {
           "id": "172c413b-fc1d-49eb-9c5d-54a9e4f3e44a",
@@ -440,7 +440,7 @@
         }
       ],
       "createdAt": "2026-09-25T20:08:00.128Z",
-      "updatedAt": "2026-09-25T22:41:17.685Z",
+      "updatedAt": "2026-09-25T23:50:16.364Z",
       "year": 2026,
       "cover": "covers/23acac90-378c-4eb5-afc6-3d23ed6bacee.jpg",
       "coverColors": {
