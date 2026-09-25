@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 20,
-  "publishedAt": "2026-09-25T18:39:08.603Z",
+  "revision": 22,
+  "publishedAt": "2026-09-25T18:41:32.685Z",
   "owner": {
     "name": ""
   },
@@ -20,6 +20,11 @@
       "id": "6d749ad8-4502-407f-b37a-1f9393a8e27c",
       "name": "Ночь",
       "group": "time"
+    },
+    {
+      "id": "75424a05-2858-41d5-abe9-46b8fa909edd",
+      "name": "Поебота",
+      "group": "mood"
     }
   ],
   "releases": [
@@ -58,7 +63,8 @@
       "artist": "cardinparis",
       "type": "single",
       "tagIds": [
-        "6d749ad8-4502-407f-b37a-1f9393a8e27c"
+        "6d749ad8-4502-407f-b37a-1f9393a8e27c",
+        "75424a05-2858-41d5-abe9-46b8fa909edd"
       ],
       "tracks": [],
       "links": [
@@ -68,7 +74,7 @@
         }
       ],
       "createdAt": "2026-09-25T16:27:15.115Z",
-      "updatedAt": "2026-09-25T18:19:15.052Z",
+      "updatedAt": "2026-09-25T18:41:28.167Z",
       "year": 2025,
       "itunesId": 1843219808,
       "cover": "covers/fcfc90b9-9a33-4d8e-93bd-9f3abf617dd8.jpg",
