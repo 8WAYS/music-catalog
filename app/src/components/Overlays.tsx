@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import { confirmRequest, toasts } from '../store/app';
 import s from './Overlays.module.css';
 
@@ -18,7 +18,8 @@ export function ConfirmDialog() {
   const req = confirmRequest.value;
   const ref = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
+  // Синхронно с рендером: иначе до отложенного close() страница остаётся inert и ввод теряется (WebKit)
+  useLayoutEffect(() => {
     const d = ref.current;
     if (!d) return;
     if (req && !d.open) d.showModal();
