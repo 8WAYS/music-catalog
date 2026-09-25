@@ -53,6 +53,30 @@ interface RawTrack {
   duration_ms?: number;
 }
 
+/**
+ * Текст ошибки для человека. Обычный ответ Web API — {error: {status, message}}, message часто
+ * прямо называет причину (например, что приложение в Development Mode и аккаунт не в списке
+ * пользователей). Но 403 бывает и с CDN/защиты Spotify ещё до самого API — тогда тело не JSON,
+ * а HTML; в этом случае показываем сырой текст, чтобы было по чему разбираться дальше.
+ */
+async function errorDetail(res: Response): Promise<string> {
+  const fallback = `Spotify ответил ошибкой ${res.status}. Попробуй позже.`;
+  let text: string;
+  try {
+    text = await res.text();
+  } catch {
+    return fallback;
+  }
+  if (!text.trim()) return fallback;
+  try {
+    const body = JSON.parse(text) as { error?: { message?: string } | string };
+    const reason = typeof body.error === 'string' ? body.error : body.error?.message;
+    return reason ? `Spotify отказал (${res.status}): ${reason}` : fallback;
+  } catch {
+    return `Spotify отказал (${res.status}): ${text.slice(0, 200)}`;
+  }
+}
+
 async function call<T>(url: string, token: string, fetchFn: Fetch): Promise<T> {
   let res: Response;
   try {
@@ -70,16 +94,7 @@ async function call<T>(url: string, token: string, fetchFn: Fetch): Promise<T> {
     throw new SpotifyError('authExpired', 'Вход в Spotify истёк — зайди заново в настройках.');
   if (res.status === 429)
     throw new SpotifyError('limit', 'Слишком много запросов к Spotify — подожди немного.');
-  if (!res.ok) {
-    // Тело ошибки — {error: {status, message}}; message часто прямо называет причину
-    // (например, что приложение в Development Mode и аккаунт не в списке пользователей)
-    const body = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
-    const reason = body?.error?.message;
-    throw new SpotifyError(
-      'http',
-      reason ? `Spotify отказал: ${reason}` : `Spotify ответил ошибкой ${res.status}. Попробуй позже.`,
-    );
-  }
+  if (!res.ok) throw new SpotifyError('http', await errorDetail(res));
   try {
     return (await res.json()) as T;
   } catch {

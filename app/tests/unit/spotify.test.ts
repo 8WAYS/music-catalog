@@ -109,7 +109,13 @@ describe('ошибки — понятным текстом', () => {
           ),
         ),
       'http',
-      /Spotify отказал: Only users listed/,
+      /Spotify отказал \(403\): Only users listed/,
+    ],
+    [
+      'запрещено — тело не JSON (блокировка до самого API)',
+      () => Promise.resolve(new Response('<html>Access Denied</html>', { status: 403 })),
+      'http',
+      /Spotify отказал \(403\): <html>Access Denied/,
     ],
     ['не JSON', () => Promise.resolve(new Response('<html>')), 'http', /непонятный ответ/],
   ])('%s', async (_, respond, kind, text) => {
