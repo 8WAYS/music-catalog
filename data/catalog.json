@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 13,
-  "publishedAt": "2026-09-25T17:07:18.195Z",
+  "revision": 14,
+  "publishedAt": "2026-09-25T17:43:36.498Z",
   "owner": {
     "name": "Wailee"
   },
@@ -78,6 +78,23 @@
         "text": "#f2e9e9"
       },
       "description": "Груснааа"
+    },
+    {
+      "id": "53f4263f-2106-4aea-9feb-43ecb0bf91c4",
+      "title": "НИКИТА ЗВЕРЕВ",
+      "artist": "elyaplugg!",
+      "type": "album",
+      "tagIds": [],
+      "tracks": [],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/42047921?ref_id=5BB449F4-9DA2-4C82-9E24-89E1D1A1AC0A&utm_medium=copy_link"
+        }
+      ],
+      "createdAt": "2026-09-25T17:42:34.794Z",
+      "updatedAt": "2026-09-25T17:43:29.912Z",
+      "year": 2026
     }
   ]
 }
