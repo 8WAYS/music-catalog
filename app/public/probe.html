@@ -125,6 +125,14 @@
 
     <section id="env">
       <h2>Окружение</h2>
+      <label style="display: flex; gap: 8px; align-items: center; color: var(--text)">
+        <input id="vpn" type="checkbox" style="width: 24px; min-height: 24px" /> Сейчас включён VPN
+      </label>
+      <label style="display: flex; gap: 8px; align-items: center; color: var(--text)">
+        <input id="adguard" type="checkbox" style="width: 24px; min-height: 24px" /> Сейчас включён AdGuard или
+        другой блокировщик
+      </label>
+      <p class="lead" style="margin: 8px 0 0">Отметь перед каждым шагом — состояние попадёт в отчёт.</p>
       <pre id="env-out"></pre>
     </section>
 
@@ -181,8 +189,15 @@
       const $ = (id) => document.getElementById(id);
       const results = {};
       const log = (id, ...lines) => ($(id).textContent += lines.join('\n') + '\n');
+      const netState = () =>
+        `VPN ${$('vpn').checked ? 'вкл' : 'выкл'}, блокировщик ${$('adguard').checked ? 'вкл' : 'выкл'}`;
+      // Без таймаута заблокированный запрос просто висит, и кажется, что «ничего не происходит»
+      const TIMEOUT = 20000;
+      const timeout = () => AbortSignal.timeout(TIMEOUT);
+      const errText = (e) =>
+        e.name === 'TimeoutError' ? `таймаут ${TIMEOUT / 1000} с — нет ответа` : `${e.name}: ${e.message}`;
       const status = (key, ok, note) => {
-        results[key] = { ok, note };
+        results[key] = { ok, note: `${note} (${netState()})` };
         const el = $(key + '-st');
         el.textContent = ok ? 'работает' : 'не работает';
         el.className = 'st ' + (ok ? 'ok' : 'bad');
@@ -206,7 +221,8 @@
       async function mbFetch(url, out) {
         for (let attempt = 1; attempt <= 3; attempt++) {
           const t0 = performance.now();
-          const res = await fetch(url, { headers: { Accept: 'application/json' } });
+          log(out, `GET ${url.replace(MB, '')} …`);
+          const res = await fetch(url, { headers: { Accept: 'application/json' }, signal: timeout() });
           log(out, `GET ${url.replace(MB, '')} → ${res.status} за ${ms(t0)}`);
           if (res.status !== 503) return res;
           await new Promise((r) => setTimeout(r, 2000));
@@ -239,8 +255,8 @@
           }
           status('mb', true, `${groups.length} результатов`);
         } catch (e) {
-          log('mb-out', 'Ошибка: ' + e.message);
-          status('mb', false, e.message);
+          log('mb-out', 'Ошибка: ' + errText(e));
+          status('mb', false, errText(e));
         }
       };
 
@@ -251,7 +267,11 @@
         if (!mbid) return log('ca-out', 'Сначала шаг 1 или MBID');
         try {
           const t0 = performance.now();
-          const res = await fetch(`https://coverartarchive.org/release-group/${mbid}/front-500`, { mode: 'cors' });
+          log('ca-out', 'Загружаю…');
+          const res = await fetch(`https://coverartarchive.org/release-group/${mbid}/front-500`, {
+            mode: 'cors',
+            signal: timeout(),
+          });
           log('ca-out', `fetch → ${res.status}, ${res.headers.get('content-type')}, за ${ms(t0)} (итоговый адрес: ${res.url})`);
           if (!res.ok) throw new Error('HTTP ' + res.status);
           const blob = await res.blob();
@@ -267,20 +287,29 @@
           $('ca-img').hidden = false;
           status('ca', true, `CORS ок, кодирование: ${out.type}`);
         } catch (e) {
-          log('ca-out', 'Ошибка: ' + e.message);
-          status('ca', false, e.message);
+          log('ca-out', 'Ошибка: ' + errText(e));
+          status('ca', false, errText(e));
         }
       };
 
       // ---------- 3. GitHub Git Data API ----------
+      // На <login>.github.io/<repo>/ репозиторий известен по адресу
+      if (location.hostname.endsWith('.github.io')) {
+        const name = location.pathname.split('/').filter(Boolean)[0];
+        if (name) $('gh-repo').value = `${location.hostname.split('.')[0]}/${name}`;
+      }
       $('gh-go').onclick = async () => {
         $('gh-out').textContent = '';
         const repo = $('gh-repo').value.trim();
         const branch = $('gh-branch').value.trim() || 'main';
         const token = $('gh-token').value.trim();
+        if (!/^[^/\s]+\/[^/\s]+$/.test(repo)) return log('gh-out', 'Укажи репозиторий в виде владелец/имя');
+        if (!token) return log('gh-out', 'Вставь токен');
+        log('gh-out', 'Отправляю…');
         const api = (path, opts = {}) =>
           fetch(`https://api.github.com/repos/${repo}${path}`, {
             ...opts,
+            signal: timeout(),
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: 'application/vnd.github+json',
@@ -320,8 +349,8 @@
           log('gh-out', `Коммит ${newCommit.sha.slice(0, 7)} за ${ms(t0)}`);
           status('gh', true, `коммит ${newCommit.sha.slice(0, 7)}`);
         } catch (e) {
-          log('gh-out', 'Ошибка: ' + e.message);
-          status('gh', false, e.message);
+          log('gh-out', 'Ошибка: ' + errText(e));
+          status('gh', false, errText(e));
         }
       };
 
@@ -331,14 +360,14 @@
         try {
           const url = new URL(`data/probe/hello.json?v=${Date.now()}`, location.href);
           const t0 = performance.now();
-          const res = await fetch(url, { cache: 'no-store' });
+          const res = await fetch(url, { cache: 'no-store', signal: timeout() });
           log('pg-out', `GET ${url.pathname} → ${res.status} за ${ms(t0)}`);
           if (!res.ok) throw new Error('HTTP ' + res.status + ' (подожди минуту после коммита)');
           log('pg-out', JSON.stringify(await res.json()));
           status('pg', true, 'файл из коммита отдаётся сайтом');
         } catch (e) {
-          log('pg-out', 'Ошибка: ' + e.message);
-          status('pg', false, e.message);
+          log('pg-out', 'Ошибка: ' + errText(e));
+          status('pg', false, errText(e));
         }
       };
 
