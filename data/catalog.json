@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 15,
-  "publishedAt": "2026-09-25T18:34:31.316Z",
+  "revision": 16,
+  "publishedAt": "2026-09-25T18:38:25.708Z",
   "owner": {
     "name": ""
   },
@@ -95,6 +95,152 @@
       "createdAt": "2026-09-25T17:42:34.794Z",
       "updatedAt": "2026-09-25T17:43:29.912Z",
       "year": 2026
+    },
+    {
+      "id": "07a69893-f0c3-4aab-85db-91e989dd208c",
+      "title": "Trip At Knight",
+      "artist": "Trippie Redd",
+      "type": "album",
+      "tagIds": [],
+      "tracks": [
+        {
+          "id": "f63197ac-ccc9-4984-9bd7-e692c7e9b59a",
+          "position": 1,
+          "title": "Molly Hearts",
+          "durationSec": 163,
+          "favorite": false
+        },
+        {
+          "id": "a6ca44b9-70e9-45f1-b709-bbd7fd9d0595",
+          "position": 2,
+          "title": "MP5",
+          "durationSec": 160,
+          "favorite": false
+        },
+        {
+          "id": "8f20d244-8944-4858-9a4e-4de89d68baf4",
+          "position": 3,
+          "title": "Betrayal (feat. Drake)",
+          "durationSec": 152,
+          "favorite": false
+        },
+        {
+          "id": "1031346e-3dac-4f78-b223-2cb67a001361",
+          "position": 4,
+          "title": "Finish Line",
+          "durationSec": 143,
+          "favorite": false
+        },
+        {
+          "id": "c12bce70-fdf9-4ee4-9215-6e5033624a7c",
+          "position": 5,
+          "title": "Holy Smokes (feat. Lil Uzi Vert)",
+          "durationSec": 182,
+          "favorite": false
+        },
+        {
+          "id": "72521545-ac99-4a93-b560-c3b36c0ffe3f",
+          "position": 6,
+          "title": "Super Cell",
+          "durationSec": 161,
+          "favorite": false
+        },
+        {
+          "id": "518f5919-8f82-45e2-9662-c9b12c54a778",
+          "position": 7,
+          "title": "Miss The Rage",
+          "durationSec": 237,
+          "favorite": false
+        },
+        {
+          "id": "a9ee5923-773b-4505-9249-75fe02377b3c",
+          "position": 8,
+          "title": "Supernatural",
+          "durationSec": 141,
+          "favorite": false
+        },
+        {
+          "id": "29f333b9-46a8-437e-856f-3c923a01edb7",
+          "position": 9,
+          "title": "Demon Time",
+          "durationSec": 159,
+          "favorite": false
+        },
+        {
+          "id": "fbbef522-998e-44d4-8e7e-b8d318623977",
+          "position": 10,
+          "title": "Matt Hardy 999",
+          "durationSec": 188,
+          "favorite": false
+        },
+        {
+          "id": "a730c4b5-8d2a-4736-8f9b-ab591fc87c7b",
+          "position": 11,
+          "title": "Vibes",
+          "durationSec": 124,
+          "favorite": false
+        },
+        {
+          "id": "89a6602a-561f-4f65-b5fe-abe43d8db6c8",
+          "position": 12,
+          "title": "New Money",
+          "durationSec": 144,
+          "favorite": false
+        },
+        {
+          "id": "2003c09d-2edf-4c4a-a4eb-10b04047658f",
+          "position": 13,
+          "title": "Danny Phantom (feat. XXXTENTACION)",
+          "durationSec": 136,
+          "favorite": false
+        },
+        {
+          "id": "f0efceba-3b98-4ab8-93c1-84e578665868",
+          "position": 14,
+          "title": "Space Time",
+          "durationSec": 120,
+          "favorite": false
+        },
+        {
+          "id": "91cf6dfd-67bb-43ac-874b-1498d892872e",
+          "position": 15,
+          "title": "Baki",
+          "durationSec": 147,
+          "favorite": false
+        },
+        {
+          "id": "d1f6062e-0d73-4b7b-960e-cb9bf9b0d93e",
+          "position": 16,
+          "title": "iPhone",
+          "durationSec": 122,
+          "favorite": false
+        },
+        {
+          "id": "9254ecc8-f6a4-4187-9a4b-d27219aad888",
+          "position": 17,
+          "title": "Rich MF (feat. Lil Durk)",
+          "durationSec": 234,
+          "favorite": false
+        },
+        {
+          "id": "bfd75ff9-3059-40d2-9e5e-d8a7b38b0a23",
+          "position": 18,
+          "title": "Captain Crunch (feat. Babyface Ray)",
+          "durationSec": 248,
+          "favorite": false
+        }
+      ],
+      "links": [],
+      "createdAt": "2026-09-25T18:38:15.522Z",
+      "updatedAt": "2026-09-25T18:38:18.050Z",
+      "year": 2021,
+      "itunesId": 1711600555,
+      "cover": "covers/07a69893-f0c3-4aab-85db-91e989dd208c.jpg",
+      "coverColors": {
+        "bg": "#121827",
+        "accent": "#a08b27",
+        "text": "#e9ebf2"
+      }
     }
   ]
 }
