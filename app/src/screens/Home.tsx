@@ -17,7 +17,8 @@ import {
   type Filters,
   type SortKey,
 } from '../services/search';
-import { isOwner, ownerName, reduceMotion, releases, tags } from '../store/app';
+import { isOwner, ownerName, reduceMotion, releases, staleCatalog, tags } from '../store/app';
+import { SYNC_LABEL, syncState } from '../store/sync';
 import { pluralize } from '../utils/normalize';
 import s from './Home.module.css';
 
@@ -53,7 +54,14 @@ export function Home() {
         </a>
       </header>
 
-      {!owner && <p class={s.viewer}>Только просмотр</p>}
+      {owner ? (
+        <SyncBadge hasReleases={all.length > 0} />
+      ) : (
+        <p class={s.viewer}>
+          Только просмотр
+          {staleCatalog.value && ' · сайт не ответил, показана сохранённая версия'}
+        </p>
+      )}
 
       {all.length === 0 ? (
         <EmptyCatalog owner={owner} />
@@ -135,6 +143,19 @@ export function Home() {
         />
       )}
     </div>
+  );
+}
+
+/** Индикатор синхронизации (раздел 7.5): ведёт в настройки публикации. */
+function SyncBadge({ hasReleases }: { hasReleases: boolean }) {
+  const st = syncState.value.status;
+  // Пока публикация не подключена и публиковать нечего — не отвлекаем
+  if (st === 'off' && !hasReleases) return null;
+  return (
+    <a class={s.sync} href={href.settings()} data-status={st}>
+      <span class={s.syncDot} aria-hidden="true" />
+      {SYNC_LABEL[st]}
+    </a>
   );
 }
 

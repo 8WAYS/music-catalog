@@ -2,6 +2,10 @@ import { computed, signal } from '@preact/signals';
 import { LocalSource } from '../data/localSource';
 import { RemoteSource } from '../data/remoteSource';
 import type { Mode, Repository } from '../data/repository';
+import { decideMode, type Published } from '../data/mode';
+import type { GitHubConfig } from '../services/github';
+import { importPublished } from '../services/publisher';
+import { connect, startSync } from './sync';
 import type { CoverColors, Release, Tag } from '../data/schema';
 
 // ---------- Данные ----------
@@ -30,36 +34,77 @@ async function refresh(): Promise<void> {
   releases.value = rel;
   tags.value = tg;
   ownerName.value = name ?? '';
+  if (r instanceof RemoteSource) staleCatalog.value = r.stale;
 }
 
-async function publishedCatalogExists(): Promise<boolean> {
+/** Есть ли на сайте опубликованная картотека. Нет ответа за 6 с (VPN, офлайн) — «неизвестно». */
+async function publishedState(): Promise<Published> {
   try {
     const res = await fetch(new URL('data/catalog.json', document.baseURI), {
       method: 'HEAD',
       cache: 'no-cache',
+      signal: AbortSignal.timeout(6_000),
     });
-    return res.ok && (res.headers.get('content-type') ?? '').includes('json');
+    return res.ok && (res.headers.get('content-type') ?? '').includes('json') ? 'yes' : 'no';
+  } catch {
+    return 'unknown';
+  }
+}
+
+const PREFER_LOCAL_KEY = 'preferLocal';
+
+function readPreferLocal(): boolean {
+  try {
+    return localStorage.getItem(PREFER_LOCAL_KEY) === '1';
   } catch {
     return false;
   }
 }
 
-/**
- * Выбор режима (раздел 3.2). Владелец — если на устройстве есть токен GitHub или локальные данные;
- * иначе, если картотека опубликована, — зритель; иначе — новая пустая картотека владельца.
- */
+/** Зритель со своими данными на устройстве может переключиться на них и обратно. */
+export function setPreferLocal(on: boolean): void {
+  try {
+    if (on) localStorage.setItem(PREFER_LOCAL_KEY, '1');
+    else localStorage.removeItem(PREFER_LOCAL_KEY);
+  } catch {
+    /* хранилище недоступно */
+  }
+  // Сменился режим — перезапускаемся сразу на главной: ради неё и переключались
+  history.replaceState(null, '', '#/');
+  location.reload();
+}
+
+/** Сколько релизов лежит в локальной картотеке — зритель видит это в настройках. */
+export const localReleaseCount = signal(0);
+/** Зритель видит сохранённую копию: сайт не ответил. */
+export const staleCatalog = signal(false);
+/** Зритель открыл свою локальную картотеку вместо опубликованной. */
+export const preferLocalOn = signal(false);
+/** Картотека опубликована на сайте (для подсказок в настройках). */
+export const publishedOnSite = signal<Published>('unknown');
+
 export async function init(): Promise<void> {
   try {
     const local = await LocalSource.open();
-    const token = await local.getMeta('token');
-    const hasLocal = (await local.getReleases()).length > 0 || (await local.getTags()).length > 0;
-    if (token || hasLocal || !(await publishedCatalogExists())) {
+    const [token, localReleases, localTags] = await Promise.all([
+      local.getMeta('token'),
+      local.getReleases(),
+      local.getTags(),
+    ]);
+    const hasLocal = localReleases.length > 0 || localTags.length > 0;
+    localReleaseCount.value = localReleases.length;
+    const preferLocal = readPreferLocal();
+    preferLocalOn.value = preferLocal;
+    // Без токена сеть спрашиваем всегда: нужно знать, есть ли что смотреть
+    const published = token ? 'unknown' : await publishedState();
+    publishedOnSite.value = published;
+    mode.value = decideMode({ token: !!token, hasLocal, published, preferLocal });
+    if (mode.value === 'owner') {
       repository = local;
-      mode.value = 'owner';
+      startSync(local);
     } else {
       local.close();
       repository = new RemoteSource();
-      mode.value = 'viewer';
     }
     repository.subscribe(() => void refresh());
     await refresh();
@@ -68,6 +113,22 @@ export async function init(): Promise<void> {
   } finally {
     ready.value = true;
   }
+}
+
+/**
+ * «Это моя картотека» на устройстве зрителя: проверить токен, сохранить его и открыть как владелец.
+ * Своих данных на устройстве нет — сразу загружаем опубликованную версию (раздел 3.2, новое устройство);
+ * есть — после перезапуска публикация покажет конфликт, и владелец выберет, какую версию оставить.
+ */
+export async function becomeOwner(cfg: GitHubConfig): Promise<void> {
+  const local = await LocalSource.open();
+  try {
+    await connect(local, cfg);
+    if ((await local.getReleases()).length === 0) await importPublished(local, cfg);
+  } finally {
+    local.close();
+  }
+  setPreferLocal(false);
 }
 
 /** Для тестов: подставить источник данных. */

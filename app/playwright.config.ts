@@ -6,6 +6,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173/',
     locale: 'ru-RU',
+    // Запросы через service worker не видит page.route — в тестах подменяем сеть напрямую
+    serviceWorkers: 'block',
     // Локально можно указать свой Chromium: PW_CHROMIUM_PATH=/path/to/chrome npm run e2e
     launchOptions: process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {},
   },

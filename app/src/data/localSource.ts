@@ -182,6 +182,33 @@ export class LocalSource implements Repository {
     };
   }
 
+  /**
+   * Заменить всю картотеку (загрузка опубликованной версии, этап 5; импорт, этап 6).
+   * Одна транзакция: либо всё, либо ничего. Служебные ключи (токен, ревизия) не трогает.
+   */
+  async replaceAll(catalog: Catalog, covers: Map<string, Blob>): Promise<void> {
+    // Байты обложек читаем заранее: внутри транзакции нельзя ждать посторонних промисов
+    const stored = await Promise.all(
+      [...covers].map(
+        async ([id, blob]) => [id, { type: blob.type, data: await blob.arrayBuffer() }] as const,
+      ),
+    );
+    const tx = this.db.transaction(['releases', 'tags', 'covers'], 'readwrite');
+    await Promise.all([
+      tx.objectStore('releases').clear(),
+      tx.objectStore('tags').clear(),
+      tx.objectStore('covers').clear(),
+    ]);
+    await Promise.all([
+      ...catalog.tags.map((t) => tx.objectStore('tags').put(t)),
+      ...catalog.releases.map((r) => tx.objectStore('releases').put(r)),
+      ...stored.map(([id, v]) => tx.objectStore('covers').put(v, id)),
+    ]);
+    await tx.done;
+    for (const id of [...this.urlCache.keys()]) this.revokeUrl(id);
+    this.emit();
+  }
+
   subscribe(listener: () => void): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);

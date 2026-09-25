@@ -1,18 +1,25 @@
 import { Icon } from '../components/Icon';
+import { ClaimOwnership, PublishSettings } from '../components/PublishSettings';
 import { goBack } from '../router';
 import {
   isOwner,
+  localReleaseCount,
   ownerName,
+  preferLocalOn,
+  publishedOnSite,
   reduceMotion,
   releases,
   repo,
+  setPreferLocal,
   setReduceMotion,
   setTheme,
+  staleCatalog,
   tags,
   theme,
   toastError,
   type ThemePref,
 } from '../store/app';
+import { markChanged } from '../store/sync';
 import { pluralize } from '../utils/normalize';
 import s from './Settings.module.css';
 
@@ -27,9 +34,11 @@ export function Settings() {
   const owner = isOwner.value;
 
   const saveName = async (name: string) => {
+    if (name.trim() === ownerName.value) return;
     try {
       await repo().setMeta('ownerName', name.trim());
       ownerName.value = name.trim();
+      await markChanged();
     } catch (e) {
       toastError(e);
     }
@@ -63,6 +72,34 @@ export function Settings() {
               {tags.value.length} {pluralize(tags.value.length, 'тег', 'тега', 'тегов')} · данные хранятся на
               этом устройстве
             </p>
+            {preferLocalOn.value && publishedOnSite.value !== 'no' && (
+              <button type="button" class="btn" onClick={() => setPreferLocal(false)}>
+                Смотреть опубликованную картотеку
+              </button>
+            )}
+          </section>
+        )}
+
+        {!owner && (
+          <section class={s.group}>
+            <h2>Картотека</h2>
+            <p class={s.muted}>
+              {ownerName.value ? `Картотека ${ownerName.value}` : 'Эта картотека'} открыта только для
+              просмотра.
+              {staleCatalog.value && ' Сайт сейчас не ответил — показана сохранённая версия.'}
+            </p>
+            {localReleaseCount.value > 0 && (
+              <>
+                <p class={s.muted}>
+                  На этом устройстве есть своя неопубликованная картотека: {localReleaseCount.value}{' '}
+                  {pluralize(localReleaseCount.value, 'релиз', 'релиза', 'релизов')}.
+                </p>
+                <button type="button" class="btn" onClick={() => setPreferLocal(true)}>
+                  Открыть свою картотеку
+                </button>
+              </>
+            )}
+            <ClaimOwnership />
           </section>
         )}
 
@@ -96,10 +133,7 @@ export function Settings() {
         {owner && (
           <section class={s.group}>
             <h2>Публикация</h2>
-            <p class={s.muted}>
-              Автопубликация на GitHub Pages появится на этапе 5. Пока картотека живёт только на этом
-              устройстве.
-            </p>
+            <PublishSettings />
           </section>
         )}
 

@@ -38,6 +38,18 @@ export default defineConfig({
           '**/*-{vietnamese,math,symbols,latin-ext,cyrillic-ext}-*.woff2',
         ],
         navigateFallbackDenylist: [/\/data\//, /probe\.html$/],
+        // Обложки зрителя — для офлайна; в адресе версия (?v=updatedAt), поэтому кэш сначала
+        runtimeCaching: [
+          {
+            urlPattern: /\/data\/covers\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'covers',
+              expiration: { maxEntries: 1500 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
       },
     }),
   ],

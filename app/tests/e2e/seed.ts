@@ -37,7 +37,7 @@ export async function seed(page: Page, data: { tags: SeedTag[]; releases: SeedRe
         ...r,
         tagIds: r.tagIds ?? [],
         tracks: (r.tracks ?? []).map((title, i) => ({
-          id: `${r.id}-${i}`,
+          id: `${r.id.slice(0, 24)}${r.id.slice(-2)}${String(i).padStart(10, '0')}`,
           position: i + 1,
           title,
           favorite: false,
@@ -52,38 +52,49 @@ export async function seed(page: Page, data: { tags: SeedTag[]; releases: SeedRe
   await page.reload();
 }
 
+/** Идентификаторы — UUID, как в настоящем приложении: иначе валидация не даст сохранить правку */
+export const ID = {
+  rainbows: '00000000-0000-4000-8000-0000000000b1',
+  blood: '00000000-0000-4000-8000-0000000000b2',
+  elka: '00000000-0000-4000-8000-0000000000b3',
+};
+
 export const TAGS: SeedTag[] = [
-  { id: 't-autumn', name: 'осень', group: 'time' },
-  { id: 't-evening', name: 'вечер', group: 'time' },
-  { id: 't-calm', name: 'спокойное', group: 'mood' },
-  { id: 't-road', name: 'дорога', group: 'place' },
+  { id: '00000000-0000-4000-8000-0000000000a1', name: 'осень', group: 'time' },
+  { id: '00000000-0000-4000-8000-0000000000a2', name: 'вечер', group: 'time' },
+  { id: '00000000-0000-4000-8000-0000000000a3', name: 'спокойное', group: 'mood' },
+  { id: '00000000-0000-4000-8000-0000000000a4', name: 'дорога', group: 'place' },
 ];
 
 export const RELEASES: SeedRelease[] = [
   {
-    id: 'r-rainbows',
+    id: '00000000-0000-4000-8000-0000000000b1',
     title: 'In Rainbows',
     artist: 'Radiohead',
     year: 2007,
     description: 'Слушал осенью на велике вдоль Невы',
-    tagIds: ['t-autumn', 't-evening', 't-calm'],
+    tagIds: [
+      '00000000-0000-4000-8000-0000000000a1',
+      '00000000-0000-4000-8000-0000000000a2',
+      '00000000-0000-4000-8000-0000000000a3',
+    ],
     tracks: ['15 Step', 'Nude'],
     createdAt: '2026-09-01T10:00:00Z',
   },
   {
-    id: 'r-blood',
+    id: '00000000-0000-4000-8000-0000000000b2',
     title: 'Группа крови',
     artist: 'Кино',
     year: 1988,
-    tagIds: ['t-autumn', 't-road'],
+    tagIds: ['00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000a4'],
     tracks: ['Группа крови', 'Звезда по имени Солнце'],
     createdAt: '2026-09-03T10:00:00Z',
   },
   {
-    id: 'r-elka',
+    id: '00000000-0000-4000-8000-0000000000b3',
     title: 'Ёлка',
     artist: 'Аквариум',
-    tagIds: ['t-calm'],
+    tagIds: ['00000000-0000-4000-8000-0000000000a3'],
     createdAt: '2026-09-02T10:00:00Z',
   },
 ];

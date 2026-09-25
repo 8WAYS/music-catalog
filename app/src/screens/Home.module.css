@@ -3,6 +3,46 @@
   font-weight: 700 !important;
   letter-spacing: -0.02em;
 }
+.sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  margin: 0 0 var(--s2);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.syncDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.sync[data-status='published'] .syncDot {
+  background: #6cc38a;
+}
+.sync[data-status='dirty'] .syncDot,
+.sync[data-status='publishing'] .syncDot {
+  background: var(--accent);
+}
+.sync[data-status='publishing'] .syncDot {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+.sync[data-status='error'] .syncDot,
+.sync[data-status='conflict'] .syncDot {
+  background: var(--danger);
+}
+.sync[data-status='error'],
+.sync[data-status='conflict'] {
+  color: var(--danger);
+}
+@keyframes pulse {
+  to {
+    opacity: 0.35;
+  }
+}
 .viewer {
   margin: 0 0 var(--s2);
   color: var(--text-muted);

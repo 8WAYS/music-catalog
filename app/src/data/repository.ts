@@ -12,6 +12,12 @@ export interface MetaValues {
   dirty: boolean;
   ownerName: string;
   publishWarningShown: boolean;
+  /** Ревизия, опубликованная последней */
+  publishedRevision: number;
+  /** Время последней публикации, ISO 8601 */
+  publishedAt: string;
+  /** Git-хэш data/catalog.json после нашей последней публикации — по нему видно чужие изменения */
+  catalogSha: string;
 }
 export type MetaKey = keyof MetaValues;
 

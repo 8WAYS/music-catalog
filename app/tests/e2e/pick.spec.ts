@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { RELEASES, TAGS, seed } from './seed';
+import { ID, RELEASES, TAGS, seed } from './seed';
 
 const chip = (page: Page, name: string) =>
   page.getByRole('group', { name: 'Фильтр по тегам' }).getByRole('button', { name, exact: true });
@@ -84,7 +84,7 @@ test('«Удиви меня» с перелистыванием', async ({ page 
   await page.getByRole('button', { name: 'Удиви меня' }).click();
   await expect(page.getByText('Выбираю…')).toBeVisible();
   await expect(page.getByRole('heading', { level: 1, name: /In Rainbows|Группа крови/ })).toBeVisible();
-  expect(page.url()).toMatch(/#\/release\/r-(rainbows|blood)$/);
+  expect(page.url()).toMatch(new RegExp(`#/release/(${ID.rainbows}|${ID.blood})$`));
 });
 
 test('без анимаций сразу открывает карточку', async ({ page }) => {
