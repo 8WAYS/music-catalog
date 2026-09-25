@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 36,
-  "publishedAt": "2026-09-25T22:41:24.917Z",
+  "revision": 39,
+  "publishedAt": "2026-09-25T23:47:49.986Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -91,7 +91,110 @@
       "artist": "elyaplugg!",
       "type": "album",
       "tagIds": [],
-      "tracks": [],
+      "tracks": [
+        {
+          "id": "27527629-ef11-4b05-9038-b4541fcd2867",
+          "position": 1,
+          "title": "nikita zverev",
+          "favorite": false
+        },
+        {
+          "id": "0262c87e-198e-4cfc-a331-2791712a4120",
+          "position": 2,
+          "title": "ты сука, да?",
+          "favorite": false
+        },
+        {
+          "id": "79742582-6d35-49f6-bd02-7db5b4d3c863",
+          "position": 3,
+          "title": "hashtag###",
+          "favorite": false
+        },
+        {
+          "id": "d824e008-bb13-46ab-90ec-f867e257404a",
+          "position": 4,
+          "title": "********** про альбом НИКИТА ЗВЕРЕВ",
+          "favorite": false
+        },
+        {
+          "id": "e99d5bdd-0347-4f55-83da-084ffd702d0d",
+          "position": 5,
+          "title": "mamma mia",
+          "favorite": false
+        },
+        {
+          "id": "11a872cc-2337-4948-89c7-a94f6dbd4b6c",
+          "position": 6,
+          "title": "vhs",
+          "favorite": false
+        },
+        {
+          "id": "33649353-e13e-4906-af1d-0f6ddc17d2b9",
+          "position": 7,
+          "title": "чем больше сиськи тем больше проблемы",
+          "favorite": false
+        },
+        {
+          "id": "abb80287-7252-452c-8eef-7f313c472b97",
+          "position": 8,
+          "title": "тупой",
+          "favorite": false
+        },
+        {
+          "id": "60111ea0-371c-47bf-ac55-48df94ed381b",
+          "position": 9,
+          "title": "подопытный кролик",
+          "favorite": false
+        },
+        {
+          "id": "85176df5-4dda-4b2e-bc99-0ef22ce2d3e3",
+          "position": 10,
+          "title": "r.i.p.",
+          "favorite": false
+        },
+        {
+          "id": "1e0da098-650e-4c9a-9add-924d4a0c89b2",
+          "position": 11,
+          "title": "bad habits (плохое поведение)",
+          "favorite": false
+        },
+        {
+          "id": "67435419-7ff9-4ec8-b885-a95bbb860021",
+          "position": 12,
+          "title": "блюз джаз",
+          "favorite": false
+        },
+        {
+          "id": "d670f7b4-21cf-4eba-beb3-644f420d9ef6",
+          "position": 13,
+          "title": "проблемы детства",
+          "favorite": false
+        },
+        {
+          "id": "ea2d58ca-4ec3-49df-9637-d0e60d4f7d81",
+          "position": 14,
+          "title": "я мечтал",
+          "favorite": false
+        },
+        {
+          "id": "f609edfc-4fcd-40d6-9fb3-981ad8e53a37",
+          "position": 15,
+          "title": "я тварь ты тварь",
+          "favorite": false
+        },
+        {
+          "id": "5709ea79-a66d-42f8-93c5-77bd3f9fd6b4",
+          "position": 16,
+          "title": "этот трек стоил 2.000.000 (эйфория)",
+          "favorite": true
+        },
+        {
+          "id": "feb0a7d0-db35-406a-9a64-e653afa2d981",
+          "position": 17,
+          "title": "модели и мы",
+          "favorite": true
+        }
+      ],
       "links": [
         {
           "service": "yandex",
@@ -99,7 +202,7 @@
         }
       ],
       "createdAt": "2026-09-25T17:42:34.794Z",
-      "updatedAt": "2026-09-25T20:13:31.334Z",
+      "updatedAt": "2026-09-25T23:47:48.933Z",
       "year": 2026,
       "cover": "covers/53f4263f-2106-4aea-9feb-43ecb0bf91c4.jpg",
       "coverColors": {
