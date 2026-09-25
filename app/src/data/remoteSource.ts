@@ -97,6 +97,11 @@ export class RemoteSource implements Repository {
       ? `${this.baseUrl}${release.cover}?v=${encodeURIComponent(release.updatedAt)}`
       : undefined;
   }
+  peekCoverUrl(release: Release): string | undefined {
+    return release.cover
+      ? `${this.baseUrl}${release.cover}?v=${encodeURIComponent(release.updatedAt)}`
+      : undefined;
+  }
   async getMeta<K extends MetaKey>(key: K): Promise<MetaValues[K] | undefined> {
     // Ждём загрузку: имя владельца спрашивают параллельно с релизами
     if (key === 'ownerName') return (await this.load()).owner.name as MetaValues[K];

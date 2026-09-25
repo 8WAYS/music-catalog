@@ -83,18 +83,6 @@ export function chipTags(tags: Tag[], selection: Release[], selected: string[]):
     );
 }
 
-/** «Удиви меня»: кадры перелистывания — до трёх случайных других релизов выборки и выбранный последним. */
-export function shuffleFrames(pool: Release[], pick: Release, random = Math.random): Release[] {
-  const others = pool.filter((r) => r.id !== pick.id);
-  const out: Release[] = [];
-  for (let k = 0; k < 3 && others.length; k++) {
-    // Без повторов подряд, если есть из чего выбирать
-    const candidates = others.length > 1 ? others.filter((r) => r !== out[out.length - 1]) : others;
-    out.push(candidates[Math.floor(random() * candidates.length)]!);
-  }
-  return [...out, pick];
-}
-
 // ---------- Фильтры в адресе: #/?tags=осень,вечер&q=…&sort=year ----------
 
 /**

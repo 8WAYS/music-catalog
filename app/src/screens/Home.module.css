@@ -1,7 +1,7 @@
 .title {
   font-size: 26px !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.02em;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em;
 }
 .sync {
   display: inline-flex;
@@ -57,14 +57,12 @@
   min-height: var(--tap);
   margin-top: var(--s1);
   padding: 0 var(--s1) 0 var(--s3);
-  border: 1px solid var(--line);
   border-radius: var(--radius-pill);
-  background: var(--surface);
   color: var(--text-muted);
   transition: border-color 150ms;
 }
 .search:focus-within {
-  border-color: var(--accent);
+  border-color: var(--focus);
 }
 .searchInput {
   flex: 1;
@@ -89,7 +87,7 @@
   height: 36px;
   border: 0;
   border-radius: 50%;
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
   color: var(--text);
 }
 
@@ -198,6 +196,19 @@
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
+@supports (animation-timeline: view()) {
+  .grid li {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 80%;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0.2;
+    transform: translateY(24px) scale(0.94);
+  }
+}
 .item {
   display: grid;
   gap: 2px;
@@ -247,35 +258,10 @@
   color: var(--text-muted);
   max-width: 30ch;
 }
-.emptyArt {
-  position: relative;
-  width: 120px;
-  height: 110px;
+.emptyDisc {
+  width: 140px;
   margin-bottom: var(--s3);
-}
-.emptyArt span {
-  position: absolute;
-  width: 84px;
-  height: 84px;
-  border-radius: var(--radius-cover);
-  border: 1px solid var(--line);
-  background: var(--surface);
-}
-.emptyArt span:nth-child(1) {
-  left: 0;
-  top: 18px;
-  transform: rotate(-10deg);
-}
-.emptyArt span:nth-child(2) {
-  left: 36px;
-  top: 18px;
-  transform: rotate(9deg);
-}
-.emptyArt span:nth-child(3) {
-  left: 18px;
-  top: 4px;
-  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, var(--bg)));
-  border: 0;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.35));
 }
 
 .dock {
@@ -287,11 +273,6 @@
   gap: var(--s2);
   padding: 6px;
   border-radius: var(--radius-pill);
-  background: var(--surface-glass);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
   z-index: 10;
 }
 .dockBtn {
@@ -315,6 +296,25 @@
 .dockBtn:disabled {
   opacity: 0.45;
   transform: none;
+}
+.surprise {
+  position: relative;
+}
+/* Перламутровое кольцо — «Удиви меня» главное действие главной */
+.surprise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: var(--pearl);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: holo 12s linear infinite;
+  pointer-events: none;
 }
 .add {
   width: 48px;

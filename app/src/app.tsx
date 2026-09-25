@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { SvgDefs } from './components/Aura';
 import { ConfirmDialog, Toasts } from './components/Overlays';
 import { route } from './router';
 import { AddSearch } from './screens/AddSearch';
@@ -67,6 +68,7 @@ export function App() {
       )}
       <Toasts />
       <ConfirmDialog />
+      <SvgDefs />
     </>
   );
 }

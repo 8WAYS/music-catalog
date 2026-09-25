@@ -78,6 +78,8 @@ export function setPreferLocal(on: boolean): void {
 export const localReleaseCount = signal(0);
 /** Зритель видит сохранённую копию: сайт не ответил. */
 export const staleCatalog = signal(false);
+/** Последний открытый релиз: его обложка на главной перетекает в карточку и обратно (View Transitions) */
+export const lastOpened = signal<string | null>(null);
 /** Зритель открыл свою локальную картотеку вместо опубликованной. */
 export const preferLocalOn = signal(false);
 /** Картотека опубликована на сайте (для подсказок в настройках). */
@@ -233,7 +235,7 @@ export function applyAppearance(): void {
   root.dataset.motion = reduceMotion.value ? 'reduce' : 'auto';
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', t === 'light' ? '#f6f2ec' : '#0f0e0d');
+    ?.setAttribute('content', t === 'light' ? '#eef0f4' : '#0e1014');
 }
 
 export function setTheme(t: ThemePref): void {

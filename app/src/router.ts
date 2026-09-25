@@ -103,8 +103,43 @@ async function onHashChange(): Promise<void> {
   if (stack.length > 1 && stack[stack.length - 2] === target) stack.pop();
   else if (stack[stack.length - 1] !== target) stack.push(target);
   currentHash = target;
-  route.value = parseHash(target);
-  routeQuery.value = queryOf(target);
+  withTransition(() => {
+    route.value = parseHash(target);
+    routeQuery.value = queryOf(target);
+  });
+}
+
+function motionReduced(): boolean {
+  return (
+    document.documentElement.dataset.motion === 'reduce' ||
+    matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+/**
+ * Смена экрана через View Transitions (ADR 0008): обложка с тем же view-transition-name
+ * перетекает между главной и карточкой, остальное — короткое растворение.
+ */
+function withTransition(apply: () => void): void {
+  if (!document.startViewTransition || motionReduced()) return apply();
+  let applied = false;
+  const run = () => {
+    if (applied) return;
+    applied = true;
+    apply();
+  };
+  try {
+    const t = document.startViewTransition(async () => {
+      run();
+      // Preact перерисовывает после смены сигнала асинхронно — ждём, пока новый экран окажется в DOM
+      await new Promise((r) => setTimeout(r, 0));
+    });
+    t.finished.catch(() => {});
+  } catch {
+    run();
+  }
+  // Страховка: браузер не вызвал обновление (бывает в WebKit вне Safari) — экран всё равно сменится
+  setTimeout(run, 400);
 }
 
 window.addEventListener('hashchange', () => void onHashChange());

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Release } from '../data/schema';
 import { repo } from '../store/app';
 import { hueFromString, initials } from '../utils/normalize';
@@ -10,15 +10,21 @@ interface Props {
   src?: string;
   size?: 'grid' | 'hero' | 'thumb';
   eager?: boolean;
+  /** Имя для View Transitions: обложка перетекает между главной и карточкой */
+  vtName?: string;
 }
 
 /** Обложка с плейсхолдером из инициалов и цвета (раздел 7.5). */
-export function Cover({ release, src, size = 'grid', eager }: Props) {
-  const [url, setUrl] = useState<string | undefined>(src);
+export function Cover({ release, src, size = 'grid', eager, vtName }: Props) {
+  const peek = () => src ?? repo().peekCoverUrl?.(release as Release);
+  const [url, setUrl] = useState<string | undefined>(peek);
+  // Проявляем из цвета только то, что грузилось; уже известная картинка появляется сразу
+  const fade = useRef(!url);
 
   useEffect(() => {
-    if (src) {
-      setUrl(src);
+    const now = peek();
+    if (now) {
+      setUrl(now);
       return;
     }
     let alive = true;
@@ -38,12 +44,25 @@ export function Cover({ release, src, size = 'grid', eager }: Props) {
   return (
     <div
       class={`${s.cover} ${s[size]}`}
-      style={{ '--ph-hue': String(hue), background: release.coverColors?.bg } as Record<string, string>}
+      style={
+        {
+          '--ph-hue': String(hue),
+          background: release.coverColors?.bg,
+          viewTransitionName: vtName,
+        } as Record<string, string>
+      }
       role="img"
       aria-label={alt}
     >
       {url ? (
-        <img src={url} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" draggable={false} />
+        <img
+          src={url}
+          alt=""
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          draggable={false}
+          class={fade.current ? s.fade : undefined}
+        />
       ) : (
         <span class={s.initials} aria-hidden="true">
           {initials(release.title)}

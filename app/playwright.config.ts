@@ -8,6 +8,8 @@ export default defineConfig({
     locale: 'ru-RU',
     // Запросы через service worker не видит page.route — в тестах подменяем сеть напрямую
     serviceWorkers: 'block',
+    // Переходы между экранами на полсекунды перекрывают клики — в тестах без анимаций; дека проверяется отдельно
+    contextOptions: { reducedMotion: 'reduce' },
     // Локально можно указать свой Chromium: PW_CHROMIUM_PATH=/path/to/chrome npm run e2e
     launchOptions: process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {},
   },

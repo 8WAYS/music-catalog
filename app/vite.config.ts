@@ -21,8 +21,8 @@ export default defineConfig({
         start_url: './',
         scope: './',
         display: 'standalone',
-        background_color: '#0f0e0d',
-        theme_color: '#0f0e0d',
+        background_color: '#0e1014',
+        theme_color: '#0e1014',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -35,7 +35,7 @@ export default defineConfig({
         globIgnores: [
           'probe.html',
           'data/**',
-          '**/*-{vietnamese,math,symbols,latin-ext,cyrillic-ext}-*.woff2',
+          '**/*-{vietnamese,math,symbols,latin-ext,cyrillic-ext,greek}-*.woff2',
         ],
         navigateFallbackDenylist: [/\/data\//, /probe\.html$/],
         // Обложки зрителя — для офлайна; в адресе версия (?v=updatedAt), поэтому кэш сначала

@@ -41,6 +41,8 @@ export interface Repository {
   getCover(releaseId: string): Promise<Blob | undefined>;
   /** Адрес картинки для <img>: blob: у владельца, https: у зрителя. */
   coverUrl(release: Release): Promise<string | undefined>;
+  /** Адрес обложки, если он уже известен, — без ожидания: переход «обложка → карточка» не мигает */
+  peekCoverUrl?(release: Release): string | undefined;
   saveCover(releaseId: string, blob: Blob): Promise<void>;
 
   getMeta<K extends MetaKey>(key: K): Promise<MetaValues[K] | undefined>;

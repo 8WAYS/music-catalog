@@ -1,0 +1,105 @@
+.disc {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  container-type: inline-size;
+  /* Серебро: мягкое чередование светлых и тёмных секторов */
+  background: conic-gradient(
+    from var(--a),
+    #eef0f3,
+    #c4c9d0 12%,
+    #f7f8fa 25%,
+    #c0c6cd 37%,
+    #eef0f3 50%,
+    #c4c9d0 62%,
+    #f7f8fa 75%,
+    #c0c6cd 87%,
+    #eef0f3
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 7%, #000 7.4%);
+  mask: radial-gradient(circle, transparent 0 7%, #000 7.4%);
+  /* Свет медленно обходит диск — 24 с на круг */
+  animation: light 24s linear infinite;
+}
+.disc::before {
+  /* Дифракция: две узкие полосы спектра напротив друг друга, как на настоящем CD */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from calc(var(--a) * -1.4),
+    transparent 0 3%,
+    var(--d1) 7%,
+    var(--d2) 10%,
+    var(--d3) 13%,
+    var(--d4) 16%,
+    var(--d5) 19%,
+    transparent 24% 53%,
+    var(--d1) 57%,
+    var(--d2) 60%,
+    var(--d3) 63%,
+    var(--d4) 66%,
+    var(--d5) 69%,
+    transparent 74%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  filter: blur(2px);
+}
+.disc::after {
+  /* Блик, дорожки, прозрачное кольцо у втулки */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from calc(var(--a) + 35deg),
+      transparent 0 1%,
+      rgba(255, 255, 255, 0.5) 4%,
+      transparent 8% 50%,
+      rgba(255, 255, 255, 0.3) 53%,
+      transparent 57%
+    ),
+    radial-gradient(
+      circle,
+      transparent 0 13%,
+      rgba(255, 255, 255, 0.8) 13.4% 14.2%,
+      rgba(214, 219, 225, 0.5) 14.2% 20%,
+      rgba(255, 255, 255, 0.85) 20.3% 21%,
+      rgba(0, 0, 0, 0.12) 21.4% 22%,
+      transparent 22.4% 96.5%,
+      rgba(255, 255, 255, 0.5) 97.5%
+    ),
+    repeating-radial-gradient(circle, rgba(0, 0, 0, 0.035) 0 0.7px, transparent 0.7px 2.4px);
+}
+.print {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+.print[data-spin='true'] {
+  animation: spin linear infinite;
+}
+.print span {
+  position: absolute;
+  top: 25%;
+  font: 700 6cqi / 1 var(--font-display);
+  letter-spacing: 0.3em;
+  color: rgba(20, 22, 30, 0.45);
+  mix-blend-mode: multiply;
+  white-space: nowrap;
+}
+@keyframes light {
+  to {
+    --a: 360deg;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

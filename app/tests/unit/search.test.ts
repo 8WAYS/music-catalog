@@ -7,7 +7,6 @@ import {
   matchesQuery,
   parseFilters,
   selectReleases,
-  shuffleFrames,
   sortReleases,
 } from '../../src/services/search';
 
@@ -156,21 +155,5 @@ describe('фильтры в адресе', () => {
   });
   it('битая кодировка не роняет разбор', () => {
     expect(parseFilters('q=%E0%A4%A', TAGS).q).toBe('%E0%A4%A');
-  });
-});
-
-describe('«Удиви меня»', () => {
-  it('выбранный релиз — последний кадр, до трёх кадров перед ним', () => {
-    const frames = shuffleFrames(ALL, blood, () => 0);
-    expect(frames).toHaveLength(4);
-    expect(frames.at(-1)).toBe(blood);
-    expect(frames.slice(0, -1)).not.toContain(blood);
-  });
-  it('соседние кадры не повторяются, если есть из чего выбирать', () => {
-    const frames = shuffleFrames(ALL, blood, () => 0);
-    for (let i = 1; i < frames.length; i++) expect(frames[i]).not.toBe(frames[i - 1]);
-  });
-  it('один релиз — только он', () => {
-    expect(shuffleFrames([blood], blood)).toEqual([blood]);
   });
 });

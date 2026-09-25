@@ -1,8 +1,10 @@
 import { Fragment } from 'preact';
 import { useState } from 'preact/hooks';
+import { Aura } from '../components/Aura';
 import { Cover } from '../components/Cover';
+import { Deck } from '../components/Deck';
+import { Disc } from '../components/Disc';
 import { Icon } from '../components/Icon';
-import { Shuffle } from '../components/Shuffle';
 import { TagChip } from '../components/TagChip';
 import { RELEASE_TYPE_LABEL, TAG_GROUP_LABEL, type Release, type Tag, type TagGroup } from '../data/schema';
 import { href, navigate, replaceHash, routeQuery } from '../router';
@@ -13,11 +15,10 @@ import {
   filtersHash,
   parseFilters,
   selectReleases,
-  shuffleFrames,
   type Filters,
   type SortKey,
 } from '../services/search';
-import { isOwner, ownerName, reduceMotion, releases, staleCatalog, tags } from '../store/app';
+import { isOwner, lastOpened, ownerName, reduceMotion, releases, staleCatalog, tags } from '../store/app';
 import { SYNC_LABEL, syncState } from '../store/sync';
 import { pluralize } from '../utils/normalize';
 import s from './Home.module.css';
@@ -30,7 +31,17 @@ export function Home() {
   const f = parseFilters(routeQuery.value, tags.value);
   const list = selectReleases(all, f);
   const filtered = f.q.trim() !== '' || f.tagIds.length > 0;
-  const [shuffle, setShuffle] = useState<Release[] | null>(null);
+  const [pick, setPick] = useState<Release | null>(null);
+  // Аура главной — из цветов нескольких свежих обложек
+  const auraColors = [...all]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map((r) => r.coverColors)
+    .filter(Boolean)
+    .slice(0, 3);
+  const open = (id: string) => {
+    lastOpened.value = id;
+    navigate(href.release(id));
+  };
 
   const update = (patch: Partial<Filters>) => replaceHash(filtersHash({ ...f, ...patch }, tags.value));
   const toggleTag = (id: string) =>
@@ -39,16 +50,17 @@ export function Home() {
 
   const surprise = () => {
     if (!list.length) return;
-    const pick = list[Math.floor(Math.random() * list.length)]!;
+    const chosen = list[Math.floor(Math.random() * list.length)]!;
     const reduce = reduceMotion.value || matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || list.length === 1) navigate(href.release(pick.id));
-    else setShuffle(shuffleFrames(list, pick));
+    if (reduce) open(chosen.id);
+    else setPick(chosen);
   };
 
   return (
     <div class="page">
+      <Aura colors={auraColors} />
       <header class="topbar">
-        <h1 class={s.title}>{title}</h1>
+        <h1 class={`${s.title} chrome-text`}>{title}</h1>
         <a class="icon-btn" href={href.settings()} aria-label="Настройки">
           <Icon name="settings" />
         </a>
@@ -105,8 +117,8 @@ export function Home() {
             <ul class={s.grid}>
               {list.map((r) => (
                 <li key={r.id}>
-                  <a class={s.item} href={href.release(r.id)}>
-                    <Cover release={r} />
+                  <a class={s.item} href={href.release(r.id)} onClick={() => (lastOpened.value = r.id)}>
+                    <Cover release={r} vtName={lastOpened.value === r.id ? `cover-${r.id}` : undefined} />
                     <span class={s.name}>{r.title}</span>
                     <span class={s.meta}>
                       {r.artist}
@@ -119,8 +131,13 @@ export function Home() {
             </ul>
           )}
 
-          <nav class={s.dock} aria-label="Действия">
-            <button type="button" class={s.dockBtn} onClick={surprise} disabled={!list.length}>
+          <nav class={`${s.dock} glass`} aria-label="Действия">
+            <button
+              type="button"
+              class={`${s.dockBtn} ${s.surprise}`}
+              onClick={surprise}
+              disabled={!list.length}
+            >
               <Icon name="dice" size={20} /> Удиви меня
             </button>
             {owner && (
@@ -132,13 +149,12 @@ export function Home() {
         </>
       )}
 
-      {shuffle && (
-        <Shuffle
-          frames={shuffle}
+      {pick && (
+        <Deck
+          pick={pick}
           onDone={() => {
-            const pick = shuffle[shuffle.length - 1]!;
-            setShuffle(null);
-            navigate(href.release(pick.id));
+            setPick(null);
+            open(pick.id);
           }}
         />
       )}
@@ -162,11 +178,7 @@ function SyncBadge({ hasReleases }: { hasReleases: boolean }) {
 function EmptyCatalog({ owner }: { owner: boolean }) {
   return (
     <div class={s.empty}>
-      <div class={s.emptyArt} aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
+      <Disc class={s.emptyDisc} label="КАРТОТЕКА" spin={30} />
       <h2>Картотека пуста</h2>
       <p>
         {owner
@@ -184,7 +196,7 @@ function EmptyCatalog({ owner }: { owner: boolean }) {
 
 function SearchBox({ value, onChange }: { value: string; onChange: (q: string) => void }) {
   return (
-    <div class={s.search}>
+    <div class={`${s.search} glass`}>
       <Icon name="search" size={18} />
       <input
         type="search"

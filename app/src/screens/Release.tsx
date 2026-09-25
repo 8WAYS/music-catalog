@@ -1,10 +1,21 @@
+import { Aura } from '../components/Aura';
 import { Cover } from '../components/Cover';
+import { Disc } from '../components/Disc';
 import { Icon } from '../components/Icon';
 import { TagChip } from '../components/TagChip';
 import { LINK_SERVICE_LABEL, RELEASE_TYPE_LABEL, TAG_GROUPS, type Release as R } from '../data/schema';
 import { goBack, href, navigate, shareUrl } from '../router';
 import { EMPTY_FILTERS, filtersHash } from '../services/search';
-import { tags as allTags, isOwner, releasesById, repo, tagsById, toast, toastError } from '../store/app';
+import {
+  tags as allTags,
+  isOwner,
+  ownerName,
+  releasesById,
+  repo,
+  tagsById,
+  toast,
+  toastError,
+} from '../store/app';
 import { formatDuration, pluralize } from '../utils/normalize';
 import s from './Release.module.css';
 
@@ -28,14 +39,6 @@ export function Release({ id }: { id: string }) {
       </div>
     );
   }
-
-  const colors = release.coverColors;
-  const style = colors
-    ? ({ '--card-bg': colors.bg, '--card-accent': colors.accent, '--card-text': colors.text } as Record<
-        string,
-        string
-      >)
-    : undefined;
 
   const tags = release.tagIds
     .map((t) => tagsById.value.get(t))
@@ -78,18 +81,29 @@ export function Release({ id }: { id: string }) {
   };
 
   return (
-    <div class={`${s.card} ${colors ? s.tinted : ''}`} style={style}>
+    <div class={s.card}>
+      <Aura colors={[release.coverColors]} />
       <div class="page">
         <header class={`topbar ${s.bar}`}>
-          <button type="button" class="icon-btn" onClick={() => goBack()} aria-label="Назад">
+          <button
+            type="button"
+            class={`icon-btn glass ${s.roundBtn}`}
+            onClick={() => goBack()}
+            aria-label="Назад"
+          >
             <Icon name="back" />
           </button>
           <span style={{ flex: 1 }} />
-          <button type="button" class="icon-btn" onClick={share} aria-label="Поделиться">
+          <button
+            type="button"
+            class={`icon-btn glass ${s.roundBtn}`}
+            onClick={share}
+            aria-label="Поделиться"
+          >
             <Icon name="share" />
           </button>
           {owner && (
-            <a class="icon-btn" href={href.edit(release.id)} aria-label="Изменить">
+            <a class={`icon-btn glass ${s.roundBtn}`} href={href.edit(release.id)} aria-label="Изменить">
               <Icon name="edit" />
             </a>
           )}
@@ -97,7 +111,13 @@ export function Release({ id }: { id: string }) {
 
         <div class={s.layout}>
           <div class={s.hero}>
-            <Cover release={release} size="hero" eager />
+            {/* Диск выезжает из-за обложки и медленно вращается (ADR 0008) */}
+            <Disc
+              class={s.disc}
+              label={ownerName.value ? ownerName.value.toUpperCase() : 'КАРТОТЕКА'}
+              spin={14}
+            />
+            <Cover release={release} size="hero" eager vtName={`cover-${release.id}`} />
           </div>
 
           <div class={s.info}>
@@ -135,7 +155,7 @@ export function Release({ id }: { id: string }) {
             )}
 
             {release.tracks.length > 0 && (
-              <section class={s.tracks} aria-labelledby="tracks-h">
+              <section class={`${s.tracks} glass`} aria-labelledby="tracks-h">
                 <div class={s.tracksHead}>
                   <h2 id="tracks-h">Треклист</h2>
                   <span>

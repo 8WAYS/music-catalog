@@ -79,12 +79,23 @@ test('«Удиви меня» выбирает из текущей выборк�
   await expect(page.getByRole('heading', { name: 'Группа крови', level: 1 })).toBeVisible();
 });
 
-test('«Удиви меня» с перелистыванием', async ({ page }) => {
+test('«Удиви меня»: проигрыватель выбирает из текущей выборки и открывает карточку', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
   await chip(page, 'осень').click();
   await page.getByRole('button', { name: 'Удиви меня' }).click();
-  await expect(page.getByText('Выбираю…')).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Удиви меня' })).toBeVisible();
+  await expect(page.getByText('Выбираю…')).toBeAttached();
   await expect(page.getByRole('heading', { level: 1, name: /In Rainbows|Группа крови/ })).toBeVisible();
   expect(page.url()).toMatch(new RegExp(`#/release/(${ID.rainbows}|${ID.blood})$`));
+});
+
+test('«Удиви меня»: нажатие сразу открывает карточку', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await chip(page, 'дорога').click();
+  await page.getByRole('button', { name: 'Удиви меня' }).click();
+  // Дека анимируется — Playwright ждёт «стабильности»; человек нажимает сразу
+  await page.getByRole('dialog', { name: 'Удиви меня' }).click({ force: true });
+  await expect(page.getByRole('heading', { name: 'Группа крови', level: 1 })).toBeVisible({ timeout: 1_000 });
 });
 
 test('без анимаций сразу открывает карточку', async ({ page }) => {

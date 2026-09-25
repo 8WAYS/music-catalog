@@ -1,7 +1,8 @@
 import { render } from 'preact';
 import { registerSW } from 'virtual:pwa-register';
-import '@fontsource-variable/onest';
-import '@fontsource-variable/unbounded';
+import '@fontsource-variable/golos-text';
+import '@fontsource-variable/tektur';
+import '@fontsource-variable/jetbrains-mono';
 import './styles/tokens.css';
 import './styles/base.css';
 import { App, pendingUpdate } from './app';

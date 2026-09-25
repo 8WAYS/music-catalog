@@ -139,6 +139,11 @@ export class LocalSource implements Repository {
     return url;
   }
 
+  peekCoverUrl(release: Release): string | undefined {
+    const cached = this.urlCache.get(release.id);
+    return cached?.key === (release.cover ?? '') + release.updatedAt ? cached.url : undefined;
+  }
+
   /** Сохраняет обложку. Поле cover у релиза выставляет вызывающий код (coverPath). */
   async saveCover(releaseId: string, blob: Blob): Promise<void> {
     // Байты читаем до транзакции: IndexedDB закрывает её на первом await
