@@ -103,10 +103,19 @@ async function onHashChange(): Promise<void> {
   if (stack.length > 1 && stack[stack.length - 2] === target) stack.pop();
   else if (stack[stack.length - 1] !== target) stack.push(target);
   currentHash = target;
+  const next = parseHash(target);
+  // SPA на hash-роутере не перезагружает страницу — без сброса новый экран открывается
+  // с той же прокруткой, что была на предыдущем (например, релиз — прокрученным вниз)
+  const resetScroll = screenKey(next) !== screenKey(route.value);
   withTransition(() => {
-    route.value = parseHash(target);
+    route.value = next;
     routeQuery.value = queryOf(target);
-  });
+  }, resetScroll);
+}
+
+/** Экран + id, если есть — смена определяет, нужно ли сбрасывать прокрутку. */
+function screenKey(r: Route): string {
+  return 'id' in r ? `${r.name}:${r.id}` : r.name;
 }
 
 function motionReduced(): boolean {
@@ -120,8 +129,22 @@ function motionReduced(): boolean {
  * Смена экрана через View Transitions (ADR 0008): обложка с тем же view-transition-name
  * перетекает между главной и карточкой, остальное — короткое растворение.
  */
-function withTransition(apply: () => void): void {
-  if (!document.startViewTransition || motionReduced()) return apply();
+function withTransition(apply: () => void, resetScroll: boolean): void {
+  // Сбрасываем прокрутку не один раз, а несколько: на длинной странице (например, релиз
+  // с треклистом) инерционная прокрутка iOS или подгрузка обложки могут сдвинуть страницу
+  // обратно вниз уже после первого сброса — на короткой странице сдвигаться некуда, поэтому
+  // там баг незаметен.
+  const settle = () => {
+    if (!resetScroll) return;
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+    setTimeout(() => window.scrollTo(0, 0), 300);
+  };
+  if (!document.startViewTransition || motionReduced()) {
+    apply();
+    settle();
+    return;
+  }
   let applied = false;
   const run = () => {
     if (applied) return;
@@ -134,12 +157,16 @@ function withTransition(apply: () => void): void {
       // Preact перерисовывает после смены сигнала асинхронно — ждём, пока новый экран окажется в DOM
       await new Promise((r) => setTimeout(r, 0));
     });
-    t.finished.catch(() => {});
+    t.finished.then(settle).catch(settle);
   } catch {
     run();
+    settle();
   }
   // Страховка: браузер не вызвал обновление (бывает в WebKit вне Safari) — экран всё равно сменится
-  setTimeout(run, 400);
+  setTimeout(() => {
+    run();
+    settle();
+  }, 400);
 }
 
 window.addEventListener('hashchange', () => void onHashChange());
