@@ -1,0 +1,61 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: var(--s5);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  animation: fade 150ms var(--ease-out);
+}
+.stage {
+  display: grid;
+  justify-items: center;
+  gap: var(--s4);
+  width: min(72vw, 320px);
+  perspective: 900px;
+}
+.frame {
+  width: 100%;
+  animation: flip 170ms var(--ease-out);
+}
+.final {
+  animation: land 420ms var(--ease-spring);
+}
+.caption {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-height: 3em;
+  margin: 0;
+  text-align: center;
+}
+.caption strong {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.2;
+}
+.caption span {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes flip {
+  from {
+    opacity: 0.4;
+    transform: rotateY(-65deg) translateX(18%) scale(0.92);
+  }
+}
+@keyframes land {
+  from {
+    transform: scale(0.9);
+  }
+}

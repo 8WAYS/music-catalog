@@ -2,8 +2,9 @@ import { Cover } from '../components/Cover';
 import { Icon } from '../components/Icon';
 import { TagChip } from '../components/TagChip';
 import { LINK_SERVICE_LABEL, RELEASE_TYPE_LABEL, TAG_GROUPS, type Release as R } from '../data/schema';
-import { goBack, href, shareUrl } from '../router';
-import { isOwner, releasesById, repo, tagsById, toast, toastError } from '../store/app';
+import { goBack, href, navigate, shareUrl } from '../router';
+import { EMPTY_FILTERS, filtersHash } from '../services/search';
+import { tags as allTags, isOwner, releasesById, repo, tagsById, toast, toastError } from '../store/app';
 import { formatDuration, pluralize } from '../utils/normalize';
 import s from './Release.module.css';
 
@@ -122,8 +123,13 @@ export function Release({ id }: { id: string }) {
 
             {tags.length > 0 && (
               <div class={s.tags} aria-label="Теги">
+                {/* Нажатие на тег — выборка по нему на главной (раздел 6.2) */}
                 {tags.map((t) => (
-                  <TagChip key={t.id} tag={t} />
+                  <TagChip
+                    key={t.id}
+                    tag={t}
+                    onClick={() => navigate(filtersHash({ ...EMPTY_FILTERS, tagIds: [t.id] }, allTags.value))}
+                  />
                 ))}
               </div>
             )}

@@ -32,6 +32,13 @@ export const href = {
 };
 
 export const route = signal<Route>(parseHash(location.hash));
+/** Часть адреса после «?»: фильтры главной (#/?tags=…&q=…). */
+export const routeQuery = signal(queryOf(location.hash));
+
+function queryOf(hash: string): string {
+  const i = hash.indexOf('?');
+  return i < 0 ? '' : hash.slice(i + 1);
+}
 
 /** Ссылка на карточку, которой можно поделиться: тот же адрес у владельца и друзей. */
 export function shareUrl(hash: string): string {
@@ -63,6 +70,18 @@ export function navigate(hash: string, { replace = false } = {}): void {
   } else location.hash = hash;
 }
 
+/**
+ * Обновить адрес без новой записи в истории — для фильтров главной:
+ * набор в поиске не должен забивать кнопку «Назад».
+ */
+export function replaceHash(hash: string): void {
+  if (hash === currentHash) return;
+  history.replaceState(null, '', hash);
+  stack[stack.length - 1] = hash;
+  currentHash = hash;
+  routeQuery.value = queryOf(hash);
+}
+
 /** Назад по истории, если есть куда, иначе — на указанный адрес. */
 export function goBack(fallback = href.home()): void {
   if (stack.length > 1) history.back();
@@ -85,6 +104,7 @@ async function onHashChange(): Promise<void> {
   else if (stack[stack.length - 1] !== target) stack.push(target);
   currentHash = target;
   route.value = parseHash(target);
+  routeQuery.value = queryOf(target);
 }
 
 window.addEventListener('hashchange', () => void onHashChange());
