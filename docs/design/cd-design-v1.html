@@ -1,0 +1,1921 @@
+<title>Картотека в стиле CD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Tektur:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+/>
+<style>
+  /* Своя айдентика: светлый перламутровый поликарбонат, акцент — лазер 405 нм. Одна тема выбрана нарочно */
+  @property --a {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+  }
+  @property --holo {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+  }
+  :root {
+    --pg: #e8ebf0;
+    --paper: #f8f9fb;
+    --ink: #111319;
+    --muted: #596070;
+    --line: #d2d7df;
+    --laser: #4b3dff;
+    --laser-ink: #ffffff;
+    --deck: #101217;
+    --deck-line: #262a32;
+    --deck-muted: #8b92a0;
+    --silver-hi: #f1f3f5;
+    --silver-lo: #8f969f;
+    --h1: #ff9ad5;
+    --h2: #ffe08a;
+    --h3: #9bffcf;
+    --h4: #8fd8ff;
+    --h5: #c6a2ff;
+    --holo-grad: conic-gradient(
+      from var(--holo),
+      var(--h1),
+      var(--h2),
+      var(--h3),
+      var(--h4),
+      var(--h5),
+      var(--h1)
+    );
+    --spring: linear(
+      0,
+      0.009,
+      0.035 2.1%,
+      0.141,
+      0.281 6.7%,
+      0.723 12.9%,
+      0.938 16.7%,
+      1.017,
+      1.077,
+      1.121,
+      1.149 24.3%,
+      1.159,
+      1.163,
+      1.161,
+      1.154 29.9%,
+      1.129 32.8%,
+      1.051 39.6%,
+      1.017 43.1%,
+      0.991,
+      0.977 51%,
+      0.974 53.8%,
+      0.975 57.1%,
+      0.997 69.8%,
+      1.003 76.9%,
+      1
+    );
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --display: 'Tektur', 'Golos Text', system-ui, sans-serif;
+    --body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color-scheme: light;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    color: var(--ink);
+    /* Лёгкий перламутровый отлив по краям страницы */
+    background:
+      radial-gradient(60% 40% at 100% 0%, rgba(155, 255, 207, 0.35), transparent 70%),
+      radial-gradient(50% 40% at 0% 30%, rgba(198, 162, 255, 0.28), transparent 70%),
+      radial-gradient(60% 50% at 100% 80%, rgba(255, 154, 213, 0.22), transparent 70%),
+      var(--pg);
+    background-attachment: fixed;
+    font: 16px/1.55 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 24px 80px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--display);
+    line-height: 1.12;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h2 {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  p {
+    margin: 0;
+  }
+  .lead {
+    color: var(--muted);
+    max-width: 62ch;
+  }
+  .eyebrow {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  section {
+    display: grid;
+    gap: 20px;
+    margin-top: 72px;
+  }
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--laser);
+    outline-offset: 3px;
+  }
+
+  /* ---------- CD-диск ---------- */
+  .cd {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    /* Серебро: чередование светлых и тёмных секторов даёт металлический блеск */
+    background: conic-gradient(
+      from calc(var(--a) + var(--pa, 0deg)),
+      var(--silver-hi),
+      var(--silver-lo) 12%,
+      #fbfcfd 25%,
+      #9aa1aa 37%,
+      var(--silver-hi) 50%,
+      var(--silver-lo) 62%,
+      #fbfcfd 75%,
+      #a0a6ae 87%,
+      var(--silver-hi)
+    );
+    -webkit-mask: radial-gradient(circle, transparent 0 7%, #000 7.4%);
+    mask: radial-gradient(circle, transparent 0 7%, #000 7.4%);
+    box-shadow: 0 30px 60px -24px rgba(20, 24, 40, 0.55);
+  }
+  .cd::before {
+    /* Радужная дифракция: две полосы спектра, вращаются навстречу свету */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      from calc(var(--a) * -1.6 + var(--pa, 0deg) * 2),
+      var(--h1),
+      var(--h2) 8%,
+      var(--h3) 16%,
+      var(--h4) 24%,
+      var(--h5) 32%,
+      transparent 40% 50%,
+      var(--h1) 50%,
+      var(--h2) 58%,
+      var(--h3) 66%,
+      var(--h4) 74%,
+      var(--h5) 82%,
+      transparent 90%
+    );
+    mix-blend-mode: hard-light;
+    opacity: 0.55;
+  }
+  .cd::after {
+    /* Дорожки, прозрачное кольцо у втулки и зеркальная втулка */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        circle,
+        transparent 0 13%,
+        rgba(255, 255, 255, 0.85) 13.4% 14.2%,
+        rgba(210, 216, 222, 0.55) 14.2% 20%,
+        rgba(255, 255, 255, 0.9) 20.3% 21%,
+        rgba(0, 0, 0, 0.18) 21.4% 22%,
+        transparent 22.4% 96.5%,
+        rgba(255, 255, 255, 0.55) 97.5%
+      ),
+      repeating-radial-gradient(circle, rgba(0, 0, 0, 0.06) 0 0.7px, transparent 0.7px 2.4px);
+  }
+  .cd .print {
+    /* Надпись на диске — по ней видно вращение */
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 1;
+    animation: spin var(--spin, 0s) linear infinite;
+  }
+  .cd .print span {
+    position: absolute;
+    top: 25%;
+    font: 700 clamp(7px, 1.6vw, 12px) / 1 var(--display);
+    letter-spacing: 0.3em;
+    color: rgba(20, 20, 26, 0.55);
+    mix-blend-mode: multiply;
+  }
+  .cd.light {
+    animation: light 14s linear infinite;
+  }
+  @keyframes light {
+    to {
+      --a: 360deg;
+    }
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes holo {
+    to {
+      --holo: 360deg;
+    }
+  }
+
+  /* ---------- Первый экран ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: center;
+    padding-top: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 6.6vw, 72px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+  .chrome {
+    /* Хромированный текст: полосы света, как на зеркальном диске */
+    background: linear-gradient(
+      172deg,
+      #14161c 0%,
+      #4a515c 30%,
+      #c9ced6 47%,
+      #ffffff 50%,
+      #5d6570 60%,
+      #1a1d24 80%,
+      #6b7380 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .copy {
+    display: grid;
+    gap: 18px;
+  }
+  .stage {
+    position: relative;
+    perspective: 900px;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .stage .cd {
+    width: min(100%, 440px);
+    margin-inline: auto;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 400ms var(--ease-out);
+    --spin: 20s;
+  }
+  .stage .hint {
+    text-align: center;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .fact {
+    font: 500 12px/1 var(--mono);
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--muted);
+  }
+
+  /* ---------- Макеты телефонов ---------- */
+  .phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    align-items: start;
+  }
+  .variant {
+    display: grid;
+    gap: 14px;
+  }
+  .variant header {
+    display: grid;
+    gap: 6px;
+  }
+  .variant .tag {
+    justify-self: start;
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .variant .tag.rec {
+    border-color: transparent;
+    color: #1a1320;
+    background: var(--holo-grad);
+    animation: holo 6s linear infinite;
+  }
+  .variant p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .phone {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 9 / 18.5;
+    margin-inline: auto;
+    border-radius: 38px;
+    padding: 10px;
+    background: linear-gradient(145deg, #fdfdfe, #aeb4bd 45%, #e9ecf0 70%, #9097a1);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+      0 40px 60px -30px rgba(20, 24, 40, 0.45);
+  }
+  .screen {
+    position: relative;
+    height: 100%;
+    border-radius: 29px;
+    overflow: hidden;
+    /* Палитра макета — своя у каждого направления */
+    --s-bg: #f4f5f8;
+    --s-surface: #ffffff;
+    --s-surface2: #e8eaf0;
+    --s-text: #111319;
+    --s-muted: #6a7180;
+    --s-line: #dfe3ea;
+    --s-accent: var(--laser);
+    --s-accent-ink: #ffffff;
+    --s-dock: rgba(255, 255, 255, 0.72);
+    background: var(--s-bg);
+    color: var(--s-text);
+    container-type: inline-size;
+  }
+  .screen.glassy {
+    --s-text: #ffffff;
+    --s-muted: rgba(255, 255, 255, 0.78);
+    --s-line: rgba(255, 255, 255, 0.3);
+    --s-surface2: rgba(255, 255, 255, 0.14);
+    --s-accent: #ffffff;
+    --s-accent-ink: #111319;
+  }
+  .chrome-light {
+    background: linear-gradient(172deg, #ffffff 0%, #c9cfd6 34%, #7c848f 48%, #eef0f3 52%, #b8bec6 70%, #ffffff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .screen.graphite {
+    --s-bg: #111317;
+    --s-surface: #1b1e24;
+    --s-surface2: #262a31;
+    --s-text: #eef0f4;
+    --s-muted: #8e95a1;
+    --s-line: #2b2f37;
+    --s-accent: #eef0f4;
+    --s-accent-ink: #111317;
+    --s-dock: rgba(27, 30, 36, 0.75);
+  }
+  .scr-pad {
+    padding: 34px 14px 14px;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    height: 100%;
+    overflow: hidden;
+  }
+  .app-title {
+    font: 700 18px/1.1 var(--display);
+    letter-spacing: -0.02em;
+  }
+  .mini-search {
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid var(--s-line);
+    background: var(--s-surface);
+    font-size: 11px;
+    color: var(--s-muted);
+    display: flex;
+    align-items: center;
+    padding-inline: 12px;
+  }
+  .mini-chips {
+    display: flex;
+    gap: 5px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  .mini-chip {
+    flex: none;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--s-surface2);
+    border: 0;
+  }
+  .mini-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 10px;
+  }
+  .mini-grid .name {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 5px;
+  }
+  .mini-grid .meta {
+    font-size: 10px;
+    color: var(--s-muted);
+  }
+  .mini-dock {
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+    border-radius: 999px;
+    background: var(--s-dock);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--s-line);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .mini-dock span {
+    padding: 8px 12px;
+    border-radius: 999px;
+  }
+  .mini-dock .plus {
+    background: var(--s-accent);
+    color: var(--s-accent-ink);
+    padding-inline: 11px;
+  }
+
+  /* Обложки — рисуются градиентами: внешние картинки на этой странице недоступны */
+  .art {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    display: grid;
+    align-content: end;
+    padding: 8%;
+    font: 700 10px/1.1 var(--display);
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.92);
+    border: 0;
+    width: 100%;
+    text-align: left;
+  }
+  .art small {
+    display: block;
+    font: 500 8px/1.2 var(--body);
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+  .a1 {
+    background:
+      radial-gradient(circle at 70% 30%, #e7d7b8 0 18%, transparent 19%),
+      linear-gradient(160deg, #5a6b7a, #1f2a33);
+  }
+  .a2 {
+    background:
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 2px, transparent 2px 14px),
+      linear-gradient(200deg, #c24d6d, #3b1830);
+  }
+  .a3 {
+    background:
+      conic-gradient(from 200deg at 60% 45%, #f2b134, #e24a2a, #2b7fd6, #5bc27a, #f2b134);
+  }
+  .a4 {
+    background:
+      linear-gradient(28deg, transparent 46%, #d9331f 46% 49%, transparent 49%),
+      radial-gradient(circle at 42% 38%, #151515 0 16%, transparent 16.5%),
+      linear-gradient(#e6d6bf, #d8c3a5);
+    color: #1b1b1b;
+  }
+  .a5 {
+    background:
+      radial-gradient(ellipse at 50% 120%, #b8e3ff, transparent 60%),
+      linear-gradient(#0d1d2b, #274a66);
+  }
+  .a6 {
+    background:
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 3px, transparent 3px 6px),
+      linear-gradient(135deg, #8b8f93, #d9dcdf 45%, #6c7075);
+    color: #111;
+  }
+
+  /* A. Джевел-кейс */
+  .case {
+    position: relative;
+    aspect-ratio: 1.12;
+    border-radius: 3px;
+    background: #0c0c0d;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+      0 10px 18px -8px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    border: 0;
+    padding: 0;
+    width: 100%;
+    display: block;
+  }
+  .case .hinge {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10%;
+    background:
+      repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0 1.5px, rgba(255, 255, 255, 0.03) 1.5px 5px),
+      linear-gradient(90deg, #1e1f22, #4a4d52 60%, #2a2b2f);
+  }
+  .case .art {
+    position: absolute;
+    left: 10%;
+    top: 4%;
+    bottom: 4%;
+    right: 3%;
+    width: auto;
+    aspect-ratio: auto;
+    border-radius: 1px;
+  }
+  .case::after {
+    /* Блик на пластике крышки */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      118deg,
+      rgba(255, 255, 255, 0.38) 0 7%,
+      transparent 18% 56%,
+      rgba(255, 255, 255, 0.14) 60% 63%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  .case-cell {
+    position: relative;
+  }
+  .case-cell .cd {
+    position: absolute;
+    width: 78%;
+    top: 7%;
+    right: 3%;
+    z-index: -1;
+    box-shadow: none;
+    transition: transform 700ms var(--spring);
+  }
+  .case-cell.open .cd {
+    transform: translateX(34%) rotate(200deg);
+  }
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 10px;
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+  }
+  .shelf-label {
+    font: 500 9px/1 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--s-muted);
+  }
+
+  /* B. Голограмма */
+  .holo-chip {
+    background: var(--holo-grad);
+    color: #1a1320;
+    animation: holo 5s linear infinite;
+  }
+  .holo-btn {
+    position: relative;
+  }
+  .holo-btn::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--holo-grad);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: holo 5s linear infinite;
+  }
+  .card-view {
+    position: absolute;
+    inset: 0;
+    padding: 34px 14px 14px;
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    background: linear-gradient(180deg, #e3e8f5 0%, var(--s-bg) 70%);
+  }
+  .card-hero {
+    position: relative;
+    width: 72%;
+    margin: 8px 0 0 2%;
+  }
+  .card-hero .cd {
+    position: absolute;
+    width: 92%;
+    top: 4%;
+    right: -34%;
+    z-index: 0;
+    --spin: 9s;
+  }
+  .card-hero .art {
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 16px 30px -12px rgba(0, 0, 0, 0.8);
+    font-size: 15px;
+  }
+  .card-view .kicker {
+    font: 500 9px/1 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--s-muted);
+    margin-top: 6px;
+  }
+  .card-view .ttl {
+    font: 800 22px/1.05 var(--display);
+    letter-spacing: -0.01em;
+  }
+  .track {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--s-line);
+  }
+  .track .st {
+    font-size: 14px;
+    line-height: 1;
+    background: var(--holo-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: holo 4s linear infinite;
+  }
+  .back-btn {
+    position: absolute;
+    top: 30px;
+    left: 10px;
+    z-index: 3;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--s-text);
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+  }
+  .tap-note {
+    font: 500 9px/1.2 var(--mono);
+    color: var(--s-muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* C. Прозрачный пластик */
+  .glass-bg {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(circle at 20% 20%, #5aa9e6 0, transparent 40%),
+      radial-gradient(circle at 80% 30%, #e86fae 0, transparent 38%),
+      radial-gradient(circle at 50% 85%, #f2c14e 0, transparent 40%),
+      #1b1d2a;
+    filter: blur(20px) saturate(1.2);
+    animation: drift 16s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    to {
+      transform: translate(-6%, 4%) rotate(8deg);
+    }
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    border-radius: 16px;
+  }
+  .glass-card {
+    padding: 8px;
+    display: grid;
+    gap: 6px;
+  }
+  .glass-card .art {
+    border-radius: 10px;
+  }
+  .glass-title {
+    font: 800 20px/1.05 var(--display);
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Лаборатория анимаций ---------- */
+  .lab {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 16px;
+  }
+  .demo {
+    display: grid;
+    grid-template-rows: auto 190px auto;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow:
+      0 1px 0 var(--line),
+      0 20px 40px -30px rgba(20, 24, 40, 0.4);
+  }
+  .demo-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 12px;
+  }
+  .replay {
+    flex: none;
+    border: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    padding: 8px 14px;
+    min-height: 40px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .demo-stage {
+    position: relative;
+    border-radius: 12px;
+    /* Тёмная «дека» — на ней виден перелив дисков */
+    background: radial-gradient(circle at 50% 40%, #1d2029, var(--deck));
+    color: #eef0f4;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  .demo p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .support {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .support span {
+    font: 500 11px/1 var(--mono);
+    padding: 5px 7px;
+    border-radius: 6px;
+    background: rgba(17, 19, 25, 0.06);
+    color: var(--muted);
+  }
+  .support .ok {
+    color: #137a48;
+  }
+  .support .warn {
+    color: #9a5a00;
+  }
+
+  /* 1. Диск выезжает */
+  .slide-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-left: -60px;
+  }
+  .slide-wrap .art {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    font-size: 11px;
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.8);
+  }
+  .slide-wrap .cd {
+    position: absolute;
+    inset: 6px;
+    z-index: 1;
+    box-shadow: none;
+  }
+  .slide-wrap.go .cd {
+    animation: slide-out 1100ms var(--spring) forwards;
+  }
+  @keyframes slide-out {
+    from {
+      transform: translateX(0) rotate(0);
+    }
+    to {
+      transform: translateX(72px) rotate(300deg);
+    }
+  }
+
+  /* 2. Звёздочка */
+  .star-btn {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 1px solid var(--deck-line);
+    background: #1b1e25;
+    display: grid;
+    place-items: center;
+  }
+  .star-btn svg {
+    width: 40px;
+    height: 40px;
+    fill: none;
+    stroke: var(--deck-muted);
+    stroke-width: 1.8;
+    transition: fill 150ms, stroke 150ms;
+  }
+  .star-btn.on svg {
+    fill: url(#holoFill);
+    stroke: transparent;
+    animation: pop 600ms var(--spring);
+  }
+  .star-btn .ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--holo-grad);
+    -webkit-mask: radial-gradient(circle, transparent 62%, #000 64%);
+    mask: radial-gradient(circle, transparent 62%, #000 64%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .star-btn.on .ring {
+    animation: burst 700ms var(--ease-out);
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.6);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes burst {
+    0% {
+      opacity: 1;
+      transform: scale(0.7);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.5);
+    }
+  }
+
+  /* 3. CD-чейнджер */
+  .changer {
+    position: relative;
+    width: 170px;
+    height: 170px;
+  }
+  .changer .tray {
+    position: absolute;
+    inset: 0;
+    transition: transform 1600ms cubic-bezier(0.15, 0.7, 0.1, 1);
+  }
+  .changer .slot {
+    position: absolute;
+    width: 62px;
+    left: 54px;
+    top: 0;
+    transform-origin: 31px 85px;
+  }
+  .changer .slot .cd {
+    width: 62px;
+    box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.7);
+  }
+  .changer .pointer {
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border: 7px solid transparent;
+    border-top-color: var(--laser);
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .changer-out {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 1.4em;
+  }
+
+  /* 4. Чипы */
+  .chips-demo {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px;
+    max-width: 280px;
+    justify-content: center;
+  }
+  .chips-demo button {
+    position: relative;
+    z-index: 1;
+    border: 0;
+    background: #262a32;
+    color: #eef0f4;
+    border-radius: 999px;
+    padding: 9px 13px;
+    min-height: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 200ms, background 200ms;
+  }
+  .chips-demo button[aria-pressed='true'] {
+    background: transparent;
+    color: #1a1320;
+  }
+  .chips-demo .pill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 999px;
+    background: var(--holo-grad);
+    animation: holo 5s linear infinite;
+    transition:
+      transform 500ms var(--spring),
+      width 500ms var(--spring),
+      height 500ms var(--spring);
+  }
+
+  /* 5. Обложка → карточка */
+  .vt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    gap: 8px;
+  }
+  .vt-grid .art,
+  .vt-big .art {
+    font-size: 7px;
+    padding: 6px;
+  }
+  .vt-big {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+    align-items: center;
+    width: 250px;
+  }
+  .vt-big .art {
+    font-size: 11px;
+  }
+  .vt-big strong {
+    font-family: var(--display);
+    font-size: 15px;
+    line-height: 1.1;
+  }
+  .vt-big span {
+    color: var(--deck-muted);
+    font-size: 12px;
+  }
+  ::view-transition-group(vt-cover) {
+    animation-duration: 520ms;
+    animation-timing-function: var(--spring);
+  }
+
+  /* 6. Проявление обложки */
+  .blur-up {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #6c3a4c;
+  }
+  .blur-up .art {
+    position: absolute;
+    inset: 0;
+    font-size: 11px;
+  }
+  .blur-up.go .art {
+    animation: reveal 900ms var(--ease-out) both;
+  }
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      filter: blur(14px);
+      transform: scale(1.06);
+    }
+  }
+  .blur-up .ph {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    font: 500 9px/1 var(--mono);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* 7. Прокрутка */
+  .scroller {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    align-content: start;
+    overscroll-behavior: contain;
+  }
+  .scroller .art {
+    font-size: 7px;
+    padding: 6px;
+  }
+  @supports (animation-timeline: view()) {
+    .scroller .art {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0.15;
+      transform: translateY(24px) scale(0.92);
+    }
+  }
+
+  /* ---------- Удобство и цена ---------- */
+  .ux {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 12px 28px;
+  }
+  .ux div {
+    display: grid;
+    gap: 4px;
+    padding-block: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .ux p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.6);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 680px;
+    font-size: 14px;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font: 500 11px/1.2 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--paper);
+  }
+  tr:last-child td {
+    border-bottom: 0;
+  }
+  td:first-child {
+    font-weight: 600;
+  }
+  .lvl {
+    font: 500 12px/1 var(--mono);
+    white-space: nowrap;
+  }
+  .lvl.low {
+    color: #137a48;
+  }
+  .lvl.mid {
+    color: #9a5a00;
+  }
+  .lvl.high {
+    color: #b3261e;
+  }
+
+  .plan {
+    display: grid;
+    gap: 10px;
+    counter-reset: step;
+    max-width: 760px;
+  }
+  .plan li {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .plan li::before {
+    counter-increment: step;
+    content: counter(step);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font: 700 13px/1 var(--display);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .plan ol {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .plan p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .callout {
+    padding: 20px;
+    border-radius: 18px;
+    background:
+      linear-gradient(var(--paper), var(--paper)) padding-box,
+      var(--holo-grad) border-box;
+    border: 1px solid transparent;
+    animation: holo 10s linear infinite;
+    display: grid;
+    gap: 8px;
+    max-width: 760px;
+  }
+  .callout p {
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
+    .hero .stage {
+      order: -1;
+    }
+    .stage .cd {
+      width: min(78vw, 360px);
+    }
+    .phones {
+      grid-template-columns: 1fr;
+      gap: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+    }
+  }
+</style>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="holoFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9ad5" />
+      <stop offset="0.3" stop-color="#ffe08a" />
+      <stop offset="0.55" stop-color="#9bffcf" />
+      <stop offset="0.8" stop-color="#8fd8ff" />
+      <stop offset="1" stop-color="#c6a2ff" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <!-- ---------- Первый экран ---------- -->
+  <div class="hero">
+    <div class="copy">
+      <p class="eyebrow">Музыкальная картотека · этап 7, полировка</p>
+      <h1><span class="chrome">Картотека в стиле CD</span></h1>
+      <p class="lead">
+        Три направления для нового визуала, семь живых анимаций и список улучшений удобства. Палитра и шрифты здесь
+        новые — это предложение, а не нынешний стиль приложения. Всё сделано на CSS и немного JavaScript, без тяжёлых
+        библиотек: ровно то, что потянет PWA на телефоне. Смотри с телефона — макеты рассчитаны на него.
+      </p>
+      <div class="facts">
+        <span class="fact">Ø 120 мм · дорожки 1,6 мкм</span>
+        <span class="fact">conic-gradient + @property</span>
+        <span class="fact">без WebGL</span>
+      </div>
+    </div>
+    <div class="stage" id="heroStage">
+      <div class="cd light" id="heroCd" role="img" aria-label="Переливающийся компакт-диск">
+        <div class="print"><span>КАРТОТЕКА · WAILEE</span></div>
+      </div>
+      <p class="hint">Проведи пальцем по диску — свет сместится, как при наклоне настоящего CD</p>
+    </div>
+  </div>
+
+  <!-- ---------- Направления ---------- -->
+  <section aria-labelledby="dirs">
+    <p class="eyebrow">Визуал</p>
+    <h2 id="dirs">Три направления</h2>
+    <p class="lead">
+      От полного погружения в эстетику CD до спокойного интерфейса с переливом в ключевых местах. Макеты
+      интерактивные: в «Голограмме» нажми на обложку, в «Джевел-кейсе» — на коробку.
+    </p>
+    <div class="phones">
+      <!-- A -->
+      <article class="variant">
+        <header>
+          <span class="tag">A · смело</span>
+          <h3>Джевел-кейс</h3>
+          <p>
+            Главная — полка с коробками CD: пластиковая петля слева, блик на крышке. Нажатие выдвигает диск. Сильный
+            образ, но коробки съедают место: на экране помещается меньше обложек.
+          </p>
+        </header>
+        <div class="phone">
+          <div class="screen graphite">
+            <div class="scr-pad">
+              <div class="app-title">Картотека Wailee</div>
+              <div class="mini-search">Альбом, исполнитель, трек…</div>
+              <div class="shelf-label">Полка · 6 дисков</div>
+              <div class="case-grid" id="shelf">
+                <div class="case-cell">
+                  <div class="cd light"></div>
+                  <button class="case" aria-label="Рельсы — Поларойд">
+                    <span class="hinge"></span><span class="art a1">Рельсы<small>Поларойд</small></span>
+                  </button>
+                </div>
+                <div class="case-cell">
+                  <div class="cd light"></div>
+                  <button class="case" aria-label="половина таблетки — cardinparis">
+                    <span class="hinge"></span
+                    ><span class="art a2">половина таблетки<small>cardinparis</small></span>
+                  </button>
+                </div>
+                <div class="case-cell">
+                  <div class="cd light"></div>
+                  <button class="case" aria-label="In Rainbows — Radiohead">
+                    <span class="hinge"></span><span class="art a3">In Rainbows<small>Radiohead</small></span>
+                  </button>
+                </div>
+                <div class="case-cell">
+                  <div class="cd light"></div>
+                  <button class="case" aria-label="Группа крови — Кино">
+                    <span class="hinge"></span><span class="art a4">Группа крови<small>Кино</small></span>
+                  </button>
+                </div>
+                <div class="case-cell">
+                  <div class="cd light"></div>
+                  <button class="case" aria-label="Homogenic — Björk">
+                    <span class="hinge"></span><span class="art a5">Homogenic<small>Björk</small></span>
+                  </button>
+                </div>
+                <div class="case-cell">
+                  <div class="cd light"></div>
+                  <button class="case" aria-label="Kid A — Radiohead">
+                    <span class="hinge"></span><span class="art a6">Kid A<small>Radiohead</small></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-dock"><span>◎ Удиви меня</span><span class="plus">＋</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- B -->
+      <article class="variant">
+        <header>
+          <span class="tag rec">B · рекомендую</span>
+          <h3>Голограмма</h3>
+          <p>
+            Нынешний спокойный интерфейс, а перелив — только там, где что-то происходит: активный тег, «Удиви меня»,
+            любимые треки. В карточке из-за обложки выглядывает вращающийся диск.
+          </p>
+        </header>
+        <div class="phone">
+          <div class="screen" id="holoScreen">
+            <div class="scr-pad" id="holoHome">
+              <div class="app-title">Картотека Wailee</div>
+              <div class="mini-search">Альбом, исполнитель, трек…</div>
+              <div class="mini-chips">
+                <span class="mini-chip holo-chip">осень</span><span class="mini-chip">вечер</span
+                ><span class="mini-chip">дорога</span><span class="mini-chip">спокойное</span>
+              </div>
+              <div class="tap-note">НАЖМИ НА ОБЛОЖКУ</div>
+              <div class="mini-grid">
+                <div>
+                  <button class="art a1" data-open="a1" style="view-transition-name: vt-a1">
+                    Рельсы<small>Поларойд</small>
+                  </button>
+                  <div class="name">Рельсы</div>
+                  <div class="meta">Поларойд</div>
+                </div>
+                <div>
+                  <button class="art a2" data-open="a2" style="view-transition-name: vt-a2">
+                    половина таблетки<small>cardinparis</small>
+                  </button>
+                  <div class="name">половина таблетки</div>
+                  <div class="meta">cardinparis</div>
+                </div>
+                <div>
+                  <button class="art a3" data-open="a3" style="view-transition-name: vt-a3">
+                    In Rainbows<small>Radiohead</small>
+                  </button>
+                  <div class="name">In Rainbows</div>
+                  <div class="meta">Radiohead</div>
+                </div>
+                <div>
+                  <button class="art a4" data-open="a4" style="view-transition-name: vt-a4">
+                    Группа крови<small>Кино</small>
+                  </button>
+                  <div class="name">Группа крови</div>
+                  <div class="meta">Кино</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-view" id="holoCard" hidden>
+              <button class="back-btn" id="holoBack" aria-label="Назад">‹</button>
+              <div class="card-hero">
+                <div class="cd light"><div class="print"><span>WAILEE</span></div></div>
+                <div class="art a1" id="cardArt">Рельсы<small>Поларойд</small></div>
+              </div>
+              <div class="kicker" id="cardKicker">Альбом · 2024</div>
+              <div class="ttl" id="cardTitle">Рельсы</div>
+              <div style="color: var(--s-muted); font-size: 12px" id="cardArtist">Поларойд</div>
+              <div>
+                <div class="track"><span>1 · Вступление</span><span class="st">★</span></div>
+                <div class="track"><span>2 · Поезд</span><span style="color: var(--s-muted)">☆</span></div>
+                <div class="track"><span>3 · Рельсы</span><span class="st">★</span></div>
+              </div>
+            </div>
+            <div class="mini-dock"><span class="holo-btn" style="border-radius: 999px">◎ Удиви меня</span><span class="plus">＋</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- C -->
+      <article class="variant">
+        <header>
+          <span class="tag">C · эксперимент</span>
+          <h3>Прозрачный пластик</h3>
+          <p>
+            Полупрозрачные панели поверх размытых цветов обложек, хромированные заголовки — эстетика Y2K. Красиво,
+            но хуже читается и больше нагружает телефон: каждый слой с размытием — отдельная работа видеокарты.
+          </p>
+        </header>
+        <div class="phone">
+          <div class="screen glassy">
+            <div class="glass-bg"></div>
+            <div class="scr-pad" style="position: relative">
+              <div class="glass-title chrome-light">Картотека Wailee</div>
+              <div class="mini-search glass" style="border-radius: 999px; background: rgba(255, 255, 255, 0.1)">
+                Альбом, исполнитель, трек…
+              </div>
+              <div class="mini-chips">
+                <span class="mini-chip glass" style="border-radius: 999px">осень</span
+                ><span class="mini-chip glass" style="border-radius: 999px">вечер</span
+                ><span class="mini-chip glass" style="border-radius: 999px">дорога</span>
+              </div>
+              <div class="mini-grid">
+                <div class="glass glass-card">
+                  <div class="art a1">Рельсы<small>Поларойд</small></div>
+                </div>
+                <div class="glass glass-card">
+                  <div class="art a2">половина таблетки<small>cardinparis</small></div>
+                </div>
+                <div class="glass glass-card">
+                  <div class="art a3">In Rainbows<small>Radiohead</small></div>
+                </div>
+                <div class="glass glass-card">
+                  <div class="art a5">Homogenic<small>Björk</small></div>
+                </div>
+              </div>
+            </div>
+            <div class="mini-dock glass" style="background: rgba(255, 255, 255, 0.12)">
+              <span>◎ Удиви меня</span><span class="plus">＋</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ---------- Анимации ---------- -->
+  <section aria-labelledby="motion">
+    <p class="eyebrow">Моушн</p>
+    <h2 id="motion">Семь анимаций, которые стоит добавить</h2>
+    <p class="lead">
+      Правило одно: анимация объясняет, что произошло, а не украшает. Все демо уважают системную настройку «Уменьшить
+      движение». В приложении те же эффекты отключает и переключатель в настройках.
+    </p>
+    <div class="lab">
+      <div class="demo">
+        <div class="demo-head">
+          <h3>Диск выезжает из обложки</h3>
+          <button class="replay" data-replay="slide">Повторить</button>
+        </div>
+        <div class="demo-stage">
+          <div class="slide-wrap" id="slide">
+            <div class="cd light"><div class="print"><span>CD</span></div></div>
+            <div class="art a3">In Rainbows<small>Radiohead</small></div>
+          </div>
+        </div>
+        <p>
+          При открытии карточки диск выезжает с пружиной и докручивается. Пружина задаётся функцией
+          <code>linear()</code> — без JS-библиотек.
+        </p>
+        <div class="support"><span class="ok">Safari 17.2+</span><span class="ok">Chrome 113+</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h3>Звёздочка с переливом</h3>
+          <button class="replay" data-replay="star">Нажать</button>
+        </div>
+        <div class="demo-stage">
+          <button class="star-btn" id="star" aria-pressed="false" aria-label="Отметить трек как любимый">
+            <span class="ring"></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2z" />
+            </svg>
+          </button>
+        </div>
+        <p>
+          Пружинное «пуф» и радужное кольцо вместо вибрации: Safari на iPhone не даёт PWA тактильный отклик, поэтому
+          отклик — визуальный.
+        </p>
+        <div class="support"><span class="ok">везде</span><span class="warn">вибрации на iOS нет</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h3>«Удиви меня» как CD-чейнджер</h3>
+          <button class="replay" data-replay="changer">Крутить</button>
+        </div>
+        <div class="demo-stage">
+          <div class="changer">
+            <div class="pointer"></div>
+            <div class="tray" id="tray"></div>
+          </div>
+          <div class="changer-out" id="changerOut" aria-live="polite"></div>
+        </div>
+        <p>
+          Вместо перелистывания обложек — карусель дисков, как в автомобильном чейнджере. Останавливается на выбранном
+          из текущей выборки.
+        </p>
+        <div class="support"><span class="ok">везде</span><span>≈ 1,6 с</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h3>Чипы: подсветка переезжает</h3>
+          <span class="replay" style="background: none; padding: 0; color: var(--muted)">нажимай</span>
+        </div>
+        <div class="demo-stage">
+          <div class="chips-demo" id="chips">
+            <span class="pill" id="pill"></span>
+            <button aria-pressed="true">осень</button>
+            <button aria-pressed="false">вечер</button>
+            <button aria-pressed="false">дорога</button>
+            <button aria-pressed="false">спокойное</button>
+            <button aria-pressed="false">драйв</button>
+          </div>
+        </div>
+        <p>
+          Голографическая «пилюля» перетекает к выбранному тегу. Подходит, когда выбирают один тег; для нескольких
+          оставим подсветку каждого.
+        </p>
+        <div class="support"><span class="ok">везде</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h3>Обложка растёт в карточку</h3>
+          <button class="replay" data-replay="vt">Открыть</button>
+        </div>
+        <div class="demo-stage" id="vtStage">
+          <div class="vt-grid" id="vtGrid">
+            <div class="art a1">Рельсы</div>
+            <div class="art a3" id="vtSmall" style="view-transition-name: vt-cover">In Rainbows</div>
+            <div class="art a4">Группа крови</div>
+            <div class="art a2">половина</div>
+            <div class="art a5">Homogenic</div>
+            <div class="art a6">Kid A</div>
+          </div>
+          <div class="vt-big" id="vtBig" hidden>
+            <div class="art a3" style="view-transition-name: vt-cover">In Rainbows<small>Radiohead</small></div>
+            <div><strong>In Rainbows</strong><br /><span>Radiohead · 2007</span></div>
+          </div>
+        </div>
+        <p>
+          View Transitions: браузер сам морфит обложку из сетки в шапку карточки. Уже работает на твоём iPhone — это
+          показала проверка этапа 0.
+        </p>
+        <div class="support"><span class="ok">Safari 18+</span><span class="ok">Chrome 111+</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h3>Обложка проявляется из цвета</h3>
+          <button class="replay" data-replay="blur">Повторить</button>
+        </div>
+        <div class="demo-stage">
+          <div class="blur-up" id="blur">
+            <div class="art a2">половина таблетки<small>cardinparis</small></div>
+            <span class="ph">coverColors.bg</span>
+          </div>
+        </div>
+        <p>
+          Пока картинка грузится, на её месте — фон из уже сохранённого цвета обложки, затем она проявляется из
+          размытия. Сетка не «моргает» серыми квадратами.
+        </p>
+        <div class="support"><span class="ok">везде</span><span>цвета уже есть в данных</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h3>Появление при прокрутке</h3>
+          <span class="replay" style="background: none; padding: 0; color: var(--muted)">прокрути</span>
+        </div>
+        <div class="demo-stage">
+          <div class="scroller" id="scroller"></div>
+        </div>
+        <p>
+          Scroll-driven animations: обложки мягко поднимаются, въезжая в экран. Анимацией управляет прокрутка, а не
+          таймер, поэтому нет рывков и лишней работы JS.
+        </p>
+        <div class="support"><span class="ok">Safari 26+</span><span class="ok">Chrome 115+</span><span class="warn">иначе без эффекта</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Удобство ---------- -->
+  <section aria-labelledby="ux">
+    <p class="eyebrow">Удобство</p>
+    <h2 id="ux">Что улучшить в интерфейсе</h2>
+    <div class="ux">
+      <div>
+        <h3>Фильтры в зоне большого пальца</h3>
+        <p>Лента тегов вверху неудобна одной рукой. Кнопка «Теги» в нижней панели открывает шторку с группами — выбор в два касания у края экрана.</p>
+      </div>
+      <div>
+        <h3>Свайп между релизами</h3>
+        <p>В карточке листать соседние релизы текущей выборки жестом влево-вправо, как пластинки на полке. Не надо возвращаться в сетку.</p>
+      </div>
+      <div>
+        <h3>Закрытие карточки жестом</h3>
+        <p>Потянул карточку вниз — она уменьшается обратно в обложку. Вместе с переходом «обложка → карточка» это ощущается как нативное приложение.</p>
+      </div>
+      <div>
+        <h3>Долгое нажатие на обложку</h3>
+        <p>Быстрые действия без открытия карточки: «Слушать в Яндекс Музыке», «Изменить», «Поделиться».</p>
+      </div>
+      <div>
+        <h3>Шапка карточки в цвете альбома</h3>
+        <p>При прокрутке треклиста сверху остаётся компактная полоса с мини-обложкой и названием в цветах обложки — контекст не теряется.</p>
+      </div>
+      <div>
+        <h3>Сетка с выбором плотности</h3>
+        <p>Щипок двумя пальцами меняет 2 ↔ 3 колонки. На 30+ релизах удобнее видеть больше обложек сразу.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Цена ---------- -->
+  <section aria-labelledby="cost">
+    <p class="eyebrow">Техника</p>
+    <h2 id="cost">Сколько стоит каждый эффект</h2>
+    <p class="lead">
+      На телефоне важны плавность (60–120 кадров в секунду) и батарея. Дешевле всего анимировать transform и opacity;
+      дороже всего — размытие под слоем и постоянная анимация, пока экран открыт.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Приём</th>
+            <th>Где</th>
+            <th>Нагрузка</th>
+            <th>Риск</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Перелив: conic-gradient + @property</td>
+            <td>диск, активный тег, звёздочка</td>
+            <td><span class="lvl low">низкая</span></td>
+            <td>Постоянно переливающиеся элементы отвлекают — анимировать только выбранное</td>
+          </tr>
+          <tr>
+            <td>Пружины через linear()</td>
+            <td>выезд диска, звёздочка, чипы</td>
+            <td><span class="lvl low">низкая</span></td>
+            <td>Слишком сильная пружина выглядит несерьёзно — держать перелёт около 15%</td>
+          </tr>
+          <tr>
+            <td>View Transitions</td>
+            <td>обложка → карточка и обратно</td>
+            <td><span class="lvl low">низкая</span></td>
+            <td>Имена переходов должны быть уникальны на экране — у каждой обложки своё</td>
+          </tr>
+          <tr>
+            <td>Scroll-driven animations</td>
+            <td>сетка на главной</td>
+            <td><span class="lvl low">низкая</span></td>
+            <td>В старых браузерах эффекта нет — страница работает и без него</td>
+          </tr>
+          <tr>
+            <td>backdrop-filter: blur</td>
+            <td>нижняя панель (уже есть), вариант C целиком</td>
+            <td><span class="lvl mid">средняя</span> / <span class="lvl high">высокая</span></td>
+            <td>Один слой — нормально; десяток на экране — подтормаживание на старых iPhone</td>
+          </tr>
+          <tr>
+            <td>Наклон телефона (гироскоп)</td>
+            <td>перелив диска следует наклону</td>
+            <td><span class="lvl mid">средняя</span></td>
+            <td>iOS спрашивает разрешение; включать по кнопке, не при открытии</td>
+          </tr>
+          <tr>
+            <td>WebGL-шейдер для «настоящей» дифракции</td>
+            <td>только крупный диск</td>
+            <td><span class="lvl high">высокая</span></td>
+            <td>Сложно, нагревает телефон; CSS даёт 90% эффекта</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ---------- Рекомендация ---------- -->
+  <section aria-labelledby="rec">
+    <p class="eyebrow">Предложение</p>
+    <h2 id="rec">Что я бы сделал</h2>
+    <div class="callout">
+      <h3>Направление B «Голограмма» + диск из A</h3>
+      <p>
+        Главная остаётся спокойной и быстрой: обложки в центре, как и задумано в спецификации. CD-эстетика появляется в
+        моментах, которые хочется повторять: открыл альбом — выехал диск, отметил трек — вспыхнул перелив, «Удиви меня» —
+        закрутился чейнджер. Прозрачный пластик C можно попробовать позже как отдельную тему в настройках.
+      </p>
+    </div>
+    <div class="plan">
+      <ol>
+        <li>
+          <div>
+            <h3>Компонент диска</h3>
+            <p>Один переиспользуемый CSS-диск с переливом и надписью владельца. Цвет спектра подстраивается под coverColors альбома.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Переход «обложка → карточка» и выезд диска</h3>
+            <p>View Transitions в роутере и пружинный выезд диска из-за обложки. Жест вниз закрывает карточку.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Перелив в ключевых местах</h3>
+            <p>Активный тег, звёздочка с кольцом, кнопка «Удиви меня» с чейнджером, проявление обложек из цвета.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Удобство</h3>
+            <p>Шторка с тегами у большого пальца, свайп между релизами, долгое нажатие на обложку.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Проверка на телефоне</h3>
+            <p>Плавность на твоём iPhone, режим «Уменьшить движение», светлая тема, батарея при долгом просмотре.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<script>
+  (() => {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Диск на первом экране: свет следует за пальцем ----------
+    const stage = document.getElementById('heroStage');
+    const cd = document.getElementById('heroCd');
+    const move = (e) => {
+      const r = cd.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      cd.style.setProperty('--pa', `${Math.atan2(y, x) * (180 / Math.PI) + x * 120}deg`);
+      if (!reduce) {
+        cd.style.setProperty('--ry', `${x * 22}deg`);
+        cd.style.setProperty('--rx', `${-y * 22}deg`);
+      }
+    };
+    stage.addEventListener('pointermove', move);
+    stage.addEventListener('pointerleave', () => {
+      cd.style.setProperty('--rx', '0deg');
+      cd.style.setProperty('--ry', '0deg');
+    });
+
+    // ---------- A. Полка: нажатие выдвигает диск ----------
+    document.querySelectorAll('#shelf .case').forEach((c) =>
+      c.addEventListener('click', () => {
+        const cell = c.parentElement;
+        const open = cell.classList.contains('open');
+        document.querySelectorAll('#shelf .case-cell').forEach((x) => x.classList.remove('open'));
+        if (!open) cell.classList.add('open');
+      }),
+    );
+
+    // ---------- B. Голограмма: обложка → карточка ----------
+    const home = document.getElementById('holoHome');
+    const card = document.getElementById('holoCard');
+    const cardArt = document.getElementById('cardArt');
+    const DATA = {
+      a1: ['Рельсы', 'Поларойд', 'Альбом · 2024'],
+      a2: ['половина таблетки', 'cardinparis', 'Сингл · 2025'],
+      a3: ['In Rainbows', 'Radiohead', 'Альбом · 2007'],
+      a4: ['Группа крови', 'Кино', 'Альбом · 1988'],
+    };
+    const transition = (fn) =>
+      document.startViewTransition && !reduce ? document.startViewTransition(fn) : fn();
+    let current = null;
+    home.querySelectorAll('[data-open]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const id = b.dataset.open;
+        current = b;
+        transition(() => {
+          b.style.viewTransitionName = 'none';
+          cardArt.className = `art ${id}`;
+          cardArt.style.viewTransitionName = `vt-${id}`;
+          cardArt.innerHTML = `${DATA[id][0]}<small>${DATA[id][1]}</small>`;
+          document.getElementById('cardTitle').textContent = DATA[id][0];
+          document.getElementById('cardArtist').textContent = DATA[id][1];
+          document.getElementById('cardKicker').textContent = DATA[id][2];
+          home.hidden = true;
+          card.hidden = false;
+        });
+      }),
+    );
+    document.getElementById('holoBack').addEventListener('click', () => {
+      transition(() => {
+        cardArt.style.viewTransitionName = 'none';
+        if (current) current.style.viewTransitionName = `vt-${current.dataset.open}`;
+        card.hidden = true;
+        home.hidden = false;
+      });
+    });
+
+    // ---------- Лаборатория ----------
+    const restart = (el, cls = 'go') => {
+      el.classList.remove(cls);
+      void el.offsetWidth; // перезапуск CSS-анимации
+      el.classList.add(cls);
+    };
+    const slide = document.getElementById('slide');
+    const blur = document.getElementById('blur');
+    const star = document.getElementById('star');
+    restart(slide);
+    restart(blur);
+
+    // Чейнджер
+    const tray = document.getElementById('tray');
+    const out = document.getElementById('changerOut');
+    const discs = ['Рельсы', 'половина таблетки', 'In Rainbows', 'Группа крови', 'Homogenic', 'Kid A'];
+    discs.forEach((name, i) => {
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.style.transform = `rotate(${(360 / discs.length) * i}deg)`;
+      slot.innerHTML = '<div class="cd light"></div>';
+      tray.append(slot);
+    });
+    let turns = 0;
+    const spinChanger = () => {
+      const pick = Math.floor(Math.random() * discs.length);
+      turns += 2;
+      out.textContent = 'Выбираю…';
+      // Выбранный диск останавливается под стрелкой сверху
+      tray.style.transform = `rotate(${turns * 360 - (360 / discs.length) * pick}deg)`;
+      setTimeout(() => (out.textContent = discs[pick]), reduce ? 0 : 1600);
+    };
+
+    // Чипы
+    const chips = document.getElementById('chips');
+    const pill = document.getElementById('pill');
+    const placePill = (btn) => {
+      pill.style.width = `${btn.offsetWidth}px`;
+      pill.style.height = `${btn.offsetHeight}px`;
+      pill.style.transform = `translate(${btn.offsetLeft}px, ${btn.offsetTop}px)`;
+    };
+    chips.querySelectorAll('button').forEach((b) =>
+      b.addEventListener('click', () => {
+        chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        placePill(b);
+      }),
+    );
+    const placeActive = () => placePill(chips.querySelector('[aria-pressed="true"]'));
+    placeActive();
+    addEventListener('resize', placeActive);
+    document.fonts?.ready.then(placeActive);
+
+    // View Transition: сетка ↔ карточка
+    const vtGrid = document.getElementById('vtGrid');
+    const vtBig = document.getElementById('vtBig');
+    const vtBtn = document.querySelector('[data-replay="vt"]');
+    const toggleVt = () =>
+      transition(() => {
+        const opening = vtBig.hidden;
+        vtGrid.hidden = opening;
+        vtBig.hidden = !opening;
+        vtBtn.textContent = opening ? 'Закрыть' : 'Открыть';
+      });
+
+    // Прокрутка: 24 обложки
+    const scroller = document.getElementById('scroller');
+    for (let i = 0; i < 24; i++) {
+      const a = document.createElement('div');
+      a.className = `art a${(i % 6) + 1}`;
+      a.textContent = discs[i % 6];
+      scroller.append(a);
+    }
+
+    document.querySelectorAll('[data-replay]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const what = b.dataset.replay;
+        if (what === 'slide') restart(slide);
+        if (what === 'blur') restart(blur);
+        if (what === 'changer') spinChanger();
+        if (what === 'vt') toggleVt();
+        if (what === 'star') star.click();
+      }),
+    );
+    star.addEventListener('click', () => {
+      const on = star.getAttribute('aria-pressed') !== 'true';
+      star.setAttribute('aria-pressed', String(on));
+      star.classList.toggle('on', on);
+    });
+    setTimeout(spinChanger, 400);
+  })();
+</script>
