@@ -37,7 +37,10 @@ const PUBLISHED = {
       type: 'album',
       year: 2007,
       tagIds: [tagId],
-      tracks: [{ id: randomUUID(), position: 1, title: '15 Step', favorite: true }],
+      tracks: [
+        { id: randomUUID(), position: 1, title: '15 Step', favorite: true, durationSec: 237 },
+        { id: randomUUID(), position: 2, title: 'Bodysnatchers', favorite: false, durationSec: 242 },
+      ],
       links: [],
       createdAt: '2026-09-01T10:00:00Z',
       updatedAt: '2026-09-01T10:00:00Z',
@@ -119,6 +122,15 @@ test('друг открывает ссылку: картотека владел�
   await expect(page.getByRole('heading', { name: 'In Rainbows', level: 1 })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Изменить' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /любимый|из любимых/ })).toHaveCount(0);
+
+  // Зритель не может нажимать звёздочку, но место под неё зарезервировано у всех треков —
+  // иначе длительность любимого трека («15 Step») уезжает влево от нелюбимого («Bodysnatchers»)
+  const durations = page.getByText(/^\d:\d\d$/);
+  const [favX, restX] = await Promise.all([
+    durations.nth(0).evaluate((el) => el.getBoundingClientRect().x),
+    durations.nth(1).evaluate((el) => el.getBoundingClientRect().x),
+  ]);
+  expect(favX).toBe(restX);
 
   await page.goto('./#/settings');
   await expect(page.getByText('Это моя картотека')).toBeVisible();

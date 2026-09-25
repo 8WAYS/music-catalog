@@ -236,6 +236,7 @@
   display: grid;
   place-items: center;
   width: 32px;
+  flex: none;
 }
 .fill {
   justify-self: start;

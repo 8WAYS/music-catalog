@@ -187,11 +187,15 @@ export function Release({ id }: { id: string }) {
                           <Icon name="star" size={20} filled={t.favorite} />
                         </button>
                       ) : (
-                        t.favorite && (
-                          <span class={s.starStatic} aria-label="Любимый трек">
-                            <Icon name="star" size={18} filled />
-                          </span>
-                        )
+                        // Всегда резервируем место под звёздочку — иначе у нелюбимых треков
+                        // длительность сдвигается относительно любимых (нет отступа под иконку)
+                        <span
+                          class={s.starStatic}
+                          aria-label={t.favorite ? 'Любимый трек' : undefined}
+                          aria-hidden={t.favorite ? undefined : true}
+                        >
+                          {t.favorite && <Icon name="star" size={18} filled />}
+                        </span>
                       )}
                     </li>
                   ))}
