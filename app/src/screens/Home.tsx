@@ -18,10 +18,51 @@ import {
   type Filters,
   type SortKey,
 } from '../services/search';
-import { isOwner, lastOpened, ownerName, reduceMotion, releases, staleCatalog, tags } from '../store/app';
+import {
+  isOwner,
+  lastOpened,
+  ownerName,
+  reduceMotion,
+  releases,
+  staleCatalog,
+  tags,
+  toast,
+  toastError,
+} from '../store/app';
 import { SYNC_LABEL, syncState } from '../store/sync';
+import { toggleReleasePin } from '../store/showcase';
+import { useLongPress } from '../hooks/useLongPress';
 import { pluralize } from '../utils/normalize';
 import s from './Home.module.css';
+
+/** Закрепить/открепить релиз на витрине долгим нажатием (ADR 0011) — только у владельца. */
+function pinFeedback(release: Release): void {
+  void toggleReleasePin(release)
+    .then((next) => toast(next.pinned ? 'Закреплено на витрине' : 'Откреплено с витрины'))
+    .catch(toastError);
+}
+
+function GridItem({ release: r, owner, sortYear }: { release: Release; owner: boolean; sortYear: boolean }) {
+  const longPress = useLongPress(() => pinFeedback(r));
+  return (
+    <li>
+      <a
+        class={s.item}
+        href={href.release(r.id)}
+        onClick={() => (lastOpened.value = r.id)}
+        {...(owner ? longPress : {})}
+      >
+        <Cover release={r} vtName={lastOpened.value === r.id ? `cover-${r.id}` : undefined} />
+        <span class={s.name}>{r.title}</span>
+        <span class={s.meta}>
+          {r.artist}
+          {sortYear && r.year && ` · ${r.year}`}
+          {r.type !== 'album' && <span class={s.type}> · {RELEASE_TYPE_LABEL[r.type]}</span>}
+        </span>
+      </a>
+    </li>
+  );
+}
 
 /** Главная (раздел 6.1): поиск, чипы тегов, сортировка, сетка, «Удиви меня». Фильтры живут в адресе. */
 export function Home() {
@@ -61,6 +102,9 @@ export function Home() {
       <Aura colors={auraColors} />
       <header class="topbar">
         <h1 class={`${s.title} chrome-text`}>{title}</h1>
+        <a class="icon-btn" href={href.showcase()} aria-label="Витрина">
+          <Icon name="star" />
+        </a>
         <a class="icon-btn" href={href.settings()} aria-label="Настройки">
           <Icon name="settings" />
         </a>
@@ -116,17 +160,7 @@ export function Home() {
           ) : (
             <ul class={s.grid}>
               {list.map((r) => (
-                <li key={r.id}>
-                  <a class={s.item} href={href.release(r.id)} onClick={() => (lastOpened.value = r.id)}>
-                    <Cover release={r} vtName={lastOpened.value === r.id ? `cover-${r.id}` : undefined} />
-                    <span class={s.name}>{r.title}</span>
-                    <span class={s.meta}>
-                      {r.artist}
-                      {f.sort === 'year' && r.year && ` · ${r.year}`}
-                      {r.type !== 'album' && <span class={s.type}> · {RELEASE_TYPE_LABEL[r.type]}</span>}
-                    </span>
-                  </a>
-                </li>
+                <GridItem key={r.id} release={r} owner={owner} sortYear={f.sort === 'year'} />
               ))}
             </ul>
           )}

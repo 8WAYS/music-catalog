@@ -1,0 +1,133 @@
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-top: var(--s3);
+}
+.avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--chrome);
+  display: grid;
+  place-items: center;
+  font: 700 15px var(--font-display);
+  color: rgba(20, 22, 30, 0.55);
+}
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+}
+.stat {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.section {
+  margin-top: var(--s5);
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+}
+.hint {
+  margin: var(--s2) 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.shelf {
+  display: flex;
+  gap: var(--s3);
+  overflow-x: auto;
+  padding: var(--s2) 2px var(--s2);
+  margin: var(--s2) -2px 0;
+  list-style: none;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.shelf::-webkit-scrollbar {
+  display: none;
+}
+
+/* Артисты — круглые плитки */
+.artist {
+  flex: none;
+  width: 76px;
+  scroll-snap-align: start;
+}
+.artistLink {
+  display: block;
+  text-align: center;
+}
+.artist [role='img'] {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.artistName {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Альбомы/синглы — квадратные плитки */
+.rel {
+  flex: none;
+  width: 116px;
+  scroll-snap-align: start;
+}
+.relLink {
+  display: block;
+}
+.rel [role='img'] {
+  width: 100%;
+  border-radius: var(--radius-cover);
+}
+.relName {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.relArtist {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Первая закреплённая обложка — «герой»: шире, диск выглядывает справа (не за пределами плитки —
+   overflow-x: auto у .shelf иначе обрежет и по вертикали) */
+.rel.hero {
+  width: 168px;
+  position: relative;
+  isolation: isolate;
+}
+.rel.hero [role='img'] {
+  position: relative;
+  z-index: 1;
+  width: 76%;
+}
+.heroDisc {
+  position: absolute;
+  right: 0;
+  top: 8%;
+  width: 58%;
+  z-index: 0;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}

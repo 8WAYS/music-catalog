@@ -8,6 +8,7 @@ import { importPublished } from '../services/publisher';
 import { handleAuthCallback } from '../services/spotifyAuth';
 import { connect, startSync } from './sync';
 import { initSpotifyStatus } from './spotify';
+import { initShowcase } from './showcase';
 import type { CoverColors, Release, Tag } from '../data/schema';
 
 // ---------- Данные ----------
@@ -109,6 +110,7 @@ export async function init(): Promise<void> {
       repository = local;
       startSync(local);
       void initSpotifyStatus(local);
+      void initShowcase(local);
     } else {
       local.close();
       repository = new RemoteSource();

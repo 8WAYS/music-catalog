@@ -7,6 +7,7 @@ import { Editor } from './screens/Editor';
 import { Home } from './screens/Home';
 import { Release } from './screens/Release';
 import { Settings } from './screens/Settings';
+import { Showcase } from './screens/Showcase';
 import { isOwner, loadError, ready } from './store/app';
 import s from './app.module.css';
 
@@ -29,6 +30,8 @@ function Screen() {
       return owner ? <AddSearch /> : <Home />;
     case 'settings':
       return <Settings />;
+    case 'showcase':
+      return <Showcase />;
     default:
       return (
         <div class="page">

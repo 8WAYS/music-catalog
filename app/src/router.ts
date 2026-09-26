@@ -7,6 +7,7 @@ export type Route =
   | { name: 'new' }
   | { name: 'add' }
   | { name: 'settings' }
+  | { name: 'showcase' }
   | { name: 'notFound' };
 
 export function parseHash(hash: string): Route {
@@ -19,6 +20,7 @@ export function parseHash(hash: string): Route {
   if (head === 'new') return { name: 'new' };
   if (head === 'add') return { name: 'add' };
   if (head === 'settings') return { name: 'settings' };
+  if (head === 'showcase') return { name: 'showcase' };
   return { name: 'notFound' };
 }
 
@@ -29,6 +31,7 @@ export const href = {
   new: () => '#/new',
   add: () => '#/add',
   settings: () => '#/settings',
+  showcase: () => '#/showcase',
 };
 
 export const route = signal<Route>(parseHash(location.hash));

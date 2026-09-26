@@ -84,6 +84,14 @@
   font-size: 18px;
   font-weight: 500;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* Закреплённый на витрине артист (ADR 0011) — перламутровая звёздочка тем же цветом, что у трека */
+.artist svg path {
+  fill: url(#pearlFill);
+  stroke: none;
 }
 
 .links {

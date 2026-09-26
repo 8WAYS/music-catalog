@@ -69,6 +69,8 @@ export interface Release {
   itunesId?: number;
   /** id альбома в Spotify, если заполнен из поиска (ADR 0010) */
   spotifyId?: string;
+  /** Закреплён на витрине (ADR 0011) — владелец сам выделяет лучшее */
+  pinned?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -134,6 +136,8 @@ export function validateRelease(r: unknown, path = 'release'): string[] {
     issues.push(`${path}.itunesId: нужно положительное целое`);
   if (o.spotifyId !== undefined && (!isStr(o.spotifyId) || !o.spotifyId.trim()))
     issues.push(`${path}.spotifyId: должна быть непустой строкой`);
+  if (o.pinned !== undefined && typeof o.pinned !== 'boolean')
+    issues.push(`${path}.pinned: должно быть true/false`);
   if (o.coverColors !== undefined) {
     const c = o.coverColors;
     if (!c || !HEX_RE.test(c.bg) || !HEX_RE.test(c.accent) || !HEX_RE.test(c.text))

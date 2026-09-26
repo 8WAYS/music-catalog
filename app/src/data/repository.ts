@@ -2,6 +2,12 @@ import type { Catalog, Release, Tag } from './schema';
 
 export type Mode = 'owner' | 'viewer';
 
+/** Закреплённый на витрине артист (ADR 0011) — releaseId даёт обложку/цвет для аватара. */
+export interface PinnedArtist {
+  name: string;
+  releaseId: string;
+}
+
 /** Ключи служебного хранилища meta (раздел 4.6). */
 export interface MetaValues {
   token: string;
@@ -24,6 +30,8 @@ export interface MetaValues {
   spotifyRefreshToken: string;
   /** Момент истечения access-токена, ms since epoch */
   spotifyTokenExpiresAt: number;
+  /** Витрина (ADR 0011): закреплённые артисты, порядок — как закрепляли */
+  pinnedArtists: PinnedArtist[];
 }
 export type MetaKey = keyof MetaValues;
 

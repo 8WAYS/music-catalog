@@ -16,6 +16,8 @@ import {
   toast,
   toastError,
 } from '../store/app';
+import { isArtistPinned, pinArtist, toggleReleasePin, unpinArtist } from '../store/showcase';
+import { useLongPress } from '../hooks/useLongPress';
 import { formatDuration, pluralize } from '../utils/normalize';
 import s from './Release.module.css';
 
@@ -58,6 +60,20 @@ export function Release({ id }: { id: string }) {
       toastError(e, 'Не удалось сохранить');
     }
   };
+
+  // Долгое нажатие — закрепление на витрине (ADR 0011): обложка закрепляет весь релиз,
+  // имя исполнителя — самого артиста (представительная обложка — этот же релиз)
+  const pinRelease = useLongPress(() => {
+    void toggleReleasePin(release)
+      .then((next) => toast(next.pinned ? 'Закреплено на витрине' : 'Откреплено с витрины'))
+      .catch(toastError);
+  });
+  const artistPinned = isArtistPinned(release.artist);
+  const pinArtistPress = useLongPress(() => {
+    void (artistPinned ? unpinArtist(release.artist) : pinArtist(release.artist, release.id))
+      .then(() => toast(artistPinned ? 'Артист откреплён' : 'Артист закреплён на витрине'))
+      .catch(toastError);
+  });
 
   const share = async () => {
     const url = shareUrl(href.release(release.id));
@@ -110,7 +126,8 @@ export function Release({ id }: { id: string }) {
         </header>
 
         <div class={s.layout}>
-          <div class={s.hero}>
+          {/* Долгое нажатие — закрепить/открепить на витрине (ADR 0011) */}
+          <div class={s.hero} {...(owner ? pinRelease : {})}>
             {/* Диск выезжает из-за обложки и медленно вращается (ADR 0008) */}
             <Disc
               class={s.disc}
@@ -126,7 +143,15 @@ export function Release({ id }: { id: string }) {
               {release.year && ` · ${release.year}`}
             </p>
             <h1 class={s.title}>{release.title}</h1>
-            <p class={s.artist}>{release.artist}</p>
+            <p class={s.artist} {...(owner ? pinArtistPress : {})}>
+              {release.artist}
+              {artistPinned && (
+                <>
+                  <Icon name="star" size={13} filled />
+                  <span class="visually-hidden">— закреплено на витрине</span>
+                </>
+              )}
+            </p>
 
             {release.links.length > 0 && (
               <div class={s.links}>
