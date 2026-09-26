@@ -2,7 +2,11 @@ import { useRef, useState } from 'preact/hooks';
 import { reduceMotion } from '../store/app';
 
 const SWIPE_THRESHOLD_RATIO = 0.22;
-const AXIS_TOLERANCE_PX = 6;
+const AXIS_TOLERANCE_PX = 10;
+// Чтобы решить «это вертикаль», вертикальный сдвиг должен явно перевешивать — иначе у медленного,
+// неторопливого свайпа обычное дрожание руки в первых пикселях случайно запирает жест в «вертикаль»
+// и дальше движение просто не подхватывается (сообщили: «свайпать медленно — может сбиться»).
+const VERTICAL_BIAS = 1.2;
 
 function motionReduced(): boolean {
   return reduceMotion.value || matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -52,8 +56,10 @@ export function useSwipeTabs(count: number, onSettle: (index: number) => void, i
     const dx = e.clientX - drag.current.startX;
     const dy = e.clientY - drag.current.startY;
     if (!drag.current.axis) {
-      if (Math.abs(dx) < AXIS_TOLERANCE_PX && Math.abs(dy) < AXIS_TOLERANCE_PX) return;
-      drag.current.axis = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      if (absDx < AXIS_TOLERANCE_PX && absDy < AXIS_TOLERANCE_PX) return;
+      drag.current.axis = absDy > absDx * VERTICAL_BIAS ? 'v' : 'h';
       if (drag.current.axis === 'v') {
         drag.current = null; // обычная вертикальная прокрутка — дальше жест не наш
         return;
@@ -63,11 +69,17 @@ export function useSwipeTabs(count: number, onSettle: (index: number) => void, i
       // до карточки релиза (нашли на e2e-тесте зрителя). Без захвата риск только один: очень
       // быстрый свайп мимо границ .viewport потеряет продолжение — а .viewport и так ловит
       // bubbling от детей, пока палец в его пределах, чего достаточно на практике.
+      //
+      // На время свайпа фоновые анимации (аура, диск, перламутр) не крутятся — не отнимают
+      // кадр у самого жеста, тот же приём, что router.ts использует для смены экрана (html.
+      // transitioning); иначе на слабом устройстве медленный свайп выглядит рвано.
+      document.documentElement.classList.add('transitioning');
     }
     place(index, dx, false);
   };
 
   function endDrag(e: PointerEvent): void {
+    document.documentElement.classList.remove('transitioning');
     if (!drag.current || drag.current.axis !== 'h') {
       drag.current = null;
       return;
