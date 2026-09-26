@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 57,
-  "publishedAt": "2026-09-26T10:53:39.571Z",
+  "revision": 58,
+  "publishedAt": "2026-09-26T12:55:41.618Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -500,6 +500,33 @@
         "bg": "#251613",
         "accent": "#c68870",
         "text": "#f2eae9"
+      }
+    },
+    {
+      "id": "81aeb585-85b0-4a96-aca1-d90343f2371b",
+      "title": "распять",
+      "artist": "greyrock, tewiq & madk1d",
+      "type": "single",
+      "tagIds": [],
+      "tracks": [
+        {
+          "id": "14d9e08a-759d-47dc-b4dd-1d3a4560e289",
+          "position": 1,
+          "title": "распять",
+          "durationSec": 120,
+          "favorite": false
+        }
+      ],
+      "links": [],
+      "createdAt": "2026-09-26T12:55:33.758Z",
+      "updatedAt": "2026-09-26T12:55:35.068Z",
+      "year": 2025,
+      "itunesId": 1798815763,
+      "cover": "covers/81aeb585-85b0-4a96-aca1-d90343f2371b.jpg",
+      "coverColors": {
+        "bg": "#2b1d0d",
+        "accent": "#ba8b61",
+        "text": "#f2ede9"
       }
     }
   ]
