@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 54,
-  "publishedAt": "2026-09-25T23:50:23.075Z",
+  "revision": 56,
+  "publishedAt": "2026-09-26T10:53:31.120Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -202,14 +202,15 @@
         }
       ],
       "createdAt": "2026-09-25T17:42:34.794Z",
-      "updatedAt": "2026-09-25T23:48:17.727Z",
+      "updatedAt": "2026-09-26T10:53:30.203Z",
       "year": 2026,
       "cover": "covers/53f4263f-2106-4aea-9feb-43ecb0bf91c4.jpg",
       "coverColors": {
         "bg": "#232315",
         "accent": "#e57ea7",
         "text": "#f2f2e9"
-      }
+      },
+      "pinned": true
     },
     {
       "id": "07a69893-f0c3-4aab-85db-91e989dd208c",
@@ -440,14 +441,15 @@
         }
       ],
       "createdAt": "2026-09-25T20:08:00.128Z",
-      "updatedAt": "2026-09-25T23:50:16.364Z",
+      "updatedAt": "2026-09-26T10:53:24.540Z",
       "year": 2026,
       "cover": "covers/23acac90-378c-4eb5-afc6-3d23ed6bacee.jpg",
       "coverColors": {
         "bg": "#1e1d1a",
         "accent": "#7bc653",
         "text": "#f2efe9"
-      }
+      },
+      "pinned": true
     },
     {
       "id": "07253db1-552d-4f8f-8771-7bebb90a14e1",
