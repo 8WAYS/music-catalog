@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Вкладки свайпом — макет v1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Tektur:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+    />
+    <style>
+      @property --a {
+        syntax: '<angle>';
+        inherits: true;
+        initial-value: 0deg;
+      }
+      @property --holo {
+        syntax: '<angle>';
+        inherits: true;
+        initial-value: 0deg;
+      }
+      :root {
+        --bg: #0e1014;
+        --surface: #171a20;
+        --surface-2: #20242b;
+        --glass: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --text: #eef0f4;
+        --text-muted: #8d94a1;
+        --line: #262a32;
+        --accent: #eef0f4;
+        --accent-text: #0e1014;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+        --cover-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.9);
+        --chrome: linear-gradient(180deg, #cdd2d9 0%, #f5f6f8 38%, #9aa1ac 50%, #f5f6f8 62%, #cdd2d9 100%);
+        --pearl: conic-gradient(from var(--holo), #f3d9e7, #f2ead3, #d9efe4, #d6e5f3, #e4dbf4, #f3d9e7);
+        --pearl-text: #15171c;
+        --radius: 14px;
+        --radius-pill: 999px;
+        --s2: 8px;
+        --s3: 12px;
+        --s4: 16px;
+        --s5: 24px;
+        --s6: 32px;
+        --display: 'Tektur', system-ui, sans-serif;
+        --body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+        --spring-soft: cubic-bezier(0.34, 1.3, 0.64, 1);
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.55 var(--body);
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 20px 100px;
+      }
+      h1,
+      h2 {
+        font-family: var(--display);
+        line-height: 1.15;
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(24px, 4vw, 32px);
+      }
+      h2 {
+        font-size: 19px;
+        margin-bottom: var(--s2);
+      }
+      .lead {
+        color: var(--text-muted);
+        max-width: 60ch;
+        margin: var(--s3) 0 0;
+      }
+      section {
+        margin-top: var(--s6);
+        padding-top: var(--s6);
+        border-top: 1px solid var(--line);
+      }
+      section:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+      .eyebrow {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 4px;
+      }
+      code {
+        font-family: var(--mono);
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.88em;
+      }
+      .verdict {
+        margin-top: var(--s4);
+        padding: var(--s3) var(--s4);
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+      .verdict strong {
+        color: var(--text);
+      }
+      ul.notes {
+        margin: var(--s3) 0 0;
+        padding-left: 1.1em;
+        color: var(--text-muted);
+        font-size: 14.5px;
+      }
+      ul.notes li {
+        margin-bottom: 6px;
+      }
+      ul.notes strong {
+        color: var(--text);
+      }
+
+      /* ---------- Каркас телефона ---------- */
+      .phone {
+        width: 340px;
+        margin: var(--s5) auto 0;
+        border-radius: 36px;
+        padding: 10px;
+        background: #05060a;
+        box-shadow: var(--shadow);
+      }
+      .screen {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 340 / 700;
+        border-radius: 28px;
+        overflow: hidden;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------- Заголовок с вкладками ---------- */
+      .tabs-head {
+        flex: none;
+        padding: 18px 20px 0;
+      }
+      .tabs-row {
+        display: flex;
+        gap: var(--s5);
+        position: relative;
+      }
+      .tab-label {
+        appearance: none;
+        border: 0;
+        background: none;
+        color: var(--text-muted);
+        font-family: var(--display);
+        font-weight: 600;
+        font-size: 16px;
+        padding: 0 0 12px;
+        cursor: pointer;
+      }
+      .tab-label[aria-selected='true'] {
+        color: var(--text);
+      }
+      .tabs-underline {
+        position: absolute;
+        bottom: 0;
+        height: 2.5px;
+        border-radius: 2px;
+        background: var(--chrome);
+        transition: transform 320ms var(--spring-soft), width 320ms var(--spring-soft);
+      }
+      .tabs-line {
+        height: 1px;
+        background: var(--line);
+        margin: 0 -20px;
+      }
+
+      /* ---------- Область свайпа ---------- */
+      .viewport {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        /* Иначе перетаскивание пальцем/мышью цепляет выделение текста вместо жеста */
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .track {
+        display: flex;
+        width: 200%;
+        height: 100%;
+        will-change: transform;
+      }
+      .track.animating {
+        transition: transform 380ms var(--spring-soft);
+      }
+      .panel {
+        width: 50%;
+        height: 100%;
+        flex: none;
+        overflow-y: auto;
+        /* Важное: горизонтальный жест обрабатывает JS, вертикальный скролл браузер ведёт сам —
+           preventDefault() тут не нужен вообще, и поэтому список не «дёргается» при свайпе */
+        touch-action: pan-y;
+        padding: 6px 20px 24px;
+      }
+
+      /* Картотека — простая сетка */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .cell .cover {
+        aspect-ratio: 1;
+        border-radius: 10px;
+        background-size: cover;
+        background-position: center;
+        box-shadow: var(--cover-shadow);
+      }
+      .cell .n {
+        margin-top: 6px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .cell .a {
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+      .count {
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* Витрина — сокращённая версия из profile-showcase-v1 */
+      .who {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: conic-gradient(from var(--a), #eef0f3, #c4c9d0 12%, #f7f8fa 25%, #c0c6cd 37%, #eef0f3 50%, #c4c9d0 62%, #f7f8fa 75%, #c0c6cd 87%, #eef0f3);
+        display: grid;
+        place-items: center;
+        font: 700 13px var(--display);
+        color: rgba(20, 22, 30, 0.55);
+      }
+      .who .name {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 16px;
+        background: var(--chrome);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .who .stat {
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+      .shelf-title {
+        font-family: var(--display);
+        font-weight: 600;
+        font-size: 14px;
+        margin-top: var(--s4);
+      }
+      .shelf {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 8px 0 4px;
+        scrollbar-width: none;
+      }
+      .shelf::-webkit-scrollbar {
+        display: none;
+      }
+      .rel {
+        flex: none;
+        width: 92px;
+      }
+      .rel .cover {
+        aspect-ratio: 1;
+        border-radius: 9px;
+        background-size: cover;
+        background-position: center;
+        box-shadow: var(--cover-shadow);
+      }
+      .rel .lbl {
+        margin-top: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* ---------- Точки-индикатор под телефоном (не часть экрана, дублирующая подсказка) ---------- */
+      .dots {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-top: var(--s3);
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--line);
+        transition: background 200ms;
+      }
+      .dot.active {
+        background: var(--text);
+      }
+      .cap-note {
+        max-width: 340px;
+        margin: var(--s3) auto 0;
+        color: var(--text-muted);
+        font-size: 14px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <p class="eyebrow">Макет · черновик</p>
+        <h1>Картотека ↔ Витрина: вкладки свайпом</h1>
+        <p class="lead">
+          Свайп — не единственный способ переключиться (иначе на десктопе или для VoiceOver вкладка вообще
+          недостижима): заголовки сверху остаются кликабельными, свайп — дополнительный, быстрый путь.
+          Потяни экран телефона горизонтально или ткни в заголовок.
+        </p>
+
+        <div class="phone">
+          <div class="screen">
+            <div class="tabs-head">
+              <div class="tabs-row" id="tabsRow">
+                <button class="tab-label" data-i="0" aria-selected="true">Картотека</button>
+                <button class="tab-label" data-i="1" aria-selected="false">Витрина</button>
+                <span class="tabs-underline" id="underline"></span>
+              </div>
+            </div>
+            <div class="tabs-line"></div>
+
+            <div class="viewport" id="viewport">
+              <div class="track" id="track">
+                <div class="panel" id="panelCatalog">
+                  <p class="count">127 релизов · сначала новые</p>
+                  <div class="grid">
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #6b3550, #2a1420)"></div>
+                      <div class="n">половина таблетки</div>
+                      <div class="a">cardinparis</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #26384a, #101820)"></div>
+                      <div class="n">In Rainbows</div>
+                      <div class="a">Radiohead</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #402c52, #1a1424)"></div>
+                      <div class="n">Группа крови</div>
+                      <div class="a">Кино</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #234a44, #16211f)"></div>
+                      <div class="n">Rings</div>
+                      <div class="a">Poolside</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #4a3a26, #201810)"></div>
+                      <div class="n">Kid A</div>
+                      <div class="a">Radiohead</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #2a4a3a, #10201a)"></div>
+                      <div class="n">OK Computer</div>
+                      <div class="a">Radiohead</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #4a2c46, #1e1020)"></div>
+                      <div class="n">Disk 2</div>
+                      <div class="a">In Rainbows</div>
+                    </div>
+                    <div class="cell">
+                      <div class="cover" style="background-image: linear-gradient(155deg, #2c3a4a, #101620)"></div>
+                      <div class="n">Pablo Honey</div>
+                      <div class="a">Radiohead</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel" id="panelShowcase">
+                  <div class="who">
+                    <div class="avatar">W</div>
+                    <div>
+                      <div class="name">Wailee</div>
+                      <div class="stat">127 релизов</div>
+                    </div>
+                  </div>
+                  <div class="shelf-title">Любимые артисты</div>
+                  <div class="shelf">
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(160deg, #2e3440, #1c2530); border-radius: 50%"></div><div class="lbl">Radiohead</div></div>
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(160deg, #4a2c46, #2a1a2b); border-radius: 50%"></div><div class="lbl">cardinparis</div></div>
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(160deg, #3a2a52, #1e1830); border-radius: 50%"></div><div class="lbl">Кино</div></div>
+                  </div>
+                  <div class="shelf-title">Любимые альбомы</div>
+                  <div class="shelf">
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(155deg, #6b3550, #2a1420)"></div><div class="lbl">половина таблетки</div></div>
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(155deg, #26384a, #101820)"></div><div class="lbl">In Rainbows</div></div>
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(155deg, #402c52, #1a1424)"></div><div class="lbl">Группа крови</div></div>
+                  </div>
+                  <div class="shelf-title">Топ · сентябрь</div>
+                  <div class="shelf">
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(155deg, #234a44, #16211f)"></div><div class="lbl">Rings</div></div>
+                    <div class="rel"><div class="cover" style="background-image: linear-gradient(155deg, #4a3a26, #201810)"></div><div class="lbl">Kid A</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dots"><span class="dot active" data-i="0"></span><span class="dot" data-i="1"></span></div>
+        <p class="cap-note">
+          Точки под телефоном — не часть экрана приложения, просто подсказка в этом макете, где сейчас
+          находимся.
+        </p>
+      </header>
+
+      <section>
+        <p class="eyebrow">Как это устроено</p>
+        <h2>Направление жеста решает браузер, а не ручной preventDefault</h2>
+        <p class="lead">
+          На треке стоит <code>touch-action: pan-y</code> — браузер сам продолжает вести вертикальный
+          скролл списка нативно, а JS слушает только горизонтальное смещение указателя для переключения
+          вкладки. Это устраняет самый частый баг свайп-вкладок: список не «прыгает» и не ловит рывки,
+          если палец слегка дрогнул по вертикали во время свайпа.
+        </p>
+        <ul class="notes">
+          <li>
+            <strong>Заголовок кликабелен всегда</strong> — свайп это ускоряющий жест, а не единственный
+            способ; иначе экран недостижим на компьютере и для VoiceOver/Диктора.
+          </li>
+          <li>
+            <strong>Прокрутка каждой вкладки — своя.</strong> При возврате на «Картотеку» должна
+            вспоминаться прокрутка, на которой её оставили — как <code>lastOpened</code> уже делает для
+            обложки при переходе на карточку (ADR 0008).
+          </li>
+          <li>
+            <strong>Требует проверки в реальном Safari на iPhone</strong> перед переносом — жест похож
+            на системный свайп «назад» с левого края экрана (edge-swipe); нужно убедиться, что от него не
+            конфликтует, если открывать «Витрину» не с самого края.
+          </li>
+        </ul>
+        <div class="verdict">
+          <strong>Что меняется в структуре:</strong> «Витрина» перестаёт быть отдельным адресом
+          <code>#/showcase</code> и становится второй половиной главной — то есть навигационно это те же
+          два состояния одного экрана, а не переход со своим «Назад». Экран настроек и карточка релиза
+          не участвуют — только сама главная.
+        </div>
+      </section>
+    </div>
+    <script>
+      (() => {
+        const track = document.getElementById('track');
+        const viewport = document.getElementById('viewport');
+        const underline = document.getElementById('underline');
+        const labels = [...document.querySelectorAll('.tab-label')];
+        const dots = [...document.querySelectorAll('.dot')];
+        let index = 0;
+        let width = viewport.clientWidth;
+        let dragging = false;
+        let decided = null; // null | 'h' | 'v'
+        let startX = 0;
+        let startY = 0;
+        let baseX = 0;
+
+        function placeUnderline(animate) {
+          const el = labels[index];
+          underline.style.transition = animate ? '' : 'none';
+          underline.style.width = el.offsetWidth + 'px';
+          underline.style.transform = `translateX(${el.offsetLeft}px)`;
+        }
+
+        function goTo(i, animate = true) {
+          index = Math.max(0, Math.min(1, i));
+          track.classList.toggle('animating', animate);
+          track.style.transform = `translateX(${-index * width}px)`;
+          labels.forEach((l, li) => l.setAttribute('aria-selected', String(li === index)));
+          dots.forEach((d, di) => d.classList.toggle('active', di === index));
+          placeUnderline(animate);
+        }
+
+        labels.forEach((l) => l.addEventListener('click', () => goTo(Number(l.dataset.i))));
+        dots.forEach((d) => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+
+        viewport.addEventListener('pointerdown', (e) => {
+          dragging = true;
+          decided = null;
+          startX = e.clientX;
+          startY = e.clientY;
+          baseX = -index * width;
+          track.classList.remove('animating');
+          viewport.setPointerCapture(e.pointerId);
+        });
+        viewport.addEventListener('pointermove', (e) => {
+          if (!dragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          if (!decided) {
+            if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+            decided = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+            if (decided === 'v') {
+              dragging = false; // отдаём жест браузеру — обычная вертикальная прокрутка
+              return;
+            }
+          }
+          if (decided !== 'h') return;
+          const next = baseX + dx;
+          const clamped = Math.max(-width, Math.min(0, next));
+          track.style.transform = `translateX(${clamped}px)`;
+        });
+        function endDrag(e) {
+          if (!dragging) return;
+          dragging = false;
+          if (decided !== 'h') return;
+          const dx = e.clientX - startX;
+          const threshold = width * 0.22;
+          if (dx < -threshold) goTo(index + 1);
+          else if (dx > threshold) goTo(index - 1);
+          else goTo(index);
+        }
+        viewport.addEventListener('pointerup', endDrag);
+        viewport.addEventListener('pointercancel', endDrag);
+
+        window.addEventListener('resize', () => {
+          width = viewport.clientWidth;
+          goTo(index, false);
+        });
+        goTo(0, false);
+      })();
+    </script>
+  </body>
+</html>

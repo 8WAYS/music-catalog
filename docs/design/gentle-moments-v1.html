@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Тихие моменты — макет v1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Tektur:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+    />
+    <style>
+      @property --holo {
+        syntax: '<angle>';
+        inherits: true;
+        initial-value: 0deg;
+      }
+      :root {
+        --bg: #0e1014;
+        --surface: #171a20;
+        --surface-2: #20242b;
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --text: #eef0f4;
+        --text-muted: #8d94a1;
+        --line: #262a32;
+        --accent: #eef0f4;
+        --accent-text: #0e1014;
+        --cover-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.9);
+        --pearl: conic-gradient(from var(--holo), #f3d9e7, #f2ead3, #d9efe4, #d6e5f3, #e4dbf4, #f3d9e7);
+        --pearl-text: #15171c;
+        --radius: 14px;
+        --radius-pill: 999px;
+        --s2: 8px;
+        --s3: 12px;
+        --s4: 16px;
+        --s5: 24px;
+        --s6: 32px;
+        --display: 'Tektur', system-ui, sans-serif;
+        --body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.55 var(--body);
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 40px 20px 100px;
+      }
+      h1,
+      h2 {
+        font-family: var(--display);
+        line-height: 1.15;
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(24px, 4vw, 32px);
+      }
+      h2 {
+        font-size: 17px;
+        margin-bottom: 4px;
+      }
+      .lead {
+        color: var(--text-muted);
+        max-width: 60ch;
+        margin: var(--s3) 0 0;
+      }
+      section {
+        margin-top: var(--s6);
+        padding-top: var(--s6);
+        border-top: 1px solid var(--line);
+      }
+      section:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+      .eyebrow {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 4px;
+      }
+      code {
+        font-family: var(--mono);
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.88em;
+      }
+      .cost {
+        margin-top: var(--s3);
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+      .cost strong {
+        color: var(--text);
+      }
+
+      /* Общая карточка-подложка для примеров, как будто вырезка из главной */
+      .frame {
+        margin-top: var(--s4);
+        padding: var(--s4);
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+
+      /* 1. Веха */
+      .milestone {
+        display: flex;
+        align-items: center;
+        gap: var(--s3);
+        padding: var(--s4);
+        border-radius: var(--radius);
+        background: linear-gradient(140deg, #241f36, var(--surface));
+        border: 1px solid var(--glass-border);
+      }
+      .milestone .num {
+        font-family: var(--display);
+        font-size: 30px;
+        font-weight: 700;
+        background: var(--pearl);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: holo 12s linear infinite;
+      }
+      @keyframes holo {
+        to {
+          --holo: 360deg;
+        }
+      }
+      .milestone p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+      .milestone b {
+        display: block;
+        font-size: 15px;
+        color: var(--text);
+      }
+
+      /* 2. В этот день */
+      .otd-row {
+        display: flex;
+        gap: var(--s3);
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .otd {
+        flex: none;
+        width: 132px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .otd .art {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        flex: none;
+        background-size: cover;
+        box-shadow: var(--cover-shadow);
+      }
+      .otd .y {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        color: var(--text-muted);
+      }
+      .otd .n {
+        font-size: 12.5px;
+        font-weight: 600;
+        line-height: 1.25;
+      }
+
+      /* 3. Свои слова */
+      .quote {
+        position: relative;
+        padding: var(--s4) var(--s4) var(--s4) 46px;
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        font-style: italic;
+        color: var(--text);
+      }
+      .quote::before {
+        content: '“';
+        position: absolute;
+        left: 14px;
+        top: 4px;
+        font-family: var(--display);
+        font-size: 34px;
+        font-style: normal;
+        color: var(--text-muted);
+      }
+      .quote footer {
+        margin-top: 10px;
+        font-style: normal;
+        font-size: 12.5px;
+        color: var(--text-muted);
+      }
+
+      /* 4. Новое с прошлого визита */
+      .grid-demo {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .g-cell {
+        position: relative;
+      }
+      .g-cell .cover {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        background-size: cover;
+        box-shadow: var(--cover-shadow);
+      }
+      .g-cell .new-dot {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--pearl);
+        animation: holo 12s linear infinite;
+        box-shadow: 0 0 0 2px var(--surface);
+      }
+      .new-line {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        margin: 0 0 10px;
+      }
+      .new-line strong {
+        color: var(--text);
+      }
+
+      /* 5. Итог месяца */
+      .recap {
+        padding: var(--s4);
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+      .recap .m {
+        font-family: var(--display);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .recap p {
+        margin: 6px 0 0;
+        font-size: 15px;
+      }
+      .recap .tag {
+        display: inline-block;
+        padding: 1px 9px;
+        border-radius: var(--radius-pill);
+        background: var(--surface-2);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <p class="eyebrow">Макет · черновик</p>
+        <h1>Тихие моменты</h1>
+        <p class="lead">
+          Пять маленьких карточек — все на данных, которые уже есть (<code>createdAt</code>, теги,
+          описание). Ничего в структуре приложения не меняется, каждая — просто ещё один блок на главной
+          или в карточке релиза.
+        </p>
+      </header>
+
+      <section>
+        <p class="eyebrow">1</p>
+        <h2>Веха коллекции</h2>
+        <p class="lead">Разовое сообщение при круглой цифре — не счётчик, не геймификация, просто отметка момента.</p>
+        <div class="frame">
+          <div class="milestone">
+            <span class="num">100</span>
+            <p><b>Сотый релиз в картотеке</b>половина таблетки — cardinparis</p>
+          </div>
+        </div>
+        <p class="cost"><strong>Стоимость:</strong> проверка <code>releases.length % 50 === 0</code> при сохранении, без новых полей.</p>
+      </section>
+
+      <section>
+        <p class="eyebrow">2</p>
+        <h2>«В этот день», не только год назад</h2>
+        <p class="lead">Смотрит на число и месяц у <code>createdAt</code> во всех прошлых годах, а не ровно −365 дней.</p>
+        <div class="frame">
+          <p class="new-line">26 сентября — было добавлено:</p>
+          <div class="otd-row">
+            <div class="otd">
+              <div class="art" style="background-image: linear-gradient(155deg, #6b3550, #2a1420)"></div>
+              <div><div class="y">2025</div><div class="n">половина таблетки</div></div>
+            </div>
+            <div class="otd">
+              <div class="art" style="background-image: linear-gradient(155deg, #26384a, #101820)"></div>
+              <div><div class="y">2024</div><div class="n">In Rainbows</div></div>
+            </div>
+          </div>
+        </div>
+        <p class="cost"><strong>Стоимость:</strong> один фильтр по массиву релизов при заходе на главную, без хранения дополнительного состояния.</p>
+      </section>
+
+      <section>
+        <p class="eyebrow">3</p>
+        <h2>Собственные слова обратно</h2>
+        <p class="lead">Раз в визит — случайное старое описание, которое владелец сам когда-то написал.</p>
+        <div class="frame">
+          <blockquote class="quote" style="margin: 0">
+            слушал осенью на велике вдоль Невы
+            <footer>про «In Rainbows» — Radiohead, апрель 2026</footer>
+          </blockquote>
+        </div>
+        <p class="cost"><strong>Стоимость:</strong> случайный выбор среди релизов с непустым <code>description</code> — тоже без новых данных.</p>
+      </section>
+
+      <section>
+        <p class="eyebrow">4</p>
+        <h2>Новое с прошлого визита</h2>
+        <p class="lead">Тихая точка на обложке — не баннер, не бейдж со счётчиком, просто заметно при взгляде на сетку.</p>
+        <div class="frame">
+          <p class="new-line"><strong>2 новых</strong> с прошлого визита (3 дня назад)</p>
+          <div class="grid-demo">
+            <div class="g-cell">
+              <div class="cover" style="background-image: linear-gradient(155deg, #6b3550, #2a1420)"></div>
+              <span class="new-dot"></span>
+            </div>
+            <div class="g-cell">
+              <div class="cover" style="background-image: linear-gradient(155deg, #26384a, #101820)"></div>
+              <span class="new-dot"></span>
+            </div>
+            <div class="g-cell"><div class="cover" style="background-image: linear-gradient(155deg, #402c52, #1a1424)"></div></div>
+            <div class="g-cell"><div class="cover" style="background-image: linear-gradient(155deg, #234a44, #16211f)"></div></div>
+          </div>
+        </div>
+        <p class="cost"><strong>Стоимость:</strong> одна дата «последний визит» в <code>localStorage</code>, сравнение с <code>createdAt</code> — работает только на этом устройстве, друзьям видно то же самое независимо друг от друга.</p>
+      </section>
+
+      <section>
+        <p class="eyebrow">5</p>
+        <h2>Мини-итог месяца</h2>
+        <p class="lead">Одна строка, не плейлист и не топ — просто честная статистика из того, что уже занесено.</p>
+        <div class="frame">
+          <div class="recap">
+            <span class="m">Сентябрь 2026</span>
+            <p>Добавлено 4 релиза · чаще всего тег <span class="tag">вечер</span></p>
+          </div>
+        </div>
+        <p class="cost"><strong>Стоимость:</strong> группировка по месяцу и подсчёт частоты тегов — чистые функции над уже сохранёнными данными, ничего не пишем заново.</p>
+      </section>
+    </div>
+  </body>
+</html>
