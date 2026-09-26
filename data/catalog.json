@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 56,
-  "publishedAt": "2026-09-26T10:53:31.120Z",
+  "revision": 57,
+  "publishedAt": "2026-09-26T10:53:39.571Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -48,14 +48,15 @@
         }
       ],
       "createdAt": "2026-09-25T16:03:17.444Z",
-      "updatedAt": "2026-09-25T16:08:00.652Z",
+      "updatedAt": "2026-09-26T10:53:32.865Z",
       "year": 2026,
       "cover": "covers/b647bda7-bd35-4933-a334-61e1886decfd.jpg",
       "coverColors": {
         "bg": "#231615",
         "accent": "#53b4c6",
         "text": "#f2eae9"
-      }
+      },
+      "pinned": true
     },
     {
       "id": "fcfc90b9-9a33-4d8e-93bd-9f3abf617dd8",
