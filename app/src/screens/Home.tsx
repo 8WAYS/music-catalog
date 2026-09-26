@@ -237,7 +237,7 @@ export function Home() {
         </div>
       </div>
 
-      {swipe.index === 0 && all.length > 0 && (
+      {swipe.index === 0 && !swipe.dragging && all.length > 0 && (
         <nav class={`${s.dock} glass`} aria-label="Действия">
           <button
             type="button"

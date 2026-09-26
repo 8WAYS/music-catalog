@@ -26,6 +26,7 @@ export function useSwipeTabs(count: number, onSettle: (index: number) => void, i
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(initialIndex);
   const [animating, setAnimating] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const drag = useRef<{ startX: number; startY: number; axis: 'h' | 'v' | null } | null>(null);
 
   // Трек шириной count*100% — свой «шаг» в процентах считаем от его собственной ширины,
@@ -74,12 +75,17 @@ export function useSwipeTabs(count: number, onSettle: (index: number) => void, i
       // кадр у самого жеста, тот же приём, что router.ts использует для смены экрана (html.
       // transitioning); иначе на слабом устройстве медленный свайп выглядит рвано.
       document.documentElement.classList.add('transitioning');
+      // Плавающий док/шапка конкретной вкладки — только у осевшей позиции (index), не у той,
+      // куда жест ещё только тянется: иначе в момент перетаскивания чужой floating-элемент
+      // наплывает на содержимое соседней вкладки (плохая «склейка» посередине жеста).
+      setDragging(true);
     }
     place(index, dx, false);
   };
 
   function endDrag(e: PointerEvent): void {
     document.documentElement.classList.remove('transitioning');
+    setDragging(false);
     if (!drag.current || drag.current.axis !== 'h') {
       drag.current = null;
       return;
@@ -99,6 +105,7 @@ export function useSwipeTabs(count: number, onSettle: (index: number) => void, i
     pointerHandlers: { onPointerDown, onPointerMove, onPointerUp: endDrag, onPointerCancel: endDrag },
     index,
     animating,
+    dragging,
     goTo,
     // Осевшая позиция — как обычный реактивный стиль; во время перетаскивания её временно
     // перекрывает прямая правка transform через trackRef (см. place()), без ре-рендера.
