@@ -25,6 +25,24 @@ import s from './Release.module.css';
 export function Release({ id }: { id: string }) {
   const release = releasesById.value.get(id);
   const owner = isOwner.value;
+  const artistPinned = release ? isArtistPinned(release.artist) : false;
+
+  // Хуки — до раннего return: релиз может исчезнуть при открытой карточке (импорт, «загрузить с
+  // сайта»), и тогда число хуков между рендерами изменилось бы — Preact перепутал бы их состояния.
+  // Долгое нажатие — закрепление на витрине (ADR 0011): обложка закрепляет весь релиз,
+  // имя исполнителя — самого артиста (представительная обложка — этот же релиз)
+  const pinRelease = useLongPress(() => {
+    if (!release) return;
+    void toggleReleasePin(release)
+      .then((next) => toast(next.pinned ? 'Закреплено на витрине' : 'Откреплено с витрины'))
+      .catch(toastError);
+  });
+  const pinArtistPress = useLongPress(() => {
+    if (!release) return;
+    void (artistPinned ? unpinArtist(release.artist) : pinArtist(release.artist, release.id))
+      .then(() => toast(artistPinned ? 'Артист откреплён' : 'Артист закреплён на витрине'))
+      .catch(toastError);
+  });
 
   if (!release) {
     return (
@@ -60,20 +78,6 @@ export function Release({ id }: { id: string }) {
       toastError(e, 'Не удалось сохранить');
     }
   };
-
-  // Долгое нажатие — закрепление на витрине (ADR 0011): обложка закрепляет весь релиз,
-  // имя исполнителя — самого артиста (представительная обложка — этот же релиз)
-  const pinRelease = useLongPress(() => {
-    void toggleReleasePin(release)
-      .then((next) => toast(next.pinned ? 'Закреплено на витрине' : 'Откреплено с витрины'))
-      .catch(toastError);
-  });
-  const artistPinned = isArtistPinned(release.artist);
-  const pinArtistPress = useLongPress(() => {
-    void (artistPinned ? unpinArtist(release.artist) : pinArtist(release.artist, release.id))
-      .then(() => toast(artistPinned ? 'Артист откреплён' : 'Артист закреплён на витрине'))
-      .catch(toastError);
-  });
 
   const share = async () => {
     const url = shareUrl(href.release(release.id));
