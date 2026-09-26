@@ -37,11 +37,16 @@ jobs:
           cache: npm
           cache-dependency-path: app/package-lock.json
 
-      - name: Сборка приложения
+      # Деплой идёт параллельно с CI и не ждёт его — без этой проверки сломанный код уезжал бы на
+      # сайт раньше, чем CI успеет упасть. Lint и unit-тесты — секунды; e2e остаются в CI.
+      # Коммиты данных с телефона сюда не попадают: код не менялся — сборка берётся из кэша.
+      - name: Проверка и сборка приложения
         if: steps.dist-cache.outputs.cache-hit != 'true'
         working-directory: app
         run: |
           npm ci
+          npm run lint
+          npm test
           npm run build
 
       - name: Сайт = сборка + данные
