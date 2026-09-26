@@ -40,8 +40,10 @@ app/            приложение (собирается GitHub Actions)
   src/data/           модель, Repository, IndexedDB (localSource), catalog.json (remoteSource), миграции
   src/services/       обложки (сжатие, палитра), ссылки, поиск и фильтры (search.ts), iTunes (itunes.ts),
                       Spotify (spotify.ts, spotifyAuth.ts), резервные копии (backup.ts)
-  src/screens/        Home, AddSearch, Release, Editor, Settings
+  src/screens/        Home (вкладки Картотека/Витрина), Showcase, AddSearch, Release, Editor, Settings
   src/components/     Cover, TagChip, TagInput, TrackEditor, LinksEditor, диалоги
+  src/hooks/          жесты: useLongPress (закрепление), useSwipeTabs (свайп вкладок)
+  src/store/          сигналы данных (app), автопубликация (sync), витрина, Spotify
 data/           опубликованные данные картотеки (пишет приложение, этап 5)
 docs/adr/       архитектурные решения
 .github/workflows/  ci.yml, deploy.yml
