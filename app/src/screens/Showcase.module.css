@@ -26,6 +26,31 @@
   color: var(--text-muted);
   font-size: 13px;
 }
+.who {
+  min-width: 0;
+  flex: 1;
+}
+.shareBtn {
+  flex: none;
+}
+
+/* ---------- Диалог «Поделиться» ---------- */
+.qrWrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--s3) 0;
+}
+.shareUrl {
+  margin: 0;
+  padding: var(--s2) var(--s3);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: center;
+  overflow-wrap: break-word;
+}
 
 .section {
   margin-top: var(--s5);

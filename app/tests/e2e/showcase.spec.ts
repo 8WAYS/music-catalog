@@ -1,5 +1,19 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { FakeGitHub } from '../fakeGithub';
 import { ID, RELEASES, TAGS, seed } from './seed';
+
+/** api.github.com в памяти теста (как в publish.spec.ts) */
+async function mockGitHub(page: Page): Promise<FakeGitHub> {
+  const gh = await FakeGitHub.create();
+  await page.route('https://api.github.com/**', async (route) => {
+    const req = route.request();
+    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204 });
+    const body = req.postData();
+    const r = await gh.handle(req.method(), req.url(), body ? JSON.parse(body) : undefined);
+    await route.fulfill({ status: r.status, json: r.json });
+  });
+  return gh;
+}
 
 /**
  * Долгое нажатие (ADR 0011): настоящий клик с задержкой между mousedown/mouseup — так же, как
@@ -101,6 +115,32 @@ test('пустая витрина у владельца — подсказки, 
   await expect(page.getByText('Долгим нажатием')).toHaveCount(0);
 });
 
+test('владелец без публикации не видит «Поделиться» — ссылка была бы нерабочей у друга', async ({ page }) => {
+  await seed(page, { tags: TAGS, releases: RELEASES });
+  await page.goto('./#/showcase');
+  await expect(page.getByLabel('Поделиться витриной')).toHaveCount(0);
+});
+
+test('владелец делится витриной: QR ведёт на ту же ссылку, что показана текстом', async ({ page }) => {
+  const gh = await mockGitHub(page);
+  await seed(page, { tags: TAGS, releases: RELEASES });
+  await page.goto('./#/settings');
+  await page.getByLabel('Репозиторий на GitHub').fill(gh.repo);
+  await page.getByLabel('Токен GitHub').fill('github_pat_test');
+  await page.getByRole('button', { name: 'Подключить и опубликовать' }).click();
+  await page.getByRole('button', { name: 'Публиковать' }).click();
+  await expect(page.getByRole('status').filter({ hasText: 'Опубликовано' })).toBeVisible();
+
+  await page.goto('./#/showcase');
+  await page.getByLabel('Поделиться витриной').click();
+  const dialog = page.getByRole('dialog', { name: 'Поделиться витриной' });
+  await expect(dialog.getByRole('img', { name: 'QR-код со ссылкой на витрину' })).toBeVisible();
+  await expect(dialog.getByText(/#\/showcase$/)).toBeVisible();
+
+  await dialog.getByRole('button', { name: 'Закрыть' }).click();
+  await expect(dialog).toBeHidden();
+});
+
 test('зритель видит закреплённых владельцем артистов — они приходят в опубликованном каталоге', async ({
   page,
 }) => {
@@ -127,6 +167,16 @@ test('у зрителя долгое нажатие ничего не закре
   // Никакого тоста о закреплении — жест у зрителя не навешан вообще, а клик прошёл как обычный переход
   await expect(page.getByText(/[Зз]акреплен/)).toHaveCount(0);
   await expect(page).toHaveURL(/#\/release\//);
+});
+
+test('зритель тоже может поделиться ссылкой на витрину — публикация уже есть по определению', async ({
+  page,
+}) => {
+  await mockAsViewer(page);
+  await page.goto('./#/showcase');
+  await page.getByLabel('Поделиться витриной').click();
+  const dialog = page.getByRole('dialog', { name: 'Поделиться витриной' });
+  await expect(dialog.getByText(/#\/showcase$/)).toBeVisible();
 });
 
 /** Друг открывает опубликованную ссылку — картотека только для просмотра (как в publish.spec.ts). */

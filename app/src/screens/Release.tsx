@@ -6,6 +6,7 @@ import { TagChip } from '../components/TagChip';
 import { LINK_SERVICE_LABEL, RELEASE_TYPE_LABEL, TAG_GROUPS, type Release as R } from '../data/schema';
 import { goBack, href, navigate, shareUrl } from '../router';
 import { EMPTY_FILTERS, filtersHash } from '../services/search';
+import { shareOrCopy } from '../services/share';
 import {
   tags as allTags,
   isOwner,
@@ -81,23 +82,9 @@ export function Release({ id }: { id: string }) {
 
   const share = async () => {
     const url = shareUrl(href.release(release.id));
-    const data = { title: `${release.artist} — ${release.title}`, url };
-    try {
-      if (navigator.share) await navigator.share(data);
-      else {
-        await navigator.clipboard.writeText(url);
-        toast('Ссылка скопирована');
-      }
-    } catch (e) {
-      if ((e as DOMException)?.name !== 'AbortError') {
-        try {
-          await navigator.clipboard.writeText(url);
-          toast('Ссылка скопирована');
-        } catch {
-          toast(url);
-        }
-      }
-    }
+    const outcome = await shareOrCopy({ title: `${release.artist} — ${release.title}`, url });
+    if (outcome === 'copied') toast('Ссылка скопирована');
+    else if (outcome === 'unavailable') toast(url);
   };
 
   return (
