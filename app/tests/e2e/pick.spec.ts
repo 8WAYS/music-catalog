@@ -4,7 +4,9 @@ import { ID, RELEASES, TAGS, seed } from './seed';
 const chip = (page: Page, name: string) =>
   page.getByRole('group', { name: 'Фильтр по тегам' }).getByRole('button', { name, exact: true });
 const grid = (page: Page) => page.getByRole('list').getByRole('link');
-const count = (page: Page) => page.getByText(/^\d+ (из \d+|релиз[а-я]*)$/);
+// Тот же текст встречается и на Витрине (вторая вкладка главной, ADR 0011) — уточняем через tabpanel.
+const count = (page: Page) =>
+  page.getByRole('tabpanel', { name: 'Картотека' }).getByText(/^\d+ (из \d+|релиз[а-я]*)$/);
 
 test.beforeEach(async ({ page }) => {
   await seed(page, { tags: TAGS, releases: RELEASES });

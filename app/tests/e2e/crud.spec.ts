@@ -44,7 +44,7 @@ test('пустая картотека → добавить альбом вруч
   await expect(page.getByRole('heading', { name: 'In Rainbows' })).toBeVisible();
   await expect(page.getByText('★ 2')).toBeVisible();
   await page.getByRole('button', { name: 'Назад' }).click();
-  await expect(page.getByText('1 релиз')).toBeVisible();
+  await expect(page.getByRole('tabpanel', { name: 'Картотека' }).getByText('1 релиз')).toBeVisible();
 });
 
 test('защита несохранённых изменений и удаление с подтверждением', async ({ page }) => {

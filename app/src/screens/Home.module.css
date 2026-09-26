@@ -3,6 +3,80 @@
   font-weight: 800 !important;
   letter-spacing: -0.01em;
 }
+
+/* ---------- Вкладки: Картотека / Витрина (ADR 0011) ---------- */
+.tabsHead {
+  gap: var(--s3);
+}
+.tabsRow {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.tabLabel {
+  appearance: none;
+  border: 0;
+  background: none;
+  min-height: var(--tap);
+  padding: 0;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  text-align: left;
+}
+.tabLabel[aria-selected='true'] {
+  color: var(--text);
+}
+.underline {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 50%;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--chrome);
+  transition: transform 320ms var(--spring-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .underline {
+    transition: none;
+  }
+}
+:global(:root[data-motion='reduce']) .underline {
+  transition: none;
+}
+.tabsLine {
+  height: 1px;
+  background: var(--line);
+  margin: 0 calc(-1 * var(--s4));
+}
+
+/* ---------- Свайп между вкладками ---------- */
+.viewport {
+  overflow: hidden;
+  margin-top: var(--s3);
+  /* Иначе перетаскивание пальцем/мышью цепляет выделение текста вместо жеста */
+  -webkit-user-select: none;
+  user-select: none;
+}
+.track {
+  display: flex;
+  align-items: flex-start;
+  width: 200%;
+  will-change: transform;
+}
+.track.animating {
+  transition: transform 380ms var(--spring-soft);
+}
+.panel {
+  width: 50%;
+  flex: none;
+  min-width: 0;
+  /* Горизонтальный жест ведёт JS, вертикальную прокрутку — браузер сам, preventDefault() не нужен */
+  touch-action: pan-y;
+}
 .sync {
   display: inline-flex;
   align-items: center;

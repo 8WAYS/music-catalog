@@ -7,7 +7,6 @@ import { Editor } from './screens/Editor';
 import { Home } from './screens/Home';
 import { Release } from './screens/Release';
 import { Settings } from './screens/Settings';
-import { Showcase } from './screens/Showcase';
 import { isOwner, loadError, ready } from './store/app';
 import s from './app.module.css';
 
@@ -19,6 +18,9 @@ function Screen() {
   const owner = isOwner.value;
   switch (r.name) {
     case 'home':
+    case 'showcase':
+      // Витрина — вторая вкладка главной (ADR 0011), не отдельный экран: Home сама решает,
+      // какая вкладка активна изначально, свайп/тап между ними не меняет route.value.
       return <Home />;
     case 'release':
       return <Release key={r.id} id={r.id} />;
@@ -30,8 +32,6 @@ function Screen() {
       return owner ? <AddSearch /> : <Home />;
     case 'settings':
       return <Settings />;
-    case 'showcase':
-      return <Showcase />;
     default:
       return (
         <div class="page">

@@ -12,24 +12,65 @@ async function longPress(locator: Locator, ms = 650): Promise<void> {
 
 test('долгое нажатие на обложку закрепляет релиз на витрине', async ({ page }) => {
   await seed(page, { tags: TAGS, releases: RELEASES });
-  await expect(page.getByText('3 релиза')).toBeVisible();
+  // Обе вкладки смонтированы одновременно (свайп ADR 0011) — те же тексты («3 релиза» и т.п.)
+  // могут повториться на Витрине, поэтому запросы уточняем через tabpanel с именем вкладки.
+  const catalog = page.getByRole('tabpanel', { name: 'Картотека' });
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+  await expect(catalog.getByText('3 релиза')).toBeVisible();
 
-  const cover = page.getByRole('list').getByRole('link').filter({ hasText: 'In Rainbows' });
+  const cover = catalog.getByRole('list').getByRole('link').filter({ hasText: 'In Rainbows' });
   await longPress(cover);
   await expect(page.getByText('Закреплено на витрине')).toBeVisible();
   // Клик после долгого нажатия погашен — на карточку релиза не перешли
   await expect(page).not.toHaveURL(/#\/release\//);
 
-  await page.getByRole('link', { name: 'Витрина' }).click();
-  await expect(page.getByRole('heading', { name: 'Любимые альбомы' })).toBeVisible();
-  await expect(page.getByText('In Rainbows')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Синглы и EP' })).toBeVisible();
-  await expect(page.getByText('Долгим нажатием на обложку сингла или EP')).toBeVisible();
+  await page.getByRole('tab', { name: 'Витрина' }).click();
+  await expect(showcase.getByRole('heading', { name: 'Любимые альбомы' })).toBeVisible();
+  await expect(showcase.getByText('In Rainbows')).toBeVisible();
+  await expect(showcase.getByRole('heading', { name: 'Синглы и EP' })).toBeVisible();
+  await expect(showcase.getByText('Долгим нажатием на обложку сингла или EP')).toBeVisible();
 
   // Повторное долгое нажатие открепляет
-  await page.goBack();
-  await longPress(page.getByRole('list').getByRole('link').filter({ hasText: 'In Rainbows' }));
+  await page.getByRole('tab', { name: 'Картотека' }).click();
+  await longPress(cover);
   await expect(page.getByText('Откреплено с витрины')).toBeVisible();
+});
+
+test('свайп переключает Картотеку и Витрину', async ({ page, browserName }) => {
+  // Playwright WebKit не доставляет pointerup после многошагового синтетического drag (проверено
+  // отдельно: события обрываются на середине пути, воспроизводимо и без setPointerCapture) — то же
+  // переключение вкладок уже покрыто кликом по табу выше и вручную проверено в реальном браузере.
+  test.skip(
+    browserName === 'webkit',
+    'известное ограничение синтетического pointer-драга в Playwright WebKit',
+  );
+  await seed(page, { tags: TAGS, releases: RELEASES });
+  // Тянем на уровне сетки релизов, а не тулбара — правее там select сортировки, и mousedown на
+  // нём в Chromium сам открывает нативный попап, до наших pointer-обработчиков жест не доходит.
+  const grid = page.getByRole('tabpanel', { name: 'Картотека' }).getByRole('list');
+  const y = (await grid.boundingBox())!.y + 10;
+  const width = page.viewportSize()!.width;
+
+  await page.mouse.move(width - 20, y);
+  await page.mouse.down();
+  await page.mouse.move(20, y, { steps: 12 });
+  await page.mouse.up();
+  await expect(page.getByRole('tab', { name: 'Витрина', selected: true })).toBeVisible();
+  await expect(page).toHaveURL(/#\/showcase/);
+
+  // Небольшой сдвиг, не дотянувший до порога, — вкладка остаётся той же
+  await page.mouse.move(200, y);
+  await page.mouse.down();
+  await page.mouse.move(220, y, { steps: 4 });
+  await page.mouse.up();
+  await expect(page.getByRole('tab', { name: 'Витрина', selected: true })).toBeVisible();
+
+  await page.mouse.move(20, y);
+  await page.mouse.down();
+  await page.mouse.move(width - 20, y, { steps: 12 });
+  await page.mouse.up();
+  await expect(page.getByRole('tab', { name: 'Картотека', selected: true })).toBeVisible();
+  await expect(page).toHaveURL(/#\/(\?.*)?$/);
 });
 
 test('долгое нажатие на имя исполнителя закрепляет артиста', async ({ page }) => {
@@ -41,8 +82,9 @@ test('долгое нажатие на имя исполнителя закре�
   await expect(page.getByText('— закреплено на витрине')).toBeAttached();
 
   await page.goto('./#/showcase');
-  await expect(page.getByRole('heading', { name: 'Любимые артисты' })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Radiohead/ })).toBeVisible();
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+  await expect(showcase.getByRole('heading', { name: 'Любимые артисты' })).toBeVisible();
+  await expect(showcase.getByRole('link', { name: /Radiohead/ })).toBeVisible();
 });
 
 test('пустая витрина у владельца — подсказки, у зрителя — без них', async ({ page }) => {
@@ -55,7 +97,7 @@ test('пустая витрина у владельца — подсказки, 
   // Смена хэша не перезагружает документ — нужен полный reload, чтобы режим владелец/зритель пересчитался
   await page.reload();
   await page.goto('./#/showcase');
-  await expect(page.getByRole('heading', { name: 'Витрина' })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Витрина', selected: true })).toBeVisible();
   await expect(page.getByText('Долгим нажатием')).toHaveCount(0);
 });
 

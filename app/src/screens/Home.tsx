@@ -7,7 +7,7 @@ import { Disc } from '../components/Disc';
 import { Icon } from '../components/Icon';
 import { TagChip } from '../components/TagChip';
 import { RELEASE_TYPE_LABEL, TAG_GROUP_LABEL, type Release, type Tag, type TagGroup } from '../data/schema';
-import { href, navigate, replaceHash, routeQuery } from '../router';
+import { href, navigate, replaceHash, route, routeQuery } from '../router';
 import {
   SORT_KEYS,
   SORT_LABEL,
@@ -32,8 +32,13 @@ import {
 import { SYNC_LABEL, syncState } from '../store/sync';
 import { toggleReleasePin } from '../store/showcase';
 import { useLongPress } from '../hooks/useLongPress';
+import { useSwipeTabs } from '../hooks/useSwipeTabs';
 import { pluralize } from '../utils/normalize';
+import { Showcase, showcaseAuraColors } from './Showcase';
 import s from './Home.module.css';
+
+/** Вкладки главной (ADR 0011): Картотека — своя, Витрина — вторая половина того же экрана. */
+const TAB_LABEL = ['Картотека', 'Витрина'] as const;
 
 /** Закрепить/открепить релиз на витрине долгим нажатием (ADR 0011) — только у владельца. */
 function pinFeedback(release: Release): void {
@@ -73,12 +78,23 @@ export function Home() {
   const list = selectReleases(all, f);
   const filtered = f.q.trim() !== '' || f.tagIds.length > 0;
   const [pick, setPick] = useState<Release | null>(null);
-  // Аура главной — из цветов нескольких свежих обложек
-  const auraColors = [...all]
+  // Аура — из свежих обложек на Картотеке, из закреплённого на Витрине (ADR 0011)
+  const catalogAuraColors = [...all]
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .map((r) => r.coverColors)
     .filter(Boolean)
     .slice(0, 3);
+
+  const swipe = useSwipeTabs(
+    2,
+    (i) => {
+      const query = location.hash.split('?')[1];
+      const base = i === 1 ? href.showcase() : href.home();
+      replaceHash(query ? `${base}?${query}` : base);
+    },
+    route.value.name === 'showcase' ? 1 : 0,
+  );
+
   const open = (id: string) => {
     lastOpened.value = id;
     navigate(href.release(id));
@@ -99,88 +115,144 @@ export function Home() {
 
   return (
     <div class="page">
-      <Aura colors={auraColors} />
-      <header class="topbar">
-        <h1 class={`${s.title} chrome-text`}>{title}</h1>
-        <a class="icon-btn" href={href.showcase()} aria-label="Витрина">
-          <Icon name="star" />
-        </a>
+      <Aura colors={swipe.index === 1 ? showcaseAuraColors() : catalogAuraColors} />
+      <header class={`topbar ${s.tabsHead}`}>
+        <div class={s.tabsRow} role="tablist" aria-label="Разделы">
+          {TAB_LABEL.map((label, i) => (
+            <button
+              key={label}
+              type="button"
+              role="tab"
+              id={`tab-${i}`}
+              aria-selected={swipe.index === i}
+              aria-controls={`panel-${i}`}
+              class={s.tabLabel}
+              onClick={() => swipe.goTo(i)}
+            >
+              {label}
+            </button>
+          ))}
+          <span
+            class={s.underline}
+            style={{ transform: `translateX(${swipe.index * 100}%)` }}
+            aria-hidden="true"
+          />
+        </div>
         <a class="icon-btn" href={href.settings()} aria-label="Настройки">
           <Icon name="settings" />
         </a>
       </header>
+      <div class={s.tabsLine} />
 
-      {owner ? (
-        <SyncBadge hasReleases={all.length > 0} />
-      ) : (
-        <p class={s.viewer}>
-          Только просмотр
-          {staleCatalog.value && ' · сайт не ответил, показана сохранённая версия'}
-        </p>
-      )}
+      <div class={s.viewport} ref={swipe.viewportRef} {...swipe.pointerHandlers}>
+        <div
+          class={`${s.track} ${swipe.animating ? s.animating : ''}`}
+          ref={swipe.trackRef}
+          style={swipe.style}
+        >
+          <div
+            class={s.panel}
+            id="panel-0"
+            role="tabpanel"
+            aria-labelledby="tab-0"
+            inert={swipe.index !== 0}
+            aria-hidden={swipe.index !== 0}
+          >
+            <h1 class={`${s.title} chrome-text`}>{title}</h1>
+            {owner ? (
+              <SyncBadge hasReleases={all.length > 0} />
+            ) : (
+              <p class={s.viewer}>
+                Только просмотр
+                {staleCatalog.value && ' · сайт не ответил, показана сохранённая версия'}
+              </p>
+            )}
 
-      {all.length === 0 ? (
-        <EmptyCatalog owner={owner} />
-      ) : (
-        <>
-          <SearchBox value={f.q} onChange={(q) => update({ q })} />
-          <TagStrip tags={chipTags(tags.value, list, f.tagIds)} selected={f.tagIds} onToggle={toggleTag} />
+            {all.length === 0 ? (
+              <EmptyCatalog owner={owner} />
+            ) : (
+              <>
+                <SearchBox value={f.q} onChange={(q) => update({ q })} />
+                <TagStrip
+                  tags={chipTags(tags.value, list, f.tagIds)}
+                  selected={f.tagIds}
+                  onToggle={toggleTag}
+                />
 
-          <div class={s.toolbar}>
-            <p class={s.count} aria-live="polite">
-              {filtered
-                ? `${list.length} из ${all.length}`
-                : `${all.length} ${pluralize(all.length, 'релиз', 'релиза', 'релизов')}`}
-            </p>
-            <label class={s.sort}>
-              <span class="visually-hidden">Сортировка</span>
-              <select value={f.sort} onChange={(e) => update({ sort: e.currentTarget.value as SortKey })}>
-                {SORT_KEYS.map((k) => (
-                  <option key={k} value={k}>
-                    {SORT_LABEL[k]}
-                  </option>
-                ))}
-              </select>
-              <Icon name="chevron" size={16} />
-            </label>
+                <div class={s.toolbar}>
+                  <p class={s.count} aria-live="polite">
+                    {filtered
+                      ? `${list.length} из ${all.length}`
+                      : `${all.length} ${pluralize(all.length, 'релиз', 'релиза', 'релизов')}`}
+                  </p>
+                  <label class={s.sort}>
+                    <span class="visually-hidden">Сортировка</span>
+                    <select
+                      value={f.sort}
+                      onChange={(e) => update({ sort: e.currentTarget.value as SortKey })}
+                    >
+                      {SORT_KEYS.map((k) => (
+                        <option key={k} value={k}>
+                          {SORT_LABEL[k]}
+                        </option>
+                      ))}
+                    </select>
+                    <Icon name="chevron" size={16} />
+                  </label>
+                </div>
+
+                {list.length === 0 ? (
+                  <div class={s.noResults}>
+                    <h2>{f.tagIds.length ? 'Под это настроение пока пусто' : 'Ничего не нашлось'}</h2>
+                    <p>
+                      {f.q.trim()
+                        ? `По запросу «${f.q.trim()}»${f.tagIds.length ? ' с выбранными тегами' : ''} релизов нет.`
+                        : 'Попробуй убрать один из тегов.'}
+                    </p>
+                    <button type="button" class="btn" onClick={reset}>
+                      Сбросить фильтры
+                    </button>
+                  </div>
+                ) : (
+                  <ul class={s.grid}>
+                    {list.map((r) => (
+                      <GridItem key={r.id} release={r} owner={owner} sortYear={f.sort === 'year'} />
+                    ))}
+                  </ul>
+                )}
+              </>
+            )}
           </div>
 
-          {list.length === 0 ? (
-            <div class={s.noResults}>
-              <h2>{f.tagIds.length ? 'Под это настроение пока пусто' : 'Ничего не нашлось'}</h2>
-              <p>
-                {f.q.trim()
-                  ? `По запросу «${f.q.trim()}»${f.tagIds.length ? ' с выбранными тегами' : ''} релизов нет.`
-                  : 'Попробуй убрать один из тегов.'}
-              </p>
-              <button type="button" class="btn" onClick={reset}>
-                Сбросить фильтры
-              </button>
-            </div>
-          ) : (
-            <ul class={s.grid}>
-              {list.map((r) => (
-                <GridItem key={r.id} release={r} owner={owner} sortYear={f.sort === 'year'} />
-              ))}
-            </ul>
-          )}
+          <div
+            class={s.panel}
+            id="panel-1"
+            role="tabpanel"
+            aria-labelledby="tab-1"
+            inert={swipe.index !== 1}
+            aria-hidden={swipe.index !== 1}
+          >
+            <Showcase />
+          </div>
+        </div>
+      </div>
 
-          <nav class={`${s.dock} glass`} aria-label="Действия">
-            <button
-              type="button"
-              class={`${s.dockBtn} ${s.surprise}`}
-              onClick={surprise}
-              disabled={!list.length}
-            >
-              <Icon name="dice" size={20} /> Удиви меня
-            </button>
-            {owner && (
-              <a class={`${s.dockBtn} ${s.add}`} href={href.add()} aria-label="Добавить релиз">
-                <Icon name="plus" size={24} />
-              </a>
-            )}
-          </nav>
-        </>
+      {swipe.index === 0 && all.length > 0 && (
+        <nav class={`${s.dock} glass`} aria-label="Действия">
+          <button
+            type="button"
+            class={`${s.dockBtn} ${s.surprise}`}
+            onClick={surprise}
+            disabled={!list.length}
+          >
+            <Icon name="dice" size={20} /> Удиви меня
+          </button>
+          {owner && (
+            <a class={`${s.dockBtn} ${s.add}`} href={href.add()} aria-label="Добавить релиз">
+              <Icon name="plus" size={24} />
+            </a>
+          )}
+        </nav>
       )}
 
       {pick && (

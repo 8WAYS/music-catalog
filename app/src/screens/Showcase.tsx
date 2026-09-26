@@ -1,18 +1,24 @@
-import { Aura } from '../components/Aura';
 import { Cover } from '../components/Cover';
 import { Disc } from '../components/Disc';
-import { Icon } from '../components/Icon';
 import type { Release } from '../data/schema';
-import { goBack, href } from '../router';
+import { href } from '../router';
 import { isOwner, ownerName, releases, releasesById } from '../store/app';
 import { pinnedAlbums, pinnedArtists, pinnedReleases, pinnedSingles } from '../store/showcase';
 import { initials, pluralize } from '../utils/normalize';
 import s from './Showcase.module.css';
 
-/** Витрина (ADR 0011): подборка, которую владелец закрепляет сам — долгим нажатием в картотеке. */
+/** Цвета обложек закреплённого — для фоновой ауры вкладки (см. Home). */
+export function showcaseAuraColors() {
+  return pinnedReleases.value.slice(0, 3).map((r) => r.coverColors);
+}
+
+/**
+ * Витрина (ADR 0011) — вторая вкладка главной, не отдельный экран: подборка, которую владелец
+ * закрепляет сам долгим нажатием в картотеке. Заголовок и переключение — в Home, здесь только
+ * содержимое вкладки.
+ */
 export function Showcase() {
   const owner = isOwner.value;
-  const auraColors = pinnedReleases.value.slice(0, 3).map((r) => r.coverColors);
   const name = ownerName.value || 'Картотека';
 
   const artists = pinnedArtists.value
@@ -20,15 +26,7 @@ export function Showcase() {
     .filter((a): a is typeof a & { release: Release } => !!a.release);
 
   return (
-    <div class="page">
-      <Aura colors={auraColors} />
-      <header class="topbar">
-        <button type="button" class="icon-btn" onClick={() => goBack()} aria-label="Назад">
-          <Icon name="back" />
-        </button>
-        <h1>Витрина</h1>
-      </header>
-
+    <div>
       <div class={s.top}>
         <div class={s.avatar} aria-hidden="true">
           {initials(name)}

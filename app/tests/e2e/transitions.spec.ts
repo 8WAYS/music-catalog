@@ -14,7 +14,7 @@ test('переход «обложка → карточка» и обратно �
   await grid(page).first().click();
   await expect(page.getByRole('heading', { level: 1, name: 'Группа крови' })).toBeVisible();
   await page.getByRole('button', { name: 'Назад' }).click();
-  await expect(page.getByText('2 релиза')).toBeVisible();
+  await expect(page.getByRole('tabpanel', { name: 'Картотека' }).getByText('2 релиза')).toBeVisible();
   await chip(page, 'осень').click();
   await page.getByRole('button', { name: 'Удиви меня' }).click();
   await expect(page.getByRole('heading', { level: 1, name: /In Rainbows|Группа крови/ })).toBeVisible();

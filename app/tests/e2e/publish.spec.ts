@@ -147,7 +147,7 @@ test('у друга есть своя картотека: видит опубл�
   await expect(page.getByText('своя неопубликованная картотека: 3 релиза')).toBeVisible();
   await page.getByRole('button', { name: 'Открыть свою картотеку' }).click();
   await expect(page.getByRole('link', { name: 'Добавить релиз' })).toBeVisible();
-  await expect(page.getByText('3 релиза')).toBeVisible();
+  await expect(page.getByRole('tabpanel', { name: 'Картотека' }).getByText('3 релиза')).toBeVisible();
 
   await page.goto('./#/settings');
   await page.getByRole('button', { name: 'Смотреть опубликованную картотеку' }).click();
@@ -164,7 +164,7 @@ test('новое устройство владельца: вход по токе
   await page.getByLabel('Токен GitHub').fill('github_pat_test');
   await page.getByRole('button', { name: 'Войти как владелец' }).click();
   await expect(page.getByRole('link', { name: 'Добавить релиз' })).toBeVisible();
-  await expect(page.getByText('2 релиза')).toBeVisible();
+  await expect(page.getByRole('tabpanel', { name: 'Картотека' }).getByText('2 релиза')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Опубликовано' })).toBeVisible();
   expect(gh.dataCommits).toHaveLength(1); // только исходный — после загрузки публиковать нечего
 });
