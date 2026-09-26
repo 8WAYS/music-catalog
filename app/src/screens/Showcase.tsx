@@ -2,8 +2,8 @@ import { Cover } from '../components/Cover';
 import { Disc } from '../components/Disc';
 import type { Release } from '../data/schema';
 import { href } from '../router';
-import { isOwner, ownerName, releases, releasesById } from '../store/app';
-import { pinnedAlbums, pinnedArtists, pinnedReleases, pinnedSingles } from '../store/showcase';
+import { isOwner, ownerName, pinnedArtists, releases, releasesById } from '../store/app';
+import { pinnedAlbums, pinnedReleases, pinnedSingles } from '../store/showcase';
 import { initials, pluralize } from '../utils/normalize';
 import s from './Showcase.module.css';
 

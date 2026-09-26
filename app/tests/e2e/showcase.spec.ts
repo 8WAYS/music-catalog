@@ -101,6 +101,22 @@ test('пустая витрина у владельца — подсказки, 
   await expect(page.getByText('Долгим нажатием')).toHaveCount(0);
 });
 
+test('зритель видит закреплённых владельцем артистов — они приходят в опубликованном каталоге', async ({
+  page,
+}) => {
+  // Раньше артисты жили только в IndexedDB владельца: до друзей полка «Любимые артисты» не доходила
+  await mockAsViewer(page, { pinnedArtists: [{ name: 'Radiohead', releaseId: ID.rainbows }] });
+  await page.goto('./#/showcase');
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+  await expect(showcase.getByRole('heading', { name: 'Любимые артисты' })).toBeVisible();
+  await expect(showcase.getByRole('link', { name: /Radiohead/ })).toHaveAttribute(
+    'href',
+    `#/release/${ID.rainbows}`,
+  );
+  // Подсказки «Долгим нажатием…» — только владельцу
+  await expect(showcase.getByText('Долгим нажатием')).toHaveCount(0);
+});
+
 test('у зрителя долгое нажатие ничего не закрепляет — просто переходит по ссылке', async ({ page }) => {
   await mockAsViewer(page);
   await page.goto('./');
@@ -114,8 +130,9 @@ test('у зрителя долгое нажатие ничего не закре
 });
 
 /** Друг открывает опубликованную ссылку — картотека только для просмотра (как в publish.spec.ts). */
-async function mockAsViewer(page: Page): Promise<void> {
+async function mockAsViewer(page: Page, extra: Record<string, unknown> = {}): Promise<void> {
   const published = {
+    ...extra,
     version: 2,
     revision: 1,
     publishedAt: '2026-09-25T12:00:00Z',

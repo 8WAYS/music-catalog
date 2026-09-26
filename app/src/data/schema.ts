@@ -75,6 +75,12 @@ export interface Release {
   updatedAt: string;
 }
 
+/** Закреплённый на витрине артист (ADR 0011) — releaseId даёт обложку/цвет для аватара. */
+export interface PinnedArtist {
+  name: string;
+  releaseId: string;
+}
+
 export interface Catalog {
   version: number;
   revision: number;
@@ -82,6 +88,11 @@ export interface Catalog {
   owner: { name: string };
   tags: Tag[];
   releases: Release[];
+  /**
+   * Витрина (ADR 0011). Необязательное и добавочное, как `Release.pinned`: FORMAT_VERSION не растёт —
+   * старая версия приложения у друга просто не увидит поле, а не отвергнет весь каталог.
+   */
+  pinnedArtists?: PinnedArtist[];
 }
 
 // ---------- Валидация ----------
@@ -180,6 +191,14 @@ export function validateCatalog(c: unknown): string[] {
   else o.tags.forEach((t, i) => issues.push(...validateTag(t, `tags[${i}]`)));
   if (!Array.isArray(o.releases)) issues.push('releases: нужен массив');
   else o.releases.forEach((r, i) => issues.push(...validateRelease(r, `releases[${i}]`)));
+  if (o.pinnedArtists !== undefined) {
+    if (!Array.isArray(o.pinnedArtists)) issues.push('pinnedArtists: нужен массив');
+    else
+      o.pinnedArtists.forEach((a, i) => {
+        if (!isStr(a?.name) || !a.name.trim() || !isStr(a?.releaseId))
+          issues.push(`pinnedArtists[${i}]: нужны name и releaseId`);
+      });
+  }
   if (Array.isArray(o.tags) && Array.isArray(o.releases)) {
     const tagIds = new Set(o.tags.map((t) => t.id));
     o.releases.forEach((r, i) =>

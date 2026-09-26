@@ -36,8 +36,17 @@ export interface CatalogDB extends DBSchema {
 
 export type DB = IDBPDatabase<CatalogDB>;
 
-export function openCatalogDB(name = DB_NAME): Promise<DB> {
-  return openDB<CatalogDB>(name, DB_VERSION, {
+/**
+ * `onYield` — другая вкладка (или тест) хочет обновить схему или удалить базу. Соединение закрываем
+ * сразу: иначе её запрос висит в «blocked», пока эта вкладка открыта, — обновление DB_VERSION в новой
+ * версии приложения зависло бы у всех, кто держит вторую вкладку.
+ */
+export function openCatalogDB(name = DB_NAME, onYield?: () => void): Promise<DB> {
+  const dbPromise: Promise<DB> = openDB<CatalogDB>(name, DB_VERSION, {
+    blocking() {
+      void dbPromise.then((db) => db.close());
+      onYield?.();
+    },
     upgrade(db, oldVersion) {
       // Миграции схемы IndexedDB: каждая версия добавляет свои изменения.
       if (oldVersion < 1) {
@@ -54,4 +63,5 @@ export function openCatalogDB(name = DB_NAME): Promise<DB> {
       }
     },
   });
+  return dbPromise;
 }

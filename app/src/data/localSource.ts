@@ -6,6 +6,7 @@ import {
   assertValidRelease,
   validateTag,
   type Catalog,
+  type PinnedArtist,
   type Release,
   type Tag,
 } from './schema';
@@ -18,8 +19,8 @@ export class LocalSource implements Repository {
 
   private constructor(private readonly db: DB) {}
 
-  static async open(dbName?: string): Promise<LocalSource> {
-    return new LocalSource(await openCatalogDB(dbName));
+  static async open(dbName?: string, onYield?: () => void): Promise<LocalSource> {
+    return new LocalSource(await openCatalogDB(dbName, onYield));
   }
 
   close(): void {
@@ -160,6 +161,20 @@ export class LocalSource implements Repository {
     }
   }
 
+  // ---------- Витрина (ADR 0011) ----------
+
+  async getPinnedArtists(): Promise<PinnedArtist[]> {
+    return (await this.getMeta('pinnedArtists')) ?? [];
+  }
+
+  async setPinnedArtists(list: PinnedArtist[]): Promise<void> {
+    const tx = this.db.transaction('meta', 'readwrite');
+    await tx.store.put(list, 'pinnedArtists');
+    await this.bumpRevision(tx.store);
+    await tx.done;
+    this.emit();
+  }
+
   // ---------- Служебное ----------
 
   async getMeta<K extends MetaKey>(key: K): Promise<MetaValues[K] | undefined> {
@@ -171,11 +186,12 @@ export class LocalSource implements Repository {
   }
 
   async snapshot(): Promise<Catalog> {
-    const [releases, tags, revision, ownerName] = await Promise.all([
+    const [releases, tags, revision, ownerName, pinnedArtists] = await Promise.all([
       this.getReleases(),
       this.getTags(),
       this.getMeta('revision'),
       this.getMeta('ownerName'),
+      this.getPinnedArtists(),
     ]);
     return {
       version: FORMAT_VERSION,
@@ -184,6 +200,7 @@ export class LocalSource implements Repository {
       owner: { name: ownerName ?? '' },
       tags,
       releases: releases.sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+      pinnedArtists,
     };
   }
 
@@ -198,7 +215,7 @@ export class LocalSource implements Repository {
         async ([id, blob]) => [id, { type: blob.type, data: await blob.arrayBuffer() }] as const,
       ),
     );
-    const tx = this.db.transaction(['releases', 'tags', 'covers'], 'readwrite');
+    const tx = this.db.transaction(['releases', 'tags', 'covers', 'meta'], 'readwrite');
     await Promise.all([
       tx.objectStore('releases').clear(),
       tx.objectStore('tags').clear(),
@@ -208,6 +225,8 @@ export class LocalSource implements Repository {
       ...catalog.tags.map((t) => tx.objectStore('tags').put(t)),
       ...catalog.releases.map((r) => tx.objectStore('releases').put(r)),
       ...stored.map(([id, v]) => tx.objectStore('covers').put(v, id)),
+      // Витрина едет вместе с каталогом: иначе после импорта остались бы артисты прежней картотеки
+      tx.objectStore('meta').put(catalog.pinnedArtists ?? [], 'pinnedArtists'),
     ]);
     await tx.done;
     for (const id of [...this.urlCache.keys()]) this.revokeUrl(id);

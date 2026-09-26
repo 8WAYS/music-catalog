@@ -1,12 +1,6 @@
-import type { Catalog, Release, Tag } from './schema';
+import type { Catalog, PinnedArtist, Release, Tag } from './schema';
 
 export type Mode = 'owner' | 'viewer';
-
-/** Закреплённый на витрине артист (ADR 0011) — releaseId даёт обложку/цвет для аватара. */
-export interface PinnedArtist {
-  name: string;
-  releaseId: string;
-}
 
 /** Ключи служебного хранилища meta (раздел 4.6). */
 export interface MetaValues {
@@ -58,6 +52,13 @@ export interface Repository {
   /** Адрес обложки, если он уже известен, — без ожидания: переход «обложка → карточка» не мигает */
   peekCoverUrl?(release: Release): string | undefined;
   saveCover(releaseId: string, blob: Blob): Promise<void>;
+
+  /**
+   * Витрина (ADR 0011): закреплённые артисты — часть catalog.json наравне с релизами, поэтому
+   * запись меняет ревизию и уходит в публикацию, а не лежит служебной настройкой устройства.
+   */
+  getPinnedArtists(): Promise<PinnedArtist[]>;
+  setPinnedArtists(list: PinnedArtist[]): Promise<void>;
 
   getMeta<K extends MetaKey>(key: K): Promise<MetaValues[K] | undefined>;
   setMeta<K extends MetaKey>(key: K, value: MetaValues[K]): Promise<void>;

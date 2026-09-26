@@ -10,7 +10,51 @@ beforeEach(async () => {
 });
 afterEach(() => repo.close());
 
+/** Удаление базы из другого контекста: 'success', либо 'blocked', если кто-то держит соединение. */
+function deleteDatabase(name: string): Promise<'success' | 'blocked'> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.deleteDatabase(name);
+    req.onsuccess = () => resolve('success');
+    req.onblocked = () => resolve('blocked');
+    req.onerror = () => reject(req.error);
+  });
+}
+
 describe('LocalSource', () => {
+  it('уступает базу другой вкладке: закрывает соединение по versionchange и сообщает об этом', async () => {
+    const name = `test-yield-${++n}`;
+    let yielded = false;
+    const src = await LocalSource.open(name, () => (yielded = true));
+    // Без этого обновление схемы (DB_VERSION++) в новой вкладке зависло бы навсегда, пока открыта старая
+    expect(await deleteDatabase(name)).toBe('success');
+    expect(yielded).toBe(true);
+    src.close();
+  });
+
+  it('закреплённые артисты — часть картотеки: revision++, dirty, попадают в снимок и восстанавливаются', async () => {
+    const r = await repo.saveRelease(createRelease({ title: 'Kid A', artist: 'Radiohead' }));
+    const before = (await repo.getMeta('revision')) ?? 0;
+    await repo.setMeta('dirty', false);
+    let notified = 0;
+    repo.subscribe(() => notified++);
+
+    await repo.setPinnedArtists([{ name: 'Radiohead', releaseId: r.id }]);
+    // Иначе закрепление не уйдёт в автопубликацию и друзья его не увидят (ADR 0011)
+    expect(await repo.getMeta('revision')).toBe(before + 1);
+    expect(await repo.getMeta('dirty')).toBe(true);
+    expect(notified).toBe(1);
+    const snap = await repo.snapshot();
+    expect(snap.pinnedArtists).toEqual([{ name: 'Radiohead', releaseId: r.id }]);
+
+    // Бэкап и «загрузить с сайта» идут через replaceAll — артисты должны вернуться вместе с релизами
+    await repo.setPinnedArtists([]);
+    await repo.replaceAll(snap, new Map());
+    expect(await repo.getPinnedArtists()).toEqual([{ name: 'Radiohead', releaseId: r.id }]);
+    // Каталог без поля (старый формат) — пустая витрина, а не старые артисты с этого устройства
+    await repo.replaceAll({ ...snap, pinnedArtists: undefined }, new Map());
+    expect(await repo.getPinnedArtists()).toEqual([]);
+  });
+
   it('сохраняет и читает релиз, нормализует позиции треков', async () => {
     const r = createRelease({
       title: '  In Rainbows ',

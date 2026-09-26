@@ -8,8 +8,7 @@ import { importPublished } from '../services/publisher';
 import { handleAuthCallback } from '../services/spotifyAuth';
 import { connect, startSync } from './sync';
 import { initSpotifyStatus } from './spotify';
-import { initShowcase } from './showcase';
-import type { CoverColors, Release, Tag } from '../data/schema';
+import type { CoverColors, PinnedArtist, Release, Tag } from '../data/schema';
 
 // ---------- Данные ----------
 
@@ -19,6 +18,8 @@ export const loadError = signal<string | null>(null);
 export const releases = signal<Release[]>([]);
 export const tags = signal<Tag[]>([]);
 export const ownerName = signal('');
+/** Витрина (ADR 0011): у владельца — из IndexedDB, у зрителя — из опубликованного catalog.json */
+export const pinnedArtists = signal<PinnedArtist[]>([]);
 
 export const tagsById = computed(() => new Map(tags.value.map((t) => [t.id, t])));
 export const releasesById = computed(() => new Map(releases.value.map((r) => [r.id, r])));
@@ -33,10 +34,16 @@ export function repo(): Repository {
 
 async function refresh(): Promise<void> {
   const r = repo();
-  const [rel, tg, name] = await Promise.all([r.getReleases(), r.getTags(), r.getMeta('ownerName')]);
+  const [rel, tg, name, pinned] = await Promise.all([
+    r.getReleases(),
+    r.getTags(),
+    r.getMeta('ownerName'),
+    r.getPinnedArtists(),
+  ]);
   releases.value = rel;
   tags.value = tg;
   ownerName.value = name ?? '';
+  pinnedArtists.value = pinned;
   if (r instanceof RemoteSource) staleCatalog.value = r.stale;
 }
 
@@ -90,7 +97,10 @@ export const publishedOnSite = signal<Published>('unknown');
 
 export async function init(): Promise<void> {
   try {
-    const local = await LocalSource.open();
+    // Другая вкладка обновляет схему или удаляет базу — соединение уже закрыто, дальше писать некуда
+    const local = await LocalSource.open(undefined, () => {
+      loadError.value = 'Картотеку открыли в другой вкладке в новой версии — обнови эту страницу.';
+    });
     // Возврат со страницы входа в Spotify (?code=…) — обрабатываем один раз, до остального (ADR 0010)
     await handleAuthCallback(local);
     const [token, localReleases, localTags] = await Promise.all([
@@ -110,7 +120,6 @@ export async function init(): Promise<void> {
       repository = local;
       startSync(local);
       void initSpotifyStatus(local);
-      void initShowcase(local);
     } else {
       local.close();
       repository = new RemoteSource();

@@ -49,6 +49,23 @@ describe('schema', () => {
     expect(validateCatalog(catalog).join()).toMatch(/нет тега/);
   });
 
+  it('каталог: закреплённые артисты необязательны, но если есть — корректные', () => {
+    const base = {
+      version: 2,
+      revision: 1,
+      publishedAt: new Date().toISOString(),
+      owner: { name: 'W' },
+      tags: [],
+      releases: [],
+    };
+    expect(validateCatalog(base)).toEqual([]);
+    expect(validateCatalog({ ...base, pinnedArtists: [{ name: 'Кино', releaseId: newId() }] })).toEqual([]);
+    expect(validateCatalog({ ...base, pinnedArtists: 'Кино' }).join()).toMatch(/pinnedArtists/);
+    expect(validateCatalog({ ...base, pinnedArtists: [{ name: '', releaseId: 1 }] }).join()).toMatch(
+      /pinnedArtists\[0\]/,
+    );
+  });
+
   it('имя файла обложки зависит от формата', () => {
     expect(coverPath('abc', 'image/webp')).toBe('covers/abc.webp');
     expect(coverPath('abc', 'image/jpeg')).toBe('covers/abc.jpg');

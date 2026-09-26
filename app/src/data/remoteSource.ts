@@ -1,6 +1,6 @@
 import { migrateCatalog } from './migrations';
 import { ReadOnlyError, type MetaKey, type MetaValues, type Repository } from './repository';
-import type { Catalog, Release, Tag } from './schema';
+import type { Catalog, PinnedArtist, Release, Tag } from './schema';
 
 const CACHE = 'catalog';
 const TIMEOUT_MS = 10_000;
@@ -102,6 +102,9 @@ export class RemoteSource implements Repository {
       ? `${this.baseUrl}${release.cover}?v=${encodeURIComponent(release.updatedAt)}`
       : undefined;
   }
+  async getPinnedArtists(): Promise<PinnedArtist[]> {
+    return (await this.load()).pinnedArtists ?? [];
+  }
   async getMeta<K extends MetaKey>(key: K): Promise<MetaValues[K] | undefined> {
     // Ждём загрузку: имя владельца спрашивают параллельно с релизами
     if (key === 'ownerName') return (await this.load()).owner.name as MetaValues[K];
@@ -130,6 +133,9 @@ export class RemoteSource implements Repository {
     return Promise.reject(new ReadOnlyError());
   }
   setMeta(): Promise<void> {
+    return Promise.reject(new ReadOnlyError());
+  }
+  setPinnedArtists(): Promise<void> {
     return Promise.reject(new ReadOnlyError());
   }
 }

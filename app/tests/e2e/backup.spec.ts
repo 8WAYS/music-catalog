@@ -31,8 +31,17 @@ test('экспорт ZIP → очистка IndexedDB → восстановле
   const zipPath = await download.path();
   expect(zipPath).toBeTruthy();
 
-  // Как будто телефон потерян: чистим IndexedDB и убеждаемся, что картотека пуста
-  await page.evaluate(() => indexedDB.deleteDatabase('music-catalog'));
+  // Как будто телефон потерян: чистим IndexedDB и убеждаемся, что картотека пуста. Ждём само удаление:
+  // приложение уступает базу по versionchange (db.ts) — раньше запрос висел в «blocked», и reload
+  // в WebKit иногда обгонял его, оставляя старые данные (флейк под параллельной нагрузкой)
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve, reject) => {
+        const req = indexedDB.deleteDatabase('music-catalog');
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      }),
+  );
   await page.reload();
   await expect(page.getByText('0 релизов · 0 тегов')).toBeVisible();
 

@@ -82,5 +82,17 @@ describe('RemoteSource', () => {
   it('только чтение', async () => {
     const { src } = source([ok]);
     await expect(src.saveRelease()).rejects.toThrow('только для просмотра');
+    await expect(src.setPinnedArtists()).rejects.toThrow('только для просмотра');
+  });
+
+  it('зритель видит закреплённых артистов из опубликованного каталога (ADR 0011)', async () => {
+    const pinned = [{ name: 'Radiohead', releaseId: catalog.releases[0]!.id }];
+    const { src } = source([() => new Response(JSON.stringify({ ...catalog, pinnedArtists: pinned }))]);
+    expect(await run(src.getPinnedArtists())).toEqual(pinned);
+  });
+
+  it('каталог без поля pinnedArtists (опубликован старой версией) — пустая витрина', async () => {
+    const { src } = source([ok]);
+    expect(await run(src.getPinnedArtists())).toEqual([]);
   });
 });
