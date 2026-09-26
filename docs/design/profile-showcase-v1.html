@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Витрина — макет v1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Tektur:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+    />
+    <style>
+      @property --a {
+        syntax: '<angle>';
+        inherits: true;
+        initial-value: 0deg;
+      }
+      @property --holo {
+        syntax: '<angle>';
+        inherits: true;
+        initial-value: 0deg;
+      }
+      /* Токены — один в один из src/styles/tokens.css (тёмная тема по умолчанию) */
+      :root {
+        --bg: #0e1014;
+        --surface: #171a20;
+        --surface-2: #20242b;
+        --glass: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 18px -10px rgba(0, 0, 0, 0.7);
+        --text: #eef0f4;
+        --text-muted: #8d94a1;
+        --line: #262a32;
+        --accent: #eef0f4;
+        --accent-text: #0e1014;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+        --cover-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.9);
+        --chrome: linear-gradient(180deg, #cdd2d9 0%, #f5f6f8 38%, #9aa1ac 50%, #f5f6f8 62%, #cdd2d9 100%);
+        --pearl: conic-gradient(from var(--holo), #f3d9e7, #f2ead3, #d9efe4, #d6e5f3, #e4dbf4, #f3d9e7);
+        --pearl-text: #15171c;
+        --d1: #eaa3c4;
+        --d2: #efd594;
+        --d3: #a3dfbf;
+        --d4: #98c6ec;
+        --d5: #b9a6ea;
+        --radius: 14px;
+        --radius-pill: 999px;
+        --s1: 4px;
+        --s2: 8px;
+        --s3: 12px;
+        --s4: 16px;
+        --s5: 24px;
+        --s6: 32px;
+        --display: 'Tektur', system-ui, sans-serif;
+        --body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.55 var(--body);
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 20px 100px;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--display);
+        line-height: 1.15;
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(26px, 4vw, 36px);
+      }
+      h2 {
+        font-size: 20px;
+        margin-bottom: var(--s2);
+      }
+      .lead {
+        color: var(--text-muted);
+        max-width: 58ch;
+        margin: var(--s3) 0 0;
+      }
+      section {
+        margin-top: var(--s6);
+        padding-top: var(--s6);
+        border-top: 1px solid var(--line);
+      }
+      section:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+      .eyebrow {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 4px;
+      }
+      code {
+        font-family: var(--mono);
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      /* ---------- Каркас телефона ---------- */
+      .phone-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s6);
+        align-items: flex-start;
+        margin-top: var(--s5);
+      }
+      .phone-cap {
+        flex: none;
+      }
+      .phone {
+        width: 320px;
+        border-radius: 36px;
+        padding: 10px;
+        background: #05060a;
+        box-shadow: var(--shadow);
+      }
+      .screen {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 320 / 690;
+        border-radius: 28px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+      .cap-note {
+        max-width: 320px;
+        margin-top: var(--s3);
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+
+      /* ---------- Аура из цветов подборки ---------- */
+      .aura {
+        position: absolute;
+        inset: -30%;
+        z-index: 0;
+        opacity: 0.5;
+        filter: blur(46px) saturate(0.95);
+        background:
+          radial-gradient(circle at 24% 20%, #8aa3b8 0, transparent 34%),
+          radial-gradient(circle at 78% 26%, #c9718d 0, transparent 32%),
+          radial-gradient(circle at 55% 80%, #d9a24a 0, transparent 36%);
+      }
+
+      /* ---------- Экран витрины ---------- */
+      .scr {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        overflow-y: auto;
+        padding: 22px 16px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--s3);
+      }
+      .avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        flex: none;
+        background: conic-gradient(from var(--a), #eef0f3, #c4c9d0 12%, #f7f8fa 25%, #c0c6cd 37%, #eef0f3 50%, #c4c9d0 62%, #f7f8fa 75%, #c0c6cd 87%, #eef0f3);
+        display: grid;
+        place-items: center;
+        font: 700 15px var(--display);
+        color: rgba(20, 22, 30, 0.55);
+      }
+      .who {
+        min-width: 0;
+      }
+      .name {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 19px;
+        background: var(--chrome);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .bio {
+        margin: 2px 0 0;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .stats {
+        margin: 6px 0 0;
+        color: var(--text-muted);
+        font-size: 12px;
+        font-family: var(--mono);
+      }
+      .gear {
+        flex: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--glass-border);
+        background: var(--glass);
+        display: grid;
+        place-items: center;
+        color: var(--text-muted);
+        font-size: 15px;
+      }
+
+      .shelf-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+      }
+      .shelf-title {
+        font-family: var(--display);
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .shelf-all {
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+      .shelf {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 4px 2px 8px;
+        margin: 8px -2px 0;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+      }
+      .shelf::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Артисты — круглые плитки */
+      .artist {
+        flex: none;
+        width: 76px;
+        scroll-snap-align: start;
+        text-align: center;
+      }
+      .artist .pic {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        margin: 0 auto;
+        background-size: cover;
+        background-position: center;
+        box-shadow: var(--cover-shadow);
+      }
+      .artist .lbl {
+        margin-top: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Альбомы/синглы — квадратные обложки */
+      .rel {
+        flex: none;
+        width: 108px;
+        scroll-snap-align: start;
+        position: relative;
+      }
+      .rel.hero {
+        width: 156px;
+      }
+      .rel .cover {
+        position: relative;
+        z-index: 1;
+        aspect-ratio: 1;
+        border-radius: 10px;
+        background-size: cover;
+        background-position: center;
+        box-shadow: var(--cover-shadow);
+      }
+      /* Герой уже сам шире (156px) — обложка занимает только часть, справа выглядывает диск,
+         не вылезая за границы плитки (иначе overflow-x:auto на .shelf обрежет и по вертикали) */
+      .rel.hero .cover {
+        width: 78%;
+      }
+      .rel .lbl {
+        margin-top: 6px;
+        font-size: 12.5px;
+        font-weight: 600;
+        line-height: 1.25;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .rel .sub {
+        color: var(--text-muted);
+        font-size: 11.5px;
+      }
+      /* Внутри границ обложки, не снаружи — иначе overflow-x:auto на .shelf обрежет и вертикаль */
+      .pin {
+        position: absolute;
+        z-index: 2;
+        top: 6px;
+        right: 6px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--pearl);
+        color: var(--pearl-text);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        animation: holo 12s linear infinite;
+      }
+      @keyframes holo {
+        to {
+          --holo: 360deg;
+        }
+      }
+
+      /* Диск, выглядывающий за героем подборки — тот же приём, что на карточке релиза, но
+         внутри своей же плитки (78% ширины у обложки, диск — в оставшихся справа) */
+      .rel.hero .disc {
+        position: absolute;
+        right: 0;
+        top: 10%;
+        width: 60%;
+        aspect-ratio: 1;
+        z-index: 0;
+        border-radius: 50%;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+        background: conic-gradient(#eef0f3, #c4c9d0 12%, #f7f8fa 25%, #c0c6cd 37%, #eef0f3 50%, #c4c9d0 62%, #f7f8fa 75%, #c0c6cd 87%, #eef0f3);
+        -webkit-mask: radial-gradient(circle, transparent 0 7%, #000 7.4%);
+        mask: radial-gradient(circle, transparent 0 7%, #000 7.4%);
+      }
+
+      /* Плитка «+ добавить» — видна только владельцу */
+      .add-tile {
+        flex: none;
+        width: 108px;
+        aspect-ratio: 1;
+        border-radius: 10px;
+        border: 1.5px dashed var(--line);
+        display: grid;
+        place-items: center;
+        color: var(--text-muted);
+        font-size: 26px;
+        scroll-snap-align: start;
+      }
+      [data-mode='guest'] .add-tile,
+      [data-mode='guest'] .edit-hint {
+        display: none;
+      }
+
+      .edit-hint {
+        font-size: 11.5px;
+        color: var(--text-muted);
+        margin: 6px 2px 0;
+      }
+
+      /* ---------- Переключатель режима над телефоном (сам макет, не часть экрана) ---------- */
+      .mode-row {
+        display: inline-flex;
+        gap: var(--s2);
+        padding: 4px;
+        border-radius: var(--radius-pill);
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+      .mode-btn {
+        min-height: 36px;
+        padding: 0 var(--s4);
+        border-radius: var(--radius-pill);
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .mode-btn[aria-checked='true'] {
+        background: var(--accent);
+        color: var(--accent-text);
+      }
+
+      ul.notes {
+        margin: var(--s3) 0 0;
+        padding-left: 1.1em;
+        color: var(--text-muted);
+        font-size: 14.5px;
+      }
+      ul.notes li {
+        margin-bottom: 6px;
+      }
+      ul.notes strong {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <p class="eyebrow">Макет · черновик</p>
+        <h1>Витрина: профиль с подборкой</h1>
+        <p class="lead">
+          Отдельный экран поверх обычной картотеки — не весь список, а то, что владелец сам выбрал показать
+          первым. Задача не «каталогизировать», а «порекомендовать»: три-четыре артиста, несколько альбомов,
+          несколько синглов — и видно, что подборка живая, потому что она периодически меняется.
+        </p>
+      </header>
+
+      <section>
+        <p class="eyebrow">Демо</p>
+        <h2>Экран</h2>
+        <p class="lead">Переключи режим — владелец видит плитки «+ добавить», гость их не видит.</p>
+        <div class="mode-row" role="radiogroup" aria-label="Режим просмотра" id="modeRow">
+          <button type="button" class="mode-btn" data-mode="owner" aria-checked="true">Владелец</button>
+          <button type="button" class="mode-btn" data-mode="guest" aria-checked="false">Гость</button>
+        </div>
+
+        <div class="phone-row">
+          <div class="phone-cap">
+            <div class="phone">
+              <div class="screen" data-mode="owner" id="showcaseScreen">
+                <div class="aura"></div>
+                <div class="scr">
+                  <div class="top">
+                    <div class="who" style="display: flex; gap: 12px; align-items: center">
+                      <div class="avatar">W</div>
+                      <div>
+                        <div class="name">Wailee</div>
+                        <p class="bio">Инди, советский рок и всё, что находит cardinparis</p>
+                        <p class="stats">127 релизов · витрина обновлена 3 дня назад</p>
+                      </div>
+                    </div>
+                    <div class="gear" aria-hidden="true">⚙</div>
+                  </div>
+
+                  <div>
+                    <div class="shelf-head">
+                      <span class="shelf-title">Любимые артисты</span>
+                      <span class="shelf-all">Вся картотека ›</span>
+                    </div>
+                    <div class="shelf">
+                      <div class="artist">
+                        <div class="pic" style="background-image: linear-gradient(160deg, #2e3440, #1c2530)"></div>
+                        <div class="lbl">Radiohead</div>
+                      </div>
+                      <div class="artist">
+                        <div class="pic" style="background-image: linear-gradient(160deg, #4a2c46, #2a1a2b)"></div>
+                        <div class="lbl">cardinparis</div>
+                      </div>
+                      <div class="artist">
+                        <div class="pic" style="background-image: linear-gradient(160deg, #3a2a52, #1e1830)"></div>
+                        <div class="lbl">Кино</div>
+                      </div>
+                      <div class="artist">
+                        <div class="pic" style="background-image: linear-gradient(160deg, #234a44, #16211f)"></div>
+                        <div class="lbl">Poolside</div>
+                      </div>
+                      <div class="add-tile" style="width: 68px; border-radius: 50%" aria-hidden="true">+</div>
+                    </div>
+                    <p class="edit-hint">Долгое нажатие на артиста в картотеке — закрепить здесь</p>
+                  </div>
+
+                  <div>
+                    <div class="shelf-head">
+                      <span class="shelf-title">Любимые альбомы</span>
+                      <span class="shelf-all">Вся картотека ›</span>
+                    </div>
+                    <div class="shelf">
+                      <div class="rel hero">
+                        <div class="pin" aria-hidden="true">★</div>
+                        <div class="disc"></div>
+                        <div class="cover" style="background-image: linear-gradient(155deg, #6b3550, #2a1420)"></div>
+                        <div class="lbl">половина таблетки</div>
+                        <div class="sub">cardinparis</div>
+                      </div>
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #26384a, #101820)"></div>
+                        <div class="lbl">In Rainbows</div>
+                        <div class="sub">Radiohead</div>
+                      </div>
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #402c52, #1a1424)"></div>
+                        <div class="lbl">Группа крови</div>
+                        <div class="sub">Кино</div>
+                      </div>
+                      <div class="add-tile" aria-hidden="true">+</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="shelf-head">
+                      <span class="shelf-title">Синглы и EP</span>
+                      <span class="shelf-all">Вся картотека ›</span>
+                    </div>
+                    <div class="shelf">
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #4a3a26, #201810)"></div>
+                        <div class="lbl">Rings</div>
+                        <div class="sub">Poolside · сингл</div>
+                      </div>
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #2a4a3a, #10201a)"></div>
+                        <div class="lbl">Disk 2</div>
+                        <div class="sub">In Rainbows · EP</div>
+                      </div>
+                      <div class="add-tile" aria-hidden="true">+</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="shelf-head">
+                      <span class="shelf-title">Топ · сентябрь 2026</span>
+                      <span class="shelf-all">Все топы ›</span>
+                    </div>
+                    <div class="shelf">
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #6b3550, #2a1420)"></div>
+                        <div class="lbl">половина таблетки</div>
+                        <div class="sub">cardinparis</div>
+                      </div>
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #402c52, #1a1424)"></div>
+                        <div class="lbl">Группа крови</div>
+                        <div class="sub">Кино</div>
+                      </div>
+                      <div class="rel">
+                        <div class="cover" style="background-image: linear-gradient(155deg, #26384a, #101820)"></div>
+                        <div class="lbl">In Rainbows</div>
+                        <div class="sub">Radiohead</div>
+                      </div>
+                      <div class="add-tile" aria-hidden="true">+</div>
+                    </div>
+                    <p class="edit-hint">Топ — обычный плейлист с датой в названии, тот же механизм полки</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="cap-note">
+              Аура — из цветов закреплённых обложек, как на карточке релиза. Полки — горизонтальный скролл
+              со snap, не грид: подборка короткая нарочно, никакой пагинации.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <p class="eyebrow">Как закрепляют</p>
+        <h2>Владелец, не отдельный редактор</h2>
+        <p class="lead">Ничего нового не вводим для этого — используем то, что уже есть в интерфейсе:</p>
+        <ul class="notes">
+          <li>
+            <strong>Долгое нажатие</strong> на обложку или артиста в обычной картотеке — «Закрепить на
+            витрине» (то же самое действие уже в списке «известные мелочи» этапа 7 для другого — можно
+            сделать оба сразу).
+          </li>
+          <li>На самой витрине — <strong>перетаскивание внутри полки</strong>, чтобы менять порядок.</li>
+          <li>
+            «Топ месяца» — заводится как обычный плейлист с названием вроде «Сентябрь 2026»; отдельного
+            интерфейса не нужно, если плейлисты уже проектируются.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <p class="eyebrow">Модель данных</p>
+        <h2>Что понадобится добавить</h2>
+        <ul class="notes">
+          <li>
+            <strong>Избранный релиз</strong> — сейчас звёздочка есть только у отдельного трека
+            (<code>Track.favorite</code>), у альбома целиком — нет. Добавить <code>Release.pinned?: boolean</code>
+            (или сразу <code>pinnedOrder?: number</code>, чтобы порядок на полке был не «как в базе», а
+            ручной).
+          </li>
+          <li>
+            <strong>Избранные артисты</strong> — в модели нет отдельной сущности «артист» (только строка
+            <code>Release.artist</code>). Нужен минимальный новый список в meta или отдельная коллекция:
+            имя + id представительного релиза (для обложки/цвета аватара).
+          </li>
+          <li>
+            <strong>Плейлист / топ</strong> — новая сущность: имя, упорядоченный список id релизов. Топ месяца
+            — такой же плейлист, просто с датой в названии; отдельная модель не нужна.
+          </li>
+          <li>
+            Ничего из этого не требует <code>FORMAT_VERSION++</code> — только новые опциональные поля и
+            коллекции, старые данные валидны как есть (как было с обложками из iTunes/Spotify).
+          </li>
+        </ul>
+      </section>
+    </div>
+    <script>
+      document.getElementById('modeRow').addEventListener('click', (e) => {
+        const btn = e.target.closest('.mode-btn');
+        if (!btn) return;
+        const mode = btn.dataset.mode;
+        document.querySelectorAll('.mode-btn').forEach((b) => b.setAttribute('aria-checked', String(b === btn)));
+        document.getElementById('showcaseScreen').dataset.mode = mode;
+      });
+    </script>
+  </body>
+</html>
