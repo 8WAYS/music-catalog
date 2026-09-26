@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Идеи структуры и анимаций — макет v1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Tektur:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+    />
+    <style>
+      @property --a {
+        syntax: '<angle>';
+        inherits: true;
+        initial-value: 0deg;
+      }
+      @property --hue {
+        syntax: '<number>';
+        inherits: true;
+        initial-value: 0;
+      }
+      :root {
+        --bg: #0e1014;
+        --surface: #171a20;
+        --surface-2: #20242b;
+        --glass: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --text: #eef0f4;
+        --text-muted: #8d94a1;
+        --line: #262a32;
+        --accent: #eef0f4;
+        --accent-text: #0e1014;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+        --cover-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.9);
+        --chrome: linear-gradient(180deg, #cdd2d9 0%, #f5f6f8 38%, #9aa1ac 50%, #f5f6f8 62%, #cdd2d9 100%);
+        --pearl: conic-gradient(from var(--holo, 0deg), #f3d9e7, #f2ead3, #d9efe4, #d6e5f3, #e4dbf4, #f3d9e7);
+        --pearl-text: #15171c;
+        --radius: 14px;
+        --radius-pill: 999px;
+        --s2: 8px;
+        --s3: 12px;
+        --s4: 16px;
+        --s5: 24px;
+        --s6: 32px;
+        --display: 'Tektur', system-ui, sans-serif;
+        --body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+        --spring-soft: cubic-bezier(0.34, 1.3, 0.64, 1);
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.55 var(--body);
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 20px 100px;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--display);
+        line-height: 1.15;
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(24px, 4vw, 32px);
+      }
+      h2 {
+        font-size: 19px;
+      }
+      .lead {
+        color: var(--text-muted);
+        max-width: 60ch;
+        margin: var(--s3) 0 0;
+      }
+      section {
+        margin-top: var(--s6);
+        padding-top: var(--s6);
+        border-top: 1px solid var(--line);
+      }
+      section:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+      .eyebrow {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 4px;
+      }
+      .verdict {
+        margin-top: var(--s3);
+        padding: var(--s3) var(--s4);
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+      .verdict strong {
+        color: var(--text);
+      }
+      code {
+        font-family: var(--mono);
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.88em;
+      }
+
+      /* ---------- 1. Полки вместо сетки ---------- */
+      .shelf-view {
+        margin-top: var(--s5);
+        perspective: 900px;
+        padding: var(--s5) 0;
+        background: radial-gradient(60% 100% at 50% 0%, #1c2027, var(--bg));
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .shelf-row {
+        display: flex;
+        gap: 14px;
+        padding: 0 28px 18px;
+        overflow-x: auto;
+        transform: rotateX(8deg);
+        transform-style: preserve-3d;
+        scrollbar-width: none;
+      }
+      .shelf-row::-webkit-scrollbar {
+        display: none;
+      }
+      .spine {
+        flex: none;
+        width: 46px;
+        height: 132px;
+        border-radius: 4px 8px 8px 4px;
+        background-size: cover;
+        background-position: center;
+        box-shadow: var(--cover-shadow), inset 2px 0 0 rgba(255, 255, 255, 0.12);
+        transform-origin: bottom;
+        transition: transform 260ms var(--spring-soft);
+        cursor: pointer;
+        position: relative;
+      }
+      .spine:hover,
+      .spine:focus-visible {
+        transform: translateY(-14px) rotateX(-4deg);
+      }
+      .shelf-board {
+        height: 10px;
+        margin: 0 20px;
+        border-radius: 3px;
+        background: linear-gradient(180deg, #2a2e37, #14161b);
+        box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.6);
+      }
+
+      /* ---------- 2. Карта настроений ---------- */
+      .mood-map {
+        position: relative;
+        margin-top: var(--s5);
+        aspect-ratio: 16/11;
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        overflow: hidden;
+      }
+      .mood-axis {
+        position: absolute;
+        color: var(--text-muted);
+        font-size: 11.5px;
+        font-family: var(--mono);
+        letter-spacing: 0.04em;
+      }
+      .mood-axis.top {
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .mood-axis.bottom {
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .mood-axis.left {
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+        transform-origin: left center;
+      }
+      .mood-axis.right {
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(90deg);
+        transform-origin: right center;
+      }
+      .mood-grid {
+        position: absolute;
+        inset: 40px;
+        border-left: 1px dashed var(--line);
+        border-bottom: 1px dashed var(--line);
+      }
+      .mood-dot {
+        position: absolute;
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background-size: cover;
+        background-position: center;
+        box-shadow: var(--cover-shadow);
+        transform: translate(-50%, 50%);
+        transition: transform 200ms var(--spring-soft);
+      }
+      .mood-dot:hover {
+        transform: translate(-50%, 50%) scale(1.18);
+        z-index: 2;
+      }
+      .mood-dot span {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 4px;
+        font-size: 10.5px;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+
+      /* ---------- 3. Скролл-анимация ауры (scroll-driven, без JS) ---------- */
+      .scrollcase {
+        margin-top: var(--s5);
+        height: 340px;
+        border-radius: var(--radius);
+        border: 1px solid var(--line);
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        scroll-timeline: --feedScroll block;
+      }
+      .scroll-aura {
+        position: sticky;
+        top: 0;
+        height: 340px;
+        margin-bottom: -340px;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.55;
+        filter: blur(40px) saturate(1.05);
+        background:
+          radial-gradient(circle at 30% 30%, hsl(calc(var(--hue) * 1deg) 70% 55%), transparent 45%),
+          radial-gradient(circle at 75% 65%, hsl(calc((var(--hue) + 120) * 1deg) 65% 50%), transparent 45%);
+        animation: hue-shift linear;
+        animation-timeline: --feedScroll;
+      }
+      @keyframes hue-shift {
+        from {
+          --hue: 0;
+        }
+        to {
+          --hue: 300;
+        }
+      }
+      .scroll-item {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        gap: var(--s3);
+        align-items: center;
+        padding: 14px 16px;
+        border-top: 1px solid var(--glass-border);
+        background: color-mix(in srgb, var(--surface) 55%, transparent);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+      }
+      .scroll-item:first-child {
+        border-top: none;
+      }
+      .scroll-item .art {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        flex: none;
+        background-size: cover;
+        background-position: center;
+      }
+      .scroll-item .t {
+        min-width: 0;
+      }
+      .scroll-item .t b {
+        display: block;
+        font-size: 14px;
+      }
+      .scroll-item .t small {
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      /* ---------- 4. Диск — тяни, чтобы крутить ---------- */
+      .spin-demo {
+        margin-top: var(--s5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s3);
+        padding: var(--s5);
+        border-radius: var(--radius);
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+      .spin-disc {
+        width: 168px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        touch-action: none;
+        cursor: grab;
+        background: conic-gradient(
+          from var(--a),
+          #eef0f3,
+          #c4c9d0 12%,
+          #f7f8fa 25%,
+          #c0c6cd 37%,
+          #eef0f3 50%,
+          #c4c9d0 62%,
+          #f7f8fa 75%,
+          #c0c6cd 87%,
+          #eef0f3
+        );
+        -webkit-mask: radial-gradient(circle, transparent 0 9%, #000 9.4%);
+        mask: radial-gradient(circle, transparent 0 9%, #000 9.4%);
+        box-shadow: var(--cover-shadow);
+        transition: transform 500ms var(--spring-soft);
+      }
+      .spin-disc:active {
+        cursor: grabbing;
+        transition: none;
+      }
+      .spin-hint {
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* ---------- 5. «Год назад» ---------- */
+      .throwback {
+        margin-top: var(--s5);
+        display: flex;
+        gap: var(--s4);
+        align-items: center;
+        padding: var(--s4);
+        border-radius: var(--radius);
+        background: linear-gradient(140deg, #2a2440, #171a20);
+        border: 1px solid var(--glass-border);
+      }
+      .throwback .art {
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
+        flex: none;
+        background: linear-gradient(155deg, #6b3550, #2a1420);
+        box-shadow: var(--cover-shadow);
+      }
+      .throwback .k {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        color: var(--pearl-text);
+        background: var(--pearl);
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: var(--radius-pill);
+        animation: holo 12s linear infinite;
+      }
+      @keyframes holo {
+        to {
+          --holo: 360deg;
+        }
+      }
+      .throwback b {
+        display: block;
+        margin-top: 4px;
+        font-size: 15px;
+      }
+      .throwback small {
+        color: var(--text-muted);
+      }
+
+      ul.notes {
+        margin: var(--s3) 0 0;
+        padding-left: 1.1em;
+        color: var(--text-muted);
+        font-size: 14.5px;
+      }
+      ul.notes li {
+        margin-bottom: 6px;
+      }
+      ul.notes strong {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <p class="eyebrow">Макет · черновик</p>
+        <h1>Структура и анимации — примеры</h1>
+        <p class="lead">
+          Пять идей из обсуждения, каждая — рабочий пример, а не картинка. Полки и карта настроений — как
+          альтернативный вид коллекции; скролл-аура, диск и «год назад» — про анимации и мелкие радости.
+        </p>
+      </header>
+
+      <section>
+        <p class="eyebrow">1 · Структура</p>
+        <h2>Полки вместо сетки</h2>
+        <p class="lead">
+          Корешки под лёгким наклоном, как настоящая полка — наведи или потяни за скролл. Подходит для «вида
+          коллекции», сетка остаётся вариантом по умолчанию для быстрого поиска.
+        </p>
+        <div class="shelf-view">
+          <div class="shelf-row">
+            <div class="spine" style="background-image: linear-gradient(180deg, #6b3550, #2a1420)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #26384a, #101820)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #402c52, #1a1424)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #234a44, #16211f)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #4a3a26, #201810)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #2a4a3a, #10201a)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #4a2c46, #1e1020)"></div>
+            <div class="spine" style="background-image: linear-gradient(180deg, #2c3a4a, #101620)"></div>
+          </div>
+          <div class="shelf-board"></div>
+        </div>
+        <p class="verdict">
+          <strong>Стоимость:</strong> чистый CSS (<code>perspective</code> + <code>transform</code>), без
+          новых данных. Главный вопрос — не техника, а нужен ли вообще второй вид, или это просто «красиво
+          один раз посмотреть».
+        </p>
+      </section>
+
+      <section>
+        <p class="eyebrow">2 · Структура</p>
+        <h2>Карта настроений</h2>
+        <p class="lead">Расположение по двум осям вместо списка — по тегам настроения/энергии.</p>
+        <div class="mood-map">
+          <span class="mood-axis top">энергично</span>
+          <span class="mood-axis bottom">спокойно</span>
+          <span class="mood-axis left">тёмное</span>
+          <span class="mood-axis right">светлое</span>
+          <div class="mood-grid"></div>
+          <div class="mood-dot" style="left: 30%; bottom: 70%; background-image: linear-gradient(155deg, #6b3550, #2a1420)">
+            <span>половина таблетки</span>
+          </div>
+          <div class="mood-dot" style="left: 62%; bottom: 35%; background-image: linear-gradient(155deg, #26384a, #101820)">
+            <span>In Rainbows</span>
+          </div>
+          <div class="mood-dot" style="left: 45%; bottom: 55%; background-image: linear-gradient(155deg, #402c52, #1a1424)">
+            <span>Группа крови</span>
+          </div>
+          <div class="mood-dot" style="left: 78%; bottom: 22%; background-image: linear-gradient(155deg, #234a44, #16211f)">
+            <span>Poolside</span>
+          </div>
+        </div>
+        <p class="verdict">
+          <strong>Стоимость:</strong> честно — требует придумать, как считать координаты из тегов
+          (что-то вроде «энергично» → жанр-теги, «светло/тёмно» → цвет обложки?). Без внятного правила
+          координаты будут произвольными, и карта превратится в decoration, а не в инструмент.
+        </p>
+      </section>
+
+      <section>
+        <p class="eyebrow">3 · Анимация</p>
+        <h2>Аура реагирует на скролл — без JavaScript</h2>
+        <p class="lead">
+          Прокрути список внутри рамки — цвет фона плавно едет по кругу вслед за прокруткой
+          (<code>animation-timeline: scroll()</code>, чистый CSS).
+        </p>
+        <div class="scrollcase" id="scrollcase">
+          <div class="scroll-aura"></div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #6b3550, #2a1420)"></div>
+            <div class="t"><b>половина таблетки</b><small>cardinparis</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #26384a, #101820)"></div>
+            <div class="t"><b>In Rainbows</b><small>Radiohead</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #402c52, #1a1424)"></div>
+            <div class="t"><b>Группа крови</b><small>Кино</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #234a44, #16211f)"></div>
+            <div class="t"><b>Rings</b><small>Poolside</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #4a3a26, #201810)"></div>
+            <div class="t"><b>Kid A</b><small>Radiohead</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #2a4a3a, #10201a)"></div>
+            <div class="t"><b>OK Computer</b><small>Radiohead</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #4a2c46, #1e1020)"></div>
+            <div class="t"><b>Disk 2</b><small>In Rainbows</small></div>
+          </div>
+          <div class="scroll-item">
+            <div class="art" style="background: linear-gradient(155deg, #2c3a4a, #101620)"></div>
+            <div class="t"><b>Pablo Honey</b><small>Radiohead</small></div>
+          </div>
+        </div>
+        <p class="verdict" id="scrollSupportNote">Проверяю поддержку scroll-driven анимаций в этом браузере…</p>
+      </section>
+
+      <section>
+        <p class="eyebrow">4 · Анимация</p>
+        <h2>Диск — тяни, чтобы крутить</h2>
+        <p class="lead">Потяни диск в сторону, как настоящую пластинку — отпустишь, он спружинит назад.</p>
+        <div class="spin-demo">
+          <div class="spin-disc" id="spinDisc"></div>
+          <p class="spin-hint">← тяни мышью или пальцем →</p>
+        </div>
+        <p class="verdict">
+          <strong>Стоимость:</strong> немного JS (перевод сдвига пальца в угол), но физика та же
+          пружина, что уже используется у звёздочки и деки — не новый язык анимации, а его расширение.
+        </p>
+      </section>
+
+      <section>
+        <p class="eyebrow">5 · Возвращаемость</p>
+        <h2>«Год назад ты добавил…»</h2>
+        <p class="lead">Карточка-напоминание на главной, если у сегодняшней даты есть что вспомнить.</p>
+        <div class="throwback">
+          <div class="art"></div>
+          <div>
+            <span class="k">Год назад</span>
+            <b>половина таблетки</b>
+            <small>cardinparis · добавлено 26 сентября 2025</small>
+          </div>
+        </div>
+        <p class="verdict">
+          <strong>Стоимость:</strong> минимальная — просто фильтр по <code>createdAt</code> на сегодняшнее
+          число прошлых лет. Из всего списка это единственная идея, которая прямо отвечает на «почему зайти
+          снова», а не просто «красиво».
+        </p>
+      </section>
+    </div>
+    <script>
+      // Диск: тянем — угол зависит от смещения пальца/курсора, отпускаем — пружина возвращает
+      (() => {
+        const disc = document.getElementById('spinDisc');
+        let dragging = false;
+        let startX = 0;
+        let startAngle = 0;
+        let angle = 0;
+        const setAngle = (a) => {
+          angle = a;
+          disc.style.setProperty('--a', a + 'deg');
+        };
+        const down = (x) => {
+          dragging = true;
+          startX = x;
+          startAngle = angle;
+          disc.style.transition = 'none';
+        };
+        const move = (x) => {
+          if (!dragging) return;
+          setAngle(startAngle + (x - startX) * 1.4);
+        };
+        const up = () => {
+          if (!dragging) return;
+          dragging = false;
+          disc.style.transition = '';
+          setAngle(0);
+        };
+        disc.addEventListener('pointerdown', (e) => down(e.clientX));
+        window.addEventListener('pointermove', (e) => move(e.clientX));
+        window.addEventListener('pointerup', up);
+      })();
+
+      // Честная проверка, а не обещание: поддерживает ли этот браузер scroll-driven анимации
+      (() => {
+        const note = document.getElementById('scrollSupportNote');
+        const supported = CSS.supports('animation-timeline', 'scroll()');
+        note.innerHTML = supported
+          ? '<strong>Поддерживается</strong> в этом браузере — но перед переносом в приложение обязательно проверить в реальном Safari на iPhone (ADR 0001 уже учит не верить на слово).'
+          : '<strong>Не поддерживается</strong> в этом браузере — аура выше просто статична. Ровно поэтому в CLAUDE.md заведено правило проверять внешние возможности перед тем, как на них полагаться.';
+      })();
+    </script>
+  </body>
+</html>
