@@ -1,5 +1,5 @@
 import { Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { Aura } from '../components/Aura';
 import { Cover } from '../components/Cover';
 import { Deck } from '../components/Deck';
@@ -94,6 +94,13 @@ export function Home() {
     },
     route.value.name === 'showcase' ? 1 : 0,
   );
+  // initialIndex у хука срабатывает только при монтировании — реальная навигация вне вкладок
+  // (ссылка «Поделиться», «Назад»/«Вперёд» браузера) меняет route.value и должна довернуть вкладку,
+  // а не оставлять её как было (свайп и тап меняют только адрес, route.value не трогают — сюда не попадут)
+  useEffect(() => {
+    if (route.value.name === 'home' || route.value.name === 'showcase')
+      swipe.goTo(route.value.name === 'showcase' ? 1 : 0, false);
+  }, [route.value.name]);
 
   const open = (id: string) => {
     lastOpened.value = id;
