@@ -47,7 +47,10 @@ npx playwright install chromium webkit   # один раз
 npm run e2e
 ```
 
-Перед тем как сказать «готово» — прогнать lint, typecheck, test, build и e2e.
+Перед тем как сказать «готово» — прогнать lint, typecheck, test, build и e2e. После пуша — дождаться CI
+(`gh run list --limit 3`, при падении `gh run view <id> --log-failed`; трейс — в артефакте `playwright-report`):
+CI гоняет WebKit на Linux без GPU, и падения, которых нет локально, случаются — однажды CI был красным
+сутки, и этого никто не заметил. Время в e2e — через `page.clock`, а не реальными таймаутами.
 
 ## Архитектура и правила
 

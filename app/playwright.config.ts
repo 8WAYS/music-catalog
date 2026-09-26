@@ -10,6 +10,9 @@ export default defineConfig({
     serviceWorkers: 'block',
     // Переходы между экранами на полсекунды перекрывают клики — в тестах без анимаций; дека проверяется отдельно
     contextOptions: { reducedMotion: 'reduce' },
+    // На CI при падении — полный трейс (таймлайн, скриншоты, консоль) в артефакт playwright-report:
+    // одного текстового снимка не хватало, чтобы понять падения, которых нет локально
+    trace: process.env.CI ? 'retain-on-failure' : 'off',
     // Локально можно указать свой Chromium: PW_CHROMIUM_PATH=/path/to/chrome npm run e2e
     launchOptions: process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {},
   },

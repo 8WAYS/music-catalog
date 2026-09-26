@@ -81,23 +81,37 @@ test('«Удиви меня» выбирает из текущей выборк�
   await expect(page.getByRole('heading', { name: 'Группа крови', level: 1 })).toBeVisible();
 });
 
+// Дека живёт на таймерах (DECK_MS = 2,8 с). Реальные часы в этих тестах делали их зависимыми от
+// скорости машины: на CI (WebKit на Linux без GPU — размытие и стекло рисуются программно) переход
+// не укладывался в отведённое время, и CI был красным сутки. Часами страницы управляет тест.
+
 test('«Удиви меня»: проигрыватель выбирает из текущей выборки и открывает карточку', async ({ page }) => {
+  await page.clock.install();
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await chip(page, 'осень').click();
   await page.getByRole('button', { name: 'Удиви меня' }).click();
   await expect(page.getByRole('dialog', { name: 'Удиви меня' })).toBeVisible();
   await expect(page.getByText('Выбираю…')).toBeAttached();
+  // Вся анимация деки — перемоткой, а не реальным ожиданием
+  await page.clock.runFor(5_000);
   await expect(page.getByRole('heading', { level: 1, name: /In Rainbows|Группа крови/ })).toBeVisible();
   expect(page.url()).toMatch(new RegExp(`#/release/(${ID.rainbows}|${ID.blood})$`));
 });
 
 test('«Удиви меня»: нажатие сразу открывает карточку', async ({ page }) => {
+  await page.clock.install();
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await chip(page, 'дорога').click();
+  // Часы стоят: дека сама закончиться не может — закрыть её и перейти способно только нажатие.
+  // Так «сразу» проверяется без секундомера, на любой по скорости машине.
+  await page.clock.pauseAt(Date.now() + 1_000);
   await page.getByRole('button', { name: 'Удиви меня' }).click();
   // Дека анимируется — Playwright ждёт «стабильности»; человек нажимает сразу
   await page.getByRole('dialog', { name: 'Удиви меня' }).click({ force: true });
-  await expect(page.getByRole('heading', { name: 'Группа крови', level: 1 })).toBeVisible({ timeout: 1_000 });
+  await expect(page.getByRole('dialog', { name: 'Удиви меня' })).toHaveCount(0);
+  await expect(page).toHaveURL(new RegExp(`#/release/${ID.blood}$`));
+  await page.clock.resume();
+  await expect(page.getByRole('heading', { name: 'Группа крови', level: 1 })).toBeVisible();
 });
 
 test('без анимаций сразу открывает карточку', async ({ page }) => {
