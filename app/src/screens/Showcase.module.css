@@ -4,23 +4,29 @@
   gap: var(--s3);
   margin-top: var(--s3);
 }
-/* Аватар-«жетон»: тот же приём объёма, что у Disc.module.css (блик со сдвигом от центра + тёмная
-   грань снизу-справа даёт купол, а не плоскую закраску) — только не гоняем свет анимацией, он и
-   так маленький и статичный, вращать там особо нечего. */
-.avatar {
+/* Аватар — настоящий диск (Disc, ADR 0008/0011), не рисованный кружок: тот же материал, что и
+   везде в приложении, плюс бумажная «наклейка» с инициалами поверх отражающего поля, как у
+   реального CD. */
+.avatarWrap {
+  position: relative;
   flex: none;
   width: 56px;
   height: 56px;
+}
+.avatarDisc {
+  width: 100%;
+  height: 100%;
+}
+.avatarLabel {
+  position: absolute;
+  inset: 20%;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #fbfcfd, #c2c7d0 55%, #767c87 100%);
-  box-shadow:
-    inset 0 -3px 5px rgba(0, 0, 0, 0.3),
-    inset 0 2px 2px rgba(255, 255, 255, 0.65),
-    0 2px 6px rgba(0, 0, 0, 0.35);
   display: grid;
   place-items: center;
+  background: rgba(20, 22, 30, 0.85);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15);
   font: 700 15px var(--font-display);
-  color: rgba(20, 22, 30, 0.6);
+  color: #f2f3f5;
 }
 .name {
   margin: 0;
@@ -92,44 +98,49 @@
   display: none;
 }
 
-/* Ранговая метка топ-3 (ADR 0011) — маленькая медаль, а не плоская подложка под цифрой: купольный
-   блик (радиальный градиент со сдвинутым центром, как у .avatar и Disc.module.css) и фаска по краю
-   (внутренние тень/блик) продают металл на 22px, где полноценные слои Disc уже потерялись бы в кашу.
-   Золото/серебро/бронза — сама подсказка места, а не только цифра. */
+/* Ранговая метка топ-3 (ADR 0011) — сама метка тоже диск (тот же Disc, что и всюду в приложении),
+   а не рисованный кружок: снаружи — настоящее отражающее поле, внутри — цветная «наклейка» ранга
+   (золото/серебро/бронза), как печатный лейбл на CD поверх блестящего поля. Наклейка нужна и для
+   контраста: цифра иначе терялась бы на переливах отражения при вращении диска. */
 .rankWrap {
   position: relative;
   display: block;
 }
-.rank {
+.rankBadge {
   position: absolute;
   top: -6px;
   left: -6px;
   z-index: 2;
-  display: grid;
-  place-items: center;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
-  font: 700 11px var(--font-display);
-  box-shadow:
-    inset 0 -2px 3px rgba(0, 0, 0, 0.4),
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.55),
-    0 2px 5px rgba(0, 0, 0, 0.4);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
 }
-.rank[data-rank='1'] {
+.rankBadgeDisc {
+  width: 100%;
+  height: 100%;
+}
+.rankNum {
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 700 10px var(--font-display);
+  box-shadow:
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+.rankNum[data-rank='1'] {
   background: radial-gradient(circle at 32% 28%, #fff6d8, #e3bb56 55%, #8a621f 100%);
   color: #4a3009;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
-.rank[data-rank='2'] {
+.rankNum[data-rank='2'] {
   background: radial-gradient(circle at 32% 28%, #f5f7fa, #b7bfc9 55%, #656d78 100%);
   color: #262b33;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
-.rank[data-rank='3'] {
+.rankNum[data-rank='3'] {
   background: radial-gradient(circle at 32% 28%, #f0c39c, #ab6a3b 55%, #5c341a 100%);
   color: #331a08;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 /* Пьедестал (ArtistShelf, ровно 3 закреплённых) — подписи на одной линии внизу, первое место крупнее
@@ -201,23 +212,34 @@
   font-size: 12px;
 }
 
-/* Первая закреплённая обложка — «герой»: шире, диск выглядывает справа (не за пределами плитки —
-   overflow-x: auto у .shelf иначе обрежет и по вертикали) */
-.rel.hero {
-  width: 168px;
+/* Топ-3 альбомов — обложка не на всю плитку, из-за неё выглядывает диск (тот же приём, что и у
+   рангового значка: витрина — про диски, не про плоские квадраты обложек). Первое место — «герой»,
+   шире и с более крупным диском; второе-третье — тот же приём спокойнее, без лишнего внимания. */
+.rel.ranked {
   position: relative;
   isolation: isolate;
 }
-.rel.hero [role='img'] {
+.rel.ranked [role='img'] {
   position: relative;
   z-index: 1;
-  width: 76%;
+  width: 82%;
 }
-.heroDisc {
+.peekDisc {
   position: absolute;
   right: 0;
+  top: 10%;
+  width: 46%;
+  z-index: 0;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+}
+.rel.ranked.hero {
+  width: 168px;
+}
+.rel.ranked.hero [role='img'] {
+  width: 76%;
+}
+.rel.ranked.hero .peekDisc {
   top: 8%;
   width: 58%;
-  z-index: 0;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }

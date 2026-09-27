@@ -38,8 +38,9 @@ export function Showcase() {
   return (
     <div>
       <div class={s.top}>
-        <div class={s.avatar} aria-hidden="true">
-          {initials(name)}
+        <div class={s.avatarWrap} aria-hidden="true">
+          <Disc class={s.avatarDisc} />
+          <span class={s.avatarLabel}>{initials(name)}</span>
         </div>
         <div class={s.who}>
           <p class={s.name}>{name}</p>
@@ -122,6 +123,20 @@ function ShareDialog({ name, onClose }: { name: string; onClose: () => void }) {
   );
 }
 
+/** Ранговая метка (ADR 0011) — тот же материал, что у Disc, а не отдельная плашка: настоящий диск в
+ * миниатюре с цветной «печатью» ранга (золото/серебро/бронза) поверх, как у CD — бумажная наклейка
+ * с текстом на отражающем поле, а не рисованный кружок. */
+function RankBadge({ rank }: { rank: number }) {
+  return (
+    <span class={s.rankBadge}>
+      <Disc class={s.rankBadgeDisc} />
+      <span class={s.rankNum} data-rank={rank} aria-label={`Ранг ${rank}`}>
+        {rank}
+      </span>
+    </span>
+  );
+}
+
 function ArtistShelf({
   artists,
   owner,
@@ -156,9 +171,7 @@ function ArtistShelf({
             <a class={s.artistLink} href={href.release(a.release.id)}>
               <span class={s.rankWrap}>
                 <Cover release={a.release} size="grid" />
-                <span class={s.rank} data-rank={i + 1} aria-label={`Ранг ${i + 1}`}>
-                  {i + 1}
-                </span>
+                <RankBadge rank={i + 1} />
               </span>
               <span class={s.artistName}>{a.name}</span>
             </a>
@@ -198,16 +211,12 @@ function ReleaseShelf({
       <h2 class={s.title}>{title}</h2>
       <ul class={s.shelf}>
         {list.map((r, i) => (
-          <li key={r.id} class={`${s.rel} ${hero && i === 0 ? s.hero : ''}`}>
+          <li key={r.id} class={`${s.rel} ${rank ? s.ranked : ''} ${hero && i === 0 ? s.hero : ''}`}>
             <a class={s.relLink} href={href.release(r.id)}>
-              {hero && i === 0 && <Disc class={s.heroDisc} />}
+              {rank && <Disc class={s.peekDisc} />}
               <span class={s.rankWrap}>
                 <Cover release={r} size="grid" />
-                {rank && (
-                  <span class={s.rank} data-rank={i + 1} aria-label={`Ранг ${i + 1}`}>
-                    {i + 1}
-                  </span>
-                )}
+                {rank && <RankBadge rank={i + 1} />}
               </span>
               <span class={s.relName}>{r.title}</span>
               <span class={s.relArtist}>{r.artist}</span>
