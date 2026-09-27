@@ -1,8 +1,11 @@
+import { useState } from 'preact/hooks';
 import { BackupSettings } from '../components/BackupSettings';
 import { Icon } from '../components/Icon';
 import { ClaimOwnership, PublishSettings } from '../components/PublishSettings';
 import { SpotifySettings } from '../components/SpotifySettings';
+import { WhatsNew } from '../components/WhatsNew';
 import { goBack } from '../router';
+import { CHANGELOG } from '../services/changelog';
 import {
   isOwner,
   localReleaseCount,
@@ -34,6 +37,7 @@ const THEMES: { id: ThemePref; label: string }[] = [
 /** Настройки (раздел 6.5). */
 export function Settings() {
   const owner = isOwner.value;
+  const [showChangelog, setShowChangelog] = useState(false);
 
   const saveName = async (name: string) => {
     if (name.trim() === ownerName.value) return;
@@ -163,8 +167,12 @@ export function Settings() {
             </a>
             .
           </p>
+          <button type="button" class="btn" onClick={() => setShowChangelog(true)}>
+            Что нового
+          </button>
         </section>
       </div>
+      {showChangelog && <WhatsNew entries={CHANGELOG} onClose={() => setShowChangelog(false)} />}
     </div>
   );
 }

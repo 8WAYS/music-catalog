@@ -180,6 +180,10 @@
   scrollbar-width: none;
   overscroll-behavior-x: contain;
   scroll-padding-inline: var(--s4);
+  /* Лента живёт внутри свайпаемой по горизонтали вкладки (.panel, touch-action: pan-y) — без
+     явного pan-x здесь горизонтальный тач-скролл ленты конкурирует со свайпом вкладок за один
+     и тот же жест, как было у полок Витрины (ADR 0011) до того же исправления. */
+  touch-action: pan-x;
 }
 .chips::-webkit-scrollbar {
   display: none;

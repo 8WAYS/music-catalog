@@ -1,0 +1,16 @@
+.entry + .entry {
+  margin-top: var(--s3);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+.meta {
+  margin: 0 0 var(--s2);
+  font-size: 13px;
+}
+.list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 6px;
+  color: var(--text);
+}

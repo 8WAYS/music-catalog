@@ -1,17 +1,22 @@
 import { signal } from '@preact/signals';
 import { SvgDefs } from './components/Aura';
 import { ConfirmDialog, Toasts } from './components/Overlays';
+import { WhatsNew } from './components/WhatsNew';
 import { route } from './router';
 import { AddSearch } from './screens/AddSearch';
 import { Editor } from './screens/Editor';
 import { Home } from './screens/Home';
 import { Release } from './screens/Release';
 import { Settings } from './screens/Settings';
+import { type ChangelogEntry, unseenChangelog } from './services/changelog';
 import { isOwner, loadError, ready } from './store/app';
 import s from './app.module.css';
 
 /** Колбэк обновления service worker (vite-plugin-pwa); null — обновлений нет. */
 export const pendingUpdate = signal<(() => void) | null>(null);
+
+/** Что нового с прошлого запуска (ADR — «Что нового»); пусто — либо первый запуск, либо версия та же. */
+export const newsToShow = signal<ChangelogEntry[]>(unseenChangelog());
 
 function Screen() {
   const r = route.value;
@@ -68,6 +73,9 @@ export function App() {
             Обновить
           </button>
         </div>
+      )}
+      {newsToShow.value.length > 0 && (
+        <WhatsNew entries={newsToShow.value} onClose={() => (newsToShow.value = [])} />
       )}
       <Toasts />
       <ConfirmDialog />

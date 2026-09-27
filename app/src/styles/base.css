@@ -215,14 +215,18 @@ html.transitioning .aura {
   }
 }
 
-/* Переходы между экранами (View Transitions): мягкая пружина */
+/* Переходы между экранами (View Transitions): плавное торможение, без перелёта — --spring-soft
+   (перелёт ~6%, для маленьких акцентов вроде звёздочки) на большом движущемся элементе вроде
+   обложки читался как дёрганый «бросок», а не переход. Растворение фона синхронизировано по
+   длительности с обложкой — иначе фон уже замер, а обложка ещё долетает до места. */
 ::view-transition-group(*) {
   animation-duration: 420ms;
-  animation-timing-function: var(--spring-soft);
+  animation-timing-function: var(--ease-out);
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 220ms;
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
 }
 
 /*

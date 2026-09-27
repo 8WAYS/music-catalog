@@ -1,0 +1,37 @@
+/** Что нового (не ADR): короткая пользовательская выжимка изменений, вручную обновляется при
+ * каждом заметном релизе — в отличие от ADR/CLAUDE.md, это для владельца и его друзей, не для
+ * разработки, поэтому без внутренних деталей реализации. Новые записи — сверху. */
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  items: string[];
+}
+
+export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '0.14.0',
+    date: '2026-09-27',
+    items: [
+      'Витрина: топ-3 альбома и топ-3 артиста — пьедестал вместо длинной полки закреплённого',
+      'Ранговые места и аватар владельца — теперь настоящий диск, как на карточке релиза',
+      'Починили: долгое нажатие на iPhone больше не открывает системное меню поверх закрепления',
+      'Починили: лента тегов и полки Витрины больше не путаются со свайпом между вкладками',
+      'Переход между экранами — плавнее, без рывка',
+    ],
+  },
+];
+
+const SEEN_KEY = 'changelogSeen';
+
+/**
+ * Что нового с прошлого раза, когда открывали приложение. На самом первом запуске (ключа в
+ * localStorage ещё нет) ничего не возвращаем — сравнивать не с чем, а не вываливать всю историю
+ * разом на нового человека.
+ */
+export function unseenChangelog(): ChangelogEntry[] {
+  const seen = localStorage.getItem(SEEN_KEY);
+  localStorage.setItem(SEEN_KEY, __APP_VERSION__);
+  if (!seen || seen === __APP_VERSION__) return [];
+  const idx = CHANGELOG.findIndex((e) => e.version === seen);
+  return idx === -1 ? CHANGELOG.slice(0, 1) : CHANGELOG.slice(0, idx);
+}
