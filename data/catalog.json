@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 62,
-  "publishedAt": "2026-09-27T10:59:42.074Z",
+  "revision": 66,
+  "publishedAt": "2026-09-27T11:00:01.042Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -354,7 +354,7 @@
         }
       ],
       "createdAt": "2026-09-25T18:38:15.522Z",
-      "updatedAt": "2026-09-27T10:42:56.878Z",
+      "updatedAt": "2026-09-27T10:59:48.773Z",
       "year": 2021,
       "itunesId": 1711600555,
       "cover": "covers/07a69893-f0c3-4aab-85db-91e989dd208c.jpg",
@@ -364,7 +364,7 @@
         "text": "#e9ebf2"
       },
       "pinned": true,
-      "pinnedAt": "2026-09-27T10:42:56.877Z"
+      "pinnedAt": "2026-09-27T10:59:48.773Z"
     },
     {
       "id": "23acac90-378c-4eb5-afc6-3d23ed6bacee",
@@ -536,16 +536,16 @@
   ],
   "pinnedArtists": [
     {
+      "name": "cardinparis",
+      "releaseId": "fcfc90b9-9a33-4d8e-93bd-9f3abf617dd8"
+    },
+    {
       "name": "elyaplugg!",
       "releaseId": "53f4263f-2106-4aea-9feb-43ecb0bf91c4"
     },
     {
       "name": "Поларойд",
       "releaseId": "b647bda7-bd35-4933-a334-61e1886decfd"
-    },
-    {
-      "name": "cardinparis",
-      "releaseId": "23acac90-378c-4eb5-afc6-3d23ed6bacee"
     }
   ]
 }
