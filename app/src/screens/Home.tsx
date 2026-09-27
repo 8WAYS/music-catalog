@@ -27,10 +27,9 @@ import {
   staleCatalog,
   tags,
   toast,
-  toastError,
 } from '../store/app';
 import { SYNC_LABEL, syncState } from '../store/sync';
-import { toggleReleasePin } from '../store/showcase';
+import { pinErrorToast, toggleReleasePin } from '../store/showcase';
 import { useLongPress } from '../hooks/useLongPress';
 import { useSwipeTabs } from '../hooks/useSwipeTabs';
 import { pluralize } from '../utils/normalize';
@@ -44,7 +43,7 @@ const TAB_LABEL = ['Картотека', 'Витрина'] as const;
 function pinFeedback(release: Release): void {
   void toggleReleasePin(release)
     .then((next) => toast(next.pinned ? 'Закреплено на витрине' : 'Откреплено с витрины'))
-    .catch(toastError);
+    .catch(pinErrorToast);
 }
 
 function GridItem({ release: r, owner, sortYear }: { release: Release; owner: boolean; sortYear: boolean }) {

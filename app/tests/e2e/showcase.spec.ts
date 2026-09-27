@@ -39,7 +39,7 @@ test('долгое нажатие на обложку закрепляет ре�
   await expect(page).not.toHaveURL(/#\/release\//);
 
   await page.getByRole('tab', { name: 'Витрина' }).click();
-  await expect(showcase.getByRole('heading', { name: 'Любимые альбомы' })).toBeVisible();
+  await expect(showcase.getByRole('heading', { name: 'Топ-3 альбома' })).toBeVisible();
   await expect(showcase.getByText('In Rainbows')).toBeVisible();
   await expect(showcase.getByRole('heading', { name: 'Синглы и EP' })).toBeVisible();
   await expect(showcase.getByText('Долгим нажатием на обложку сингла или EP')).toBeVisible();
@@ -97,7 +97,7 @@ test('долгое нажатие на имя исполнителя закре�
 
   await page.goto('./#/showcase');
   const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
-  await expect(showcase.getByRole('heading', { name: 'Любимые артисты' })).toBeVisible();
+  await expect(showcase.getByRole('heading', { name: 'Топ-3 артиста' })).toBeVisible();
   await expect(showcase.getByRole('link', { name: /Radiohead/ })).toBeVisible();
 });
 
@@ -148,7 +148,7 @@ test('зритель видит закреплённых владельцем а
   await mockAsViewer(page, { pinnedArtists: [{ name: 'Radiohead', releaseId: ID.rainbows }] });
   await page.goto('./#/showcase');
   const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
-  await expect(showcase.getByRole('heading', { name: 'Любимые артисты' })).toBeVisible();
+  await expect(showcase.getByRole('heading', { name: 'Топ-3 артиста' })).toBeVisible();
   await expect(showcase.getByRole('link', { name: /Radiohead/ })).toHaveAttribute(
     'href',
     `#/release/${ID.rainbows}`,
@@ -177,6 +177,68 @@ test('зритель тоже может поделиться ссылкой н�
   await page.getByLabel('Поделиться витриной').click();
   const dialog = page.getByRole('dialog', { name: 'Поделиться витриной' });
   await expect(dialog.getByText(/#\/showcase$/)).toBeVisible();
+});
+
+/** Топ-3 (ADR 0011): ровно 3 места, четвёртый не закрепляется, пока не освободить одно. */
+test('топ-3 альбомов занят — четвёртый долгим нажатием не закрепляется', async ({ page }) => {
+  const at = (h: number) => new Date(2024, 0, 1, h).toISOString();
+  const albums = ['Album 1', 'Album 2', 'Album 3', 'Album 4'].map((title, i) => ({
+    id: `00000000-0000-4000-8000-0000000000d${i + 1}`,
+    title,
+    artist: 'X',
+    createdAt: at(i),
+    pinned: i < 3,
+    pinnedAt: i < 3 ? at(i) : undefined,
+  }));
+  await seed(page, { tags: [], releases: albums });
+
+  const catalog = page.getByRole('tabpanel', { name: 'Картотека' });
+  const cover = catalog.getByRole('list').getByRole('link').filter({ hasText: 'Album 4' });
+  await longPress(cover);
+  await expect(page.getByText('Топ-3 альбомов уже занят')).toBeVisible();
+
+  await page.getByRole('tab', { name: 'Витрина' }).click();
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+  await expect(showcase.getByText('Album 4')).toHaveCount(0);
+  await expect(showcase.getByRole('listitem').filter({ hasText: 'Album' })).toHaveCount(3);
+});
+
+test('топ-3 артистов занят — четвёртый долгим нажатием не закрепляется', async ({ page }) => {
+  const release = {
+    id: '00000000-0000-4000-8000-0000000000e1',
+    title: 'R',
+    artist: 'Свежий',
+    createdAt: '2024-01-01',
+  };
+  await seed(page, {
+    tags: [],
+    releases: [release],
+    pinnedArtists: [
+      { name: 'A1', releaseId: release.id },
+      { name: 'A2', releaseId: release.id },
+      { name: 'A3', releaseId: release.id },
+    ],
+  });
+
+  await page.goto(`./#/release/${release.id}`);
+  await longPress(page.getByText('Свежий', { exact: true }));
+  await expect(page.getByText('Топ-3 артистов уже занят')).toBeVisible();
+
+  await page.goto('./#/showcase');
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+  await expect(showcase.getByText('Свежий')).toHaveCount(0);
+});
+
+test('ранговые метки 1/2/3 видны у топ-3 альбомов и артистов', async ({ page }) => {
+  await seed(page, { tags: TAGS, releases: RELEASES });
+  const catalog = page.getByRole('tabpanel', { name: 'Картотека' });
+  await longPress(catalog.getByRole('list').getByRole('link').filter({ hasText: 'In Rainbows' }));
+  await page.goto(`./#/release/${ID.rainbows}`);
+  await longPress(page.getByText('Radiohead', { exact: true }));
+
+  await page.goto('./#/showcase');
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+  await expect(showcase.locator('[aria-label="Ранг 1"]').first()).toBeVisible();
 });
 
 /** Друг открывает опубликованную ссылку — картотека только для просмотра (как в publish.spec.ts). */

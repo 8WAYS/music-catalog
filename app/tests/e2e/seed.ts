@@ -10,24 +10,30 @@ export interface SeedRelease {
   id: string;
   title: string;
   artist: string;
+  type?: 'album' | 'single' | 'ep';
   year?: number;
   description?: string;
   tagIds?: string[];
   tracks?: string[];
   createdAt: string;
+  pinned?: boolean;
+  pinnedAt?: string;
 }
 
-/** Кладёт релизы и теги прямо в IndexedDB приложения и перезагружает страницу. */
-export async function seed(page: Page, data: { tags: SeedTag[]; releases: SeedRelease[] }): Promise<void> {
+/** Кладёт релизы, теги и (если заданы) закреплённых артистов прямо в IndexedDB, перезагружает страницу. */
+export async function seed(
+  page: Page,
+  data: { tags: SeedTag[]; releases: SeedRelease[]; pinnedArtists?: { name: string; releaseId: string }[] },
+): Promise<void> {
   await page.goto('./');
   await page.getByRole('heading', { name: 'Картотека пуста' }).waitFor();
-  await page.evaluate(async ({ tags, releases }) => {
+  await page.evaluate(async ({ tags, releases, pinnedArtists }) => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       const req = indexedDB.open('music-catalog');
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => reject(req.error);
     });
-    const tx = db.transaction(['tags', 'releases'], 'readwrite');
+    const tx = db.transaction(['tags', 'releases', 'meta'], 'readwrite');
     for (const t of tags) tx.objectStore('tags').put(t);
     for (const r of releases)
       tx.objectStore('releases').put({
@@ -43,6 +49,7 @@ export async function seed(page: Page, data: { tags: SeedTag[]; releases: SeedRe
           favorite: false,
         })),
       });
+    if (pinnedArtists) tx.objectStore('meta').put(pinnedArtists, 'pinnedArtists');
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);

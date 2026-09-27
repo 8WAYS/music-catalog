@@ -7,8 +7,8 @@ import { QrCode } from '../components/QrCode';
 import type { Release } from '../data/schema';
 import { href, shareUrl } from '../router';
 import { shareOrCopy } from '../services/share';
-import { isOwner, ownerName, pinnedArtists, releases, releasesById, toast } from '../store/app';
-import { pinnedAlbums, pinnedReleases, pinnedSingles } from '../store/showcase';
+import { isOwner, ownerName, releases, releasesById, toast } from '../store/app';
+import { pinnedAlbums, pinnedReleases, pinnedSingles, topArtists } from '../store/showcase';
 import { syncState } from '../store/sync';
 import { initials, pluralize } from '../utils/normalize';
 import s from './Showcase.module.css';
@@ -31,7 +31,7 @@ export function Showcase() {
   const canShare = !owner || syncState.value.status !== 'off';
   const [shareOpen, setShareOpen] = useState(false);
 
-  const artists = pinnedArtists.value
+  const artists = topArtists.value
     .map((a) => ({ ...a, release: releasesById.value.get(a.releaseId) }))
     .filter((a): a is typeof a & { release: Release } => !!a.release);
 
@@ -62,11 +62,12 @@ export function Showcase() {
 
       <ArtistShelf artists={artists} owner={owner} />
       <ReleaseShelf
-        title="Любимые альбомы"
+        title="Топ-3 альбома"
         list={pinnedAlbums.value}
         hero
+        rank
         owner={owner}
-        emptyHint="Долгим нажатием на обложку альбома в картотеке — закрепить первый"
+        emptyHint="Долгим нажатием на обложку альбома в картотеке — закрепить в топ-3"
       />
       <ReleaseShelf
         title="Синглы и EP"
@@ -132,19 +133,24 @@ function ArtistShelf({
     if (!owner) return null;
     return (
       <section class={s.section}>
-        <h2 class={s.title}>Любимые артисты</h2>
-        <p class={s.hint}>Долгим нажатием на имя исполнителя в карточке релиза — закрепить первого</p>
+        <h2 class={s.title}>Топ-3 артиста</h2>
+        <p class={s.hint}>Долгим нажатием на имя исполнителя в карточке релиза — закрепить в топ-3</p>
       </section>
     );
   }
   return (
     <section class={s.section}>
-      <h2 class={s.title}>Любимые артисты</h2>
+      <h2 class={s.title}>Топ-3 артиста</h2>
       <ul class={s.shelf}>
-        {artists.map((a) => (
+        {artists.map((a, i) => (
           <li key={a.name} class={s.artist}>
             <a class={s.artistLink} href={href.release(a.release.id)}>
-              <Cover release={a.release} size="grid" />
+              <span class={s.rankWrap}>
+                <Cover release={a.release} size="grid" />
+                <span class={s.rank} aria-label={`Ранг ${i + 1}`}>
+                  {i + 1}
+                </span>
+              </span>
               <span class={s.artistName}>{a.name}</span>
             </a>
           </li>
@@ -158,12 +164,14 @@ function ReleaseShelf({
   title,
   list,
   hero,
+  rank,
   owner,
   emptyHint,
 }: {
   title: string;
   list: Release[];
   hero?: boolean;
+  rank?: boolean;
   owner: boolean;
   emptyHint: string;
 }) {
@@ -184,7 +192,14 @@ function ReleaseShelf({
           <li key={r.id} class={`${s.rel} ${hero && i === 0 ? s.hero : ''}`}>
             <a class={s.relLink} href={href.release(r.id)}>
               {hero && i === 0 && <Disc class={s.heroDisc} />}
-              <Cover release={r} size="grid" />
+              <span class={s.rankWrap}>
+                <Cover release={r} size="grid" />
+                {rank && (
+                  <span class={s.rank} aria-label={`Ранг ${i + 1}`}>
+                    {i + 1}
+                  </span>
+                )}
+              </span>
               <span class={s.relName}>{r.title}</span>
               <span class={s.relArtist}>{r.artist}</span>
             </a>

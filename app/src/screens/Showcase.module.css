@@ -75,9 +75,34 @@
   list-style: none;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
+  /* Полка живёт внутри свайпаемой по горизонтали вкладки (Home.tsx, touch-action: pan-y на
+     .viewport) — без явного pan-x здесь горизонтальный тач-скролл полки конкурирует со свайпом
+     вкладок за один и тот же жест. */
+  touch-action: pan-x;
 }
 .shelf::-webkit-scrollbar {
   display: none;
+}
+
+/* Ранговая метка топ-3 (ADR 0011) — кружок с номером поверх обложки/аватара */
+.rankWrap {
+  position: relative;
+  display: block;
+}
+.rank {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--chrome);
+  color: rgba(20, 22, 30, 0.75);
+  font: 700 12px var(--font-display);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 /* Артисты — круглые плитки */

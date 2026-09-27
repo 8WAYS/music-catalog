@@ -17,7 +17,7 @@ import {
   toast,
   toastError,
 } from '../store/app';
-import { isArtistPinned, pinArtist, toggleReleasePin, unpinArtist } from '../store/showcase';
+import { isArtistPinned, pinArtist, pinErrorToast, toggleReleasePin, unpinArtist } from '../store/showcase';
 import { useLongPress } from '../hooks/useLongPress';
 import { formatDuration, pluralize } from '../utils/normalize';
 import s from './Release.module.css';
@@ -36,13 +36,13 @@ export function Release({ id }: { id: string }) {
     if (!release) return;
     void toggleReleasePin(release)
       .then((next) => toast(next.pinned ? 'Закреплено на витрине' : 'Откреплено с витрины'))
-      .catch(toastError);
+      .catch(pinErrorToast);
   });
   const pinArtistPress = useLongPress(() => {
     if (!release) return;
     void (artistPinned ? unpinArtist(release.artist) : pinArtist(release.artist, release.id))
       .then(() => toast(artistPinned ? 'Артист откреплён' : 'Артист закреплён на витрине'))
-      .catch(toastError);
+      .catch(pinErrorToast);
   });
 
   if (!release) {
