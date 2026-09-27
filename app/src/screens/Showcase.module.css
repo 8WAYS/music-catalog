@@ -98,79 +98,36 @@
   display: none;
 }
 
-/* Ранговая метка топ-3 (ADR 0011) — сама метка тоже диск (тот же Disc, что и всюду в приложении),
-   а не рисованный кружок: снаружи — настоящее отражающее поле, внутри — цветная «наклейка» ранга
-   (золото/серебро/бронза), как печатный лейбл на CD поверх блестящего поля. Наклейка нужна и для
-   контраста: цифра иначе терялась бы на переливах отражения при вращении диска. */
-.rankWrap {
-  position: relative;
-  display: block;
-}
-.rankBadge {
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  z-index: 2;
-  width: 22px;
-  height: 22px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
-}
-.rankBadgeDisc {
-  width: 100%;
-  height: 100%;
-}
-.rankNum {
-  position: absolute;
-  inset: 20%;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font: 700 10px var(--font-display);
-  box-shadow:
-    inset 0 -1px 2px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5);
-}
-.rankNum[data-rank='1'] {
-  background: radial-gradient(circle at 32% 28%, #fff6d8, #e3bb56 55%, #8a621f 100%);
-  color: #4a3009;
-}
-.rankNum[data-rank='2'] {
-  background: radial-gradient(circle at 32% 28%, #f5f7fa, #b7bfc9 55%, #656d78 100%);
-  color: #262b33;
-}
-.rankNum[data-rank='3'] {
-  background: radial-gradient(circle at 32% 28%, #f0c39c, #ab6a3b 55%, #5c341a 100%);
-  color: #331a08;
-}
-
-/* Пьедестал (ArtistShelf, ровно 3 закреплённых) — подписи на одной линии внизу, первое место крупнее
-   и потому выше остальных само по себе, без отдельных сдвигов и подгонки под каждый ранг. */
+/* Пьедестал (ADR 0011, ровно 3 закреплённых) — второе место слева, первое в центре и выше, третье
+   справа. Ранг называет сама высота места, поэтому отдельная плашка с цифрой на диске не нужна —
+   на предыдущем заходе она спорила с остальным металлом и выглядела наклейкой ради наклейки.
+   Подписи на одной линии внизу (align-items: flex-end), а «выше» получается само — просто из
+   разницы в размере плиток между рангами, без ручных сдвигов и подгонки под каждое место. */
 .podium {
   align-items: flex-end;
+  justify-content: safe center;
 }
 
-/* Артисты — круглые плитки */
+/* Артисты — круглые плитки, три размера по рангу (1 — крупнее, 3 — компактнее) */
 .artist {
   flex: none;
-  width: 76px;
+  width: 60px;
   scroll-snap-align: start;
+}
+.artist[data-rank='2'] {
+  width: 72px;
+}
+.artist[data-rank='1'] {
+  width: 88px;
 }
 .artistLink {
   display: block;
   text-align: center;
 }
 .artist [role='img'] {
-  width: 68px;
-  height: 68px;
+  width: 100%;
+  aspect-ratio: 1;
   border-radius: 50%;
-  margin: 0 auto;
-}
-.artist[data-rank='1'] {
-  width: 92px;
-}
-.artist[data-rank='1'] [role='img'] {
-  width: 84px;
-  height: 84px;
 }
 .artistName {
   display: block;
@@ -212,12 +169,19 @@
   font-size: 12px;
 }
 
-/* Топ-3 альбомов — обложка не на всю плитку, из-за неё выглядывает диск (тот же приём, что и у
-   рангового значка: витрина — про диски, не про плоские квадраты обложек). Первое место — «герой»,
-   шире и с более крупным диском; второе-третье — тот же приём спокойнее, без лишнего внимания. */
+/* Топ-3 альбомов — три размера плитки по рангу (тот же пьедестал, что у артистов), обложка не на
+   всю плитку — из-за неё выглядывает диск (доля в процентах одна на все три ранга, масштабируется
+   вместе с шириной плитки, отдельные подгонки под каждое место не нужны). */
 .rel.ranked {
   position: relative;
   isolation: isolate;
+  width: 76px;
+}
+.rel.ranked[data-rank='2'] {
+  width: 90px;
+}
+.rel.ranked[data-rank='1'] {
+  width: 110px;
 }
 .rel.ranked [role='img'] {
   position: relative;
@@ -231,15 +195,4 @@
   width: 46%;
   z-index: 0;
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
-}
-.rel.ranked.hero {
-  width: 168px;
-}
-.rel.ranked.hero [role='img'] {
-  width: 76%;
-}
-.rel.ranked.hero .peekDisc {
-  top: 8%;
-  width: 58%;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }

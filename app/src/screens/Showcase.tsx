@@ -65,7 +65,6 @@ export function Showcase() {
       <ReleaseShelf
         title="Топ-3 альбома"
         list={pinnedAlbums.value}
-        hero
         rank
         owner={owner}
         emptyHint="Долгим нажатием на обложку альбома в картотеке — закрепить в топ-3"
@@ -123,19 +122,11 @@ function ShareDialog({ name, onClose }: { name: string; onClose: () => void }) {
   );
 }
 
-/** Ранговая метка (ADR 0011) — тот же материал, что у Disc, а не отдельная плашка: настоящий диск в
- * миниатюре с цветной «печатью» ранга (золото/серебро/бронза) поверх, как у CD — бумажная наклейка
- * с текстом на отражающем поле, а не рисованный кружок. */
-function RankBadge({ rank }: { rank: number }) {
-  return (
-    <span class={s.rankBadge}>
-      <Disc class={s.rankBadgeDisc} />
-      <span class={s.rankNum} data-rank={rank} aria-label={`Ранг ${rank}`}>
-        {rank}
-      </span>
-    </span>
-  );
-}
+/** Пьедестал (ADR 0011) — второе место слева, первое в центре и выше, третье справа: сама высота
+ * называет место, отдельный номер на диске не нужен — цветная плашка с цифрой поверх отражающего
+ * поля и так спорила с остальным металлом, а тут ранг понятен без неё. Строится, только когда мест
+ * ровно 3 — с одним-двумя закреплёнными подиум не из чего собрать, обычный порядок честнее. */
+const PODIUM_ORDER = [2, 1, 3];
 
 function ArtistShelf({
   artists,
@@ -153,10 +144,7 @@ function ArtistShelf({
       </section>
     );
   }
-  // «Пьедестал» — вторая позиция слева, первая (крупнее) в центре, третья справа — только когда
-  // мест ровно 3: с одним-двумя закреплёнными строить пьедестал не из чего, обычный порядок честнее.
   const podium = artists.length === 3;
-  const podiumOrder = [2, 1, 3];
   return (
     <section class={s.section}>
       <h2 class={s.title}>Топ-3 артиста</h2>
@@ -166,13 +154,10 @@ function ArtistShelf({
             key={a.name}
             class={s.artist}
             data-rank={i + 1}
-            style={podium ? { order: podiumOrder[i] } : undefined}
+            style={podium ? { order: PODIUM_ORDER[i] } : undefined}
           >
             <a class={s.artistLink} href={href.release(a.release.id)}>
-              <span class={s.rankWrap}>
-                <Cover release={a.release} size="grid" />
-                <RankBadge rank={i + 1} />
-              </span>
+              <Cover release={a.release} size="grid" />
               <span class={s.artistName}>{a.name}</span>
             </a>
           </li>
@@ -185,14 +170,12 @@ function ArtistShelf({
 function ReleaseShelf({
   title,
   list,
-  hero,
   rank,
   owner,
   emptyHint,
 }: {
   title: string;
   list: Release[];
-  hero?: boolean;
   rank?: boolean;
   owner: boolean;
   emptyHint: string;
@@ -206,18 +189,21 @@ function ReleaseShelf({
       </section>
     );
   }
+  const podium = rank && list.length === 3;
   return (
     <section class={s.section}>
       <h2 class={s.title}>{title}</h2>
-      <ul class={s.shelf}>
+      <ul class={`${s.shelf} ${podium ? s.podium : ''}`}>
         {list.map((r, i) => (
-          <li key={r.id} class={`${s.rel} ${rank ? s.ranked : ''} ${hero && i === 0 ? s.hero : ''}`}>
+          <li
+            key={r.id}
+            class={`${s.rel} ${rank ? s.ranked : ''}`}
+            data-rank={rank ? i + 1 : undefined}
+            style={podium ? { order: PODIUM_ORDER[i] } : undefined}
+          >
             <a class={s.relLink} href={href.release(r.id)}>
               {rank && <Disc class={s.peekDisc} />}
-              <span class={s.rankWrap}>
-                <Cover release={r} size="grid" />
-                {rank && <RankBadge rank={i + 1} />}
-              </span>
+              <Cover release={r} size="grid" />
               <span class={s.relName}>{r.title}</span>
               <span class={s.relArtist}>{r.artist}</span>
             </a>

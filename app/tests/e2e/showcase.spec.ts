@@ -229,16 +229,46 @@ test('топ-3 артистов занят — четвёртый долгим �
   await expect(showcase.getByText('Свежий')).toHaveCount(0);
 });
 
-test('ранговые метки 1/2/3 видны у топ-3 альбомов и артистов', async ({ page }) => {
-  await seed(page, { tags: TAGS, releases: RELEASES });
-  const catalog = page.getByRole('tabpanel', { name: 'Картотека' });
-  await longPress(catalog.getByRole('list').getByRole('link').filter({ hasText: 'In Rainbows' }));
-  await page.goto(`./#/release/${ID.rainbows}`);
-  await longPress(page.getByText('Radiohead', { exact: true }));
+/** Пьедестал (ADR 0011): при полном топ-3 первое место — по центру и выше (крупнее) остальных, а не
+ * первым слева, как в обычном порядке чтения. Ранг тут называет сама позиция/размер, отдельной
+ * плашки с цифрой на диске больше нет — проверяем расположение плиток, а не подпись. */
+test('пьедестал: первое место по центру и крупнее у топ-3 альбомов и артистов', async ({ page }) => {
+  const at = (h: number) => new Date(2024, 0, 1, h).toISOString();
+  const albums = ['Album 1', 'Album 2', 'Album 3'].map((title, i) => ({
+    id: `00000000-0000-4000-8000-0000000000f${i + 1}`,
+    title,
+    artist: 'X',
+    createdAt: at(i),
+    pinned: true,
+    pinnedAt: at(i),
+  }));
+  await seed(page, {
+    tags: [],
+    releases: albums,
+    pinnedArtists: [
+      { name: 'A1', releaseId: albums[0]!.id },
+      { name: 'A2', releaseId: albums[1]!.id },
+      { name: 'A3', releaseId: albums[2]!.id },
+    ],
+  });
 
   await page.goto('./#/showcase');
   const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
-  await expect(showcase.locator('[aria-label="Ранг 1"]').first()).toBeVisible();
+
+  for (const heading of ['Топ-3 альбома', 'Топ-3 артиста']) {
+    const section = showcase.locator('section', { has: page.getByRole('heading', { name: heading }) });
+    const [box1, box2, box3] = await Promise.all([
+      section.locator('[data-rank="1"]').boundingBox(),
+      section.locator('[data-rank="2"]').boundingBox(),
+      section.locator('[data-rank="3"]').boundingBox(),
+    ]);
+    // Порядок слева направо — второе, первое, третье место
+    expect(box2!.x).toBeLessThan(box1!.x);
+    expect(box1!.x).toBeLessThan(box3!.x);
+    // Первое место крупнее и потому выше остальных (подписи выровнены по нижнему краю)
+    expect(box1!.y).toBeLessThan(box2!.y);
+    expect(box1!.y).toBeLessThan(box3!.y);
+  }
 });
 
 /** Друг открывает опубликованную ссылку — картотека только для просмотра (как в publish.spec.ts). */
