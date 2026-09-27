@@ -4,13 +4,24 @@
   letter-spacing: -0.01em;
 }
 
+/* Картотека и Витрина — это сетки/полки, им есть куда расти; общий .page (base.css) — 1200px, тесно
+   для остальных экранов с текстом, но для этих двух вкладок специально расширяем. Составной селектор
+   (а не просто .wide) — чтобы гарантированно перебить .page независимо от порядка файлов в сборке. */
+:global(.page).wide {
+  max-width: 1800px;
+}
+
 /* ---------- Вкладки: Картотека / Витрина (ADR 0011) ---------- */
 .tabsHead {
   gap: var(--s3);
+  /* На широком экране .tabsRow не должен тянуться на всю ширину шапки — иначе подчёркивание
+     под «Витрина» становится вдвое шире самого текста. */
+  justify-content: space-between;
 }
 .tabsRow {
   position: relative;
   flex: 1;
+  max-width: 380px;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -255,28 +266,15 @@
   max-width: 32ch;
   color: var(--text-muted);
 }
+/* Плитки растут вместе с шириной экрана вместо фиксированных ступеней 2/3/4/6 — на большом
+   мониторе обложки раньше застывали ~180px и весь лишний простор уходил в пустые поля по бокам. */
 .grid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(clamp(136px, 22vw, 220px), 1fr));
   gap: var(--s5) var(--s4);
-}
-@media (min-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (min-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (min-width: 1200px) {
-  .grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
 }
 @supports (animation-timeline: view()) {
   .grid li {

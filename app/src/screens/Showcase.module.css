@@ -1,3 +1,31 @@
+/* Витрина на широком экране — не одна колонка на всю ширину: слева профиль-«сайдбар», справа
+   полки. На телефоне/планшете (нет места для двух колонок) — просто одна колонка сверху вниз. */
+.layout {
+  display: grid;
+  gap: var(--s5);
+}
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    gap: var(--s6);
+    align-items: start;
+  }
+}
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+@media (min-width: 900px) {
+  .hero {
+    position: sticky;
+    top: var(--s4);
+  }
+}
+.content {
+  min-width: 0;
+}
+
 .top {
   display: flex;
   align-items: center;
@@ -32,13 +60,8 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 19px;
+  font-size: clamp(19px, 2.4vw, 26px);
   color: var(--text);
-}
-.stat {
-  margin: 2px 0 0;
-  color: var(--text-muted);
-  font-size: 13px;
 }
 .who {
   min-width: 0;
@@ -46,6 +69,37 @@
 }
 .shareBtn {
   flex: none;
+}
+
+/* Цифры-итоги (сколько релизов/артистов, с какого года коллекция) — крупная жирная цифра и
+   мелкая подпись под ней, тот же приём, что у Wrapped-подобных музыкальных итогов: коллекция
+   говорит сама за себя числами, а не только списком. Все три числа уже есть в данных релизов —
+   ничего нового не считаем и не храним. */
+.figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s5);
+}
+@media (min-width: 900px) {
+  .figures {
+    flex-direction: column;
+    gap: var(--s3);
+  }
+}
+.figure {
+  display: flex;
+  flex-direction: column;
+}
+.figureNum {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1.15;
+  color: var(--text);
+}
+.figureLabel {
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 /* ---------- Диалог «Поделиться» ---------- */
@@ -69,10 +123,13 @@
 .section {
   margin-top: var(--s5);
 }
+.section:first-child {
+  margin-top: 0;
+}
 .title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 15px;
+  font-size: clamp(15px, 1.6vw, 19px);
 }
 .hint {
   margin: var(--s2) 0 0;
@@ -97,6 +154,15 @@
 .shelf::-webkit-scrollbar {
   display: none;
 }
+/* Синглы/EP (список без предела, ADR 0011) — на телефоне лента со скроллом, но как только ширины
+   хватает, полезнее показать сразу несколько рядов, чем прятать в горизонтальный скролл. Пьедестал
+   (.podium, ровно 3 места) переносить не нужно — он и так весь виден. */
+@media (min-width: 640px) {
+  .shelf:not(.podium) {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
 
 /* Пьедестал (ADR 0011, ровно 3 закреплённых) — второе место слева, первое в центре и выше, третье
    справа. Ранг называет сама высота места, поэтому отдельная плашка с цифрой на диске не нужна —
@@ -108,17 +174,19 @@
   justify-content: safe center;
 }
 
-/* Артисты — круглые плитки, три размера по рангу (1 — крупнее, 3 — компактнее) */
+/* Артисты — круглые плитки, три размера по рангу (1 — крупнее, 3 — компактнее); clamp() вместо
+   фиксированных px — на широком экране плитки растут вместо того, чтобы застыть в размере телефона
+   посреди пустого пространства. */
 .artist {
   flex: none;
-  width: 60px;
+  width: clamp(60px, 5vw, 96px);
   scroll-snap-align: start;
 }
 .artist[data-rank='2'] {
-  width: 72px;
+  width: clamp(72px, 6vw, 116px);
 }
 .artist[data-rank='1'] {
-  width: 88px;
+  width: clamp(88px, 7.5vw, 144px);
 }
 .artistLink {
   display: block;
@@ -142,7 +210,7 @@
 /* Альбомы/синглы — квадратные плитки */
 .rel {
   flex: none;
-  width: 116px;
+  width: clamp(116px, 9vw, 160px);
   scroll-snap-align: start;
 }
 .relLink {
@@ -175,13 +243,13 @@
 .rel.ranked {
   position: relative;
   isolation: isolate;
-  width: 76px;
+  width: clamp(76px, 7vw, 130px);
 }
 .rel.ranked[data-rank='2'] {
-  width: 90px;
+  width: clamp(90px, 8vw, 156px);
 }
 .rel.ranked[data-rank='1'] {
-  width: 110px;
+  width: clamp(110px, 10vw, 190px);
 }
 .rel.ranked [role='img'] {
   position: relative;

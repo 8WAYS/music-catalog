@@ -271,6 +271,22 @@ test('пьедестал: первое место по центру и круп�
   }
 });
 
+/** На большом экране профиль — не тесная строка сверху, а полноценная левая колонка (ADR 0011). */
+test('на широком экране профиль становится левой колонкой, а не верхней строкой', async ({ page }) => {
+  await seed(page, { tags: TAGS, releases: RELEASES });
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('./#/showcase');
+  const showcase = page.getByRole('tabpanel', { name: 'Витрина' });
+
+  const heroBox = await showcase.locator('[class*="hero"]').first().boundingBox();
+  const contentBox = await showcase.locator('[class*="content"]').first().boundingBox();
+  expect(heroBox).toBeTruthy();
+  expect(contentBox).toBeTruthy();
+  // Колонки рядом на одной высоте, а не профиль над списком
+  expect(heroBox!.x + heroBox!.width).toBeLessThanOrEqual(contentBox!.x + 1);
+  expect(Math.abs(heroBox!.y - contentBox!.y)).toBeLessThan(40);
+});
+
 /** Друг открывает опубликованную ссылку — картотека только для просмотра (как в publish.spec.ts). */
 async function mockAsViewer(page: Page, extra: Record<string, unknown> = {}): Promise<void> {
   const published = {

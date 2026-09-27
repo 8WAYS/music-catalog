@@ -120,7 +120,7 @@ export function Home() {
   };
 
   return (
-    <div class="page">
+    <div class={`page ${s.wide}`}>
       <Aura colors={swipe.index === 1 ? showcaseAuraColors() : catalogAuraColors} />
       <header class={`topbar ${s.tabsHead}`}>
         <div class={s.tabsRow} role="tablist" aria-label="Разделы">

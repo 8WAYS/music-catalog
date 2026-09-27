@@ -35,46 +35,71 @@ export function Showcase() {
     .map((a) => ({ ...a, release: releasesById.value.get(a.releaseId) }))
     .filter((a): a is typeof a & { release: Release } => !!a.release);
 
+  const all = releases.value;
+  const artistCount = new Set(all.map((r) => r.artist)).size;
+  const sinceYear = all.length
+    ? new Date(Math.min(...all.map((r) => +new Date(r.createdAt)))).getFullYear()
+    : null;
+
   return (
-    <div>
-      <div class={s.top}>
-        <div class={s.avatarWrap} aria-hidden="true">
-          <Disc class={s.avatarDisc} />
-          <span class={s.avatarLabel}>{initials(name)}</span>
+    <div class={s.layout}>
+      <div class={s.hero}>
+        <div class={s.top}>
+          <div class={s.avatarWrap} aria-hidden="true">
+            <Disc class={s.avatarDisc} />
+            <span class={s.avatarLabel}>{initials(name)}</span>
+          </div>
+          <div class={s.who}>
+            <p class={s.name}>{name}</p>
+          </div>
+          {canShare && (
+            <button
+              type="button"
+              class={`icon-btn glass ${s.shareBtn}`}
+              onClick={() => setShareOpen(true)}
+              aria-label="Поделиться витриной"
+            >
+              <Icon name="share" />
+            </button>
+          )}
         </div>
-        <div class={s.who}>
-          <p class={s.name}>{name}</p>
-          <p class={s.stat}>
-            {releases.value.length} {pluralize(releases.value.length, 'релиз', 'релиза', 'релизов')}
-          </p>
-        </div>
-        {canShare && (
-          <button
-            type="button"
-            class={`icon-btn glass ${s.shareBtn}`}
-            onClick={() => setShareOpen(true)}
-            aria-label="Поделиться витриной"
-          >
-            <Icon name="share" />
-          </button>
+        {all.length > 0 && (
+          <div class={s.figures} role="group" aria-label="О картотеке">
+            <div class={s.figure}>
+              <span class={s.figureNum}>{all.length}</span>
+              <span class={s.figureLabel}>{pluralize(all.length, 'релиз', 'релиза', 'релизов')}</span>
+            </div>
+            <div class={s.figure}>
+              <span class={s.figureNum}>{artistCount}</span>
+              <span class={s.figureLabel}>{pluralize(artistCount, 'артист', 'артиста', 'артистов')}</span>
+            </div>
+            {sinceYear && (
+              <div class={s.figure}>
+                <span class={s.figureNum}>{sinceYear}</span>
+                <span class={s.figureLabel}>коллекция с</span>
+              </div>
+            )}
+          </div>
         )}
       </div>
-      {shareOpen && <ShareDialog name={name} onClose={() => setShareOpen(false)} />}
 
-      <ArtistShelf artists={artists} owner={owner} />
-      <ReleaseShelf
-        title="Топ-3 альбома"
-        list={pinnedAlbums.value}
-        rank
-        owner={owner}
-        emptyHint="Долгим нажатием на обложку альбома в картотеке — закрепить в топ-3"
-      />
-      <ReleaseShelf
-        title="Синглы и EP"
-        list={pinnedSingles.value}
-        owner={owner}
-        emptyHint="Долгим нажатием на обложку сингла или EP в картотеке — закрепить первый"
-      />
+      <div class={s.content}>
+        <ArtistShelf artists={artists} owner={owner} />
+        <ReleaseShelf
+          title="Топ-3 альбома"
+          list={pinnedAlbums.value}
+          rank
+          owner={owner}
+          emptyHint="Долгим нажатием на обложку альбома в картотеке — закрепить в топ-3"
+        />
+        <ReleaseShelf
+          title="Синглы и EP"
+          list={pinnedSingles.value}
+          owner={owner}
+          emptyHint="Долгим нажатием на обложку сингла или EP в картотеке — закрепить первый"
+        />
+      </div>
+      {shareOpen && <ShareDialog name={name} onClose={() => setShareOpen(false)} />}
     </div>
   );
 }
