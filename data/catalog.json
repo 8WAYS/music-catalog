@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 60,
-  "publishedAt": "2026-09-27T10:55:17.777Z",
+  "revision": 62,
+  "publishedAt": "2026-09-27T10:59:42.074Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -494,7 +494,7 @@
       ],
       "links": [],
       "createdAt": "2026-09-25T22:37:14.598Z",
-      "updatedAt": "2026-09-27T10:55:10.984Z",
+      "updatedAt": "2026-09-27T10:59:34.755Z",
       "year": 2024,
       "itunesId": 1739186085,
       "cover": "covers/5df87844-2c61-40c1-abd1-9793952378f9.jpg",
@@ -504,7 +504,7 @@
         "text": "#f2eae9"
       },
       "pinned": true,
-      "pinnedAt": "2026-09-27T10:55:10.983Z"
+      "pinnedAt": "2026-09-27T10:59:34.755Z"
     },
     {
       "id": "81aeb585-85b0-4a96-aca1-d90343f2371b",
