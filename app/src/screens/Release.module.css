@@ -23,6 +23,11 @@
   justify-self: start;
   margin-left: 4vw;
   isolation: isolate;
+  /* Долгое нажатие (ADR 0011) закрепляет релиз — в Safari на iOS то же нажатие на обложке без
+     этого предлагает сохранить/скопировать картинку вместо запуска нашего таймера. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .hero > [role='img'] {
   position: relative;
@@ -87,6 +92,11 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  /* Долгое нажатие (ADR 0011) закрепляет артиста — в Safari на iOS то же нажатие на тексте без
+     этого выделяет его (лупа, маркеры выделения) вместо запуска нашего таймера. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 /* Закреплённый на витрине артист (ADR 0011) — перламутровая звёздочка тем же цветом, что у трека */
 .artist svg path {

@@ -93,6 +93,10 @@ CI гоняет WebKit на Linux без GPU, и падения, которых 
   (`src/services/spotifyAuth.ts`, без client secret на устройстве), поиск и треклист —
   `src/services/spotify.ts`. Обложку не запрашивает — у CDN Spotify нет CORS для `fetch`.
 - Доступность: зоны касания ≥ 44 px, подписи для диктора, `prefers-reduced-motion` и переключатель в настройках.
+- `useLongPress` (`src/hooks/useLongPress.ts`, ADR 0011) — элемент, на который он повешен, всегда получает
+  `-webkit-touch-callout: none; user-select: none;` в CSS: иначе в Safari на iOS то же долгое нажатие
+  открывает системное превью ссылки/картинки или выделяет текст поверх нашего таймера (Playwright
+  WebKit этого не ловит — превью и выделение показывает только настоящий Safari).
 - Тексты интерфейса — на русском, дружелюбные и короткие.
 - Коммиты — Conventional Commits (`feat:`, `fix:`, `docs:`); коммиты данных приложение подписывает `data: publish rev N`.
 - Новые архитектурные решения — короткий ADR в `docs/adr/`.

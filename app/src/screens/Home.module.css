@@ -292,6 +292,12 @@
   gap: 2px;
   text-decoration: none;
   transition: transform 180ms var(--ease-out);
+  /* Долгое нажатие (ADR 0011) закрепляет релиз — в Safari на iOS то же нажатие на ссылке/картинке
+     без этого открывает системное превью страницы или предлагает сохранить обложку, а на тексте
+     внутри — выделяет его вместо запуска нашего таймера. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .item:active {
   transform: scale(0.97);
