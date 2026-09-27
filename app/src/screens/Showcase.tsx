@@ -42,7 +42,7 @@ export function Showcase() {
           {initials(name)}
         </div>
         <div class={s.who}>
-          <p class={`${s.name} chrome-text`}>{name}</p>
+          <p class={s.name}>{name}</p>
           <p class={s.stat}>
             {releases.value.length} {pluralize(releases.value.length, 'релиз', 'релиза', 'релизов')}
           </p>
@@ -138,16 +138,25 @@ function ArtistShelf({
       </section>
     );
   }
+  // «Пьедестал» — вторая позиция слева, первая (крупнее) в центре, третья справа — только когда
+  // мест ровно 3: с одним-двумя закреплёнными строить пьедестал не из чего, обычный порядок честнее.
+  const podium = artists.length === 3;
+  const podiumOrder = [2, 1, 3];
   return (
     <section class={s.section}>
       <h2 class={s.title}>Топ-3 артиста</h2>
-      <ul class={s.shelf}>
+      <ul class={`${s.shelf} ${podium ? s.podium : ''}`}>
         {artists.map((a, i) => (
-          <li key={a.name} class={s.artist}>
+          <li
+            key={a.name}
+            class={s.artist}
+            data-rank={i + 1}
+            style={podium ? { order: podiumOrder[i] } : undefined}
+          >
             <a class={s.artistLink} href={href.release(a.release.id)}>
               <span class={s.rankWrap}>
                 <Cover release={a.release} size="grid" />
-                <span class={s.rank} aria-label={`Ранг ${i + 1}`}>
+                <span class={s.rank} data-rank={i + 1} aria-label={`Ранг ${i + 1}`}>
                   {i + 1}
                 </span>
               </span>
@@ -195,7 +204,7 @@ function ReleaseShelf({
               <span class={s.rankWrap}>
                 <Cover release={r} size="grid" />
                 {rank && (
-                  <span class={s.rank} aria-label={`Ранг ${i + 1}`}>
+                  <span class={s.rank} data-rank={i + 1} aria-label={`Ранг ${i + 1}`}>
                     {i + 1}
                   </span>
                 )}

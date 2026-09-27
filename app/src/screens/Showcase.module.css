@@ -4,22 +4,30 @@
   gap: var(--s3);
   margin-top: var(--s3);
 }
+/* Аватар-«жетон»: тот же приём объёма, что у Disc.module.css (блик со сдвигом от центра + тёмная
+   грань снизу-справа даёт купол, а не плоскую закраску) — только не гоняем свет анимацией, он и
+   так маленький и статичный, вращать там особо нечего. */
 .avatar {
   flex: none;
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--chrome);
+  background: radial-gradient(circle at 32% 28%, #fbfcfd, #c2c7d0 55%, #767c87 100%);
+  box-shadow:
+    inset 0 -3px 5px rgba(0, 0, 0, 0.3),
+    inset 0 2px 2px rgba(255, 255, 255, 0.65),
+    0 2px 6px rgba(0, 0, 0, 0.35);
   display: grid;
   place-items: center;
   font: 700 15px var(--font-display);
-  color: rgba(20, 22, 30, 0.55);
+  color: rgba(20, 22, 30, 0.6);
 }
 .name {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 19px;
+  color: var(--text);
 }
 .stat {
   margin: 2px 0 0;
@@ -84,7 +92,10 @@
   display: none;
 }
 
-/* Ранговая метка топ-3 (ADR 0011) — кружок с номером поверх обложки/аватара */
+/* Ранговая метка топ-3 (ADR 0011) — маленькая медаль, а не плоская подложка под цифрой: купольный
+   блик (радиальный градиент со сдвинутым центром, как у .avatar и Disc.module.css) и фаска по краю
+   (внутренние тень/блик) продают металл на 22px, где полноценные слои Disc уже потерялись бы в кашу.
+   Золото/серебро/бронза — сама подсказка места, а не только цифра. */
 .rankWrap {
   position: relative;
   display: block;
@@ -99,10 +110,32 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--chrome);
-  color: rgba(20, 22, 30, 0.75);
-  font: 700 12px var(--font-display);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  font: 700 11px var(--font-display);
+  box-shadow:
+    inset 0 -2px 3px rgba(0, 0, 0, 0.4),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.55),
+    0 2px 5px rgba(0, 0, 0, 0.4);
+}
+.rank[data-rank='1'] {
+  background: radial-gradient(circle at 32% 28%, #fff6d8, #e3bb56 55%, #8a621f 100%);
+  color: #4a3009;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.rank[data-rank='2'] {
+  background: radial-gradient(circle at 32% 28%, #f5f7fa, #b7bfc9 55%, #656d78 100%);
+  color: #262b33;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.rank[data-rank='3'] {
+  background: radial-gradient(circle at 32% 28%, #f0c39c, #ab6a3b 55%, #5c341a 100%);
+  color: #331a08;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Пьедестал (ArtistShelf, ровно 3 закреплённых) — подписи на одной линии внизу, первое место крупнее
+   и потому выше остальных само по себе, без отдельных сдвигов и подгонки под каждый ранг. */
+.podium {
+  align-items: flex-end;
 }
 
 /* Артисты — круглые плитки */
@@ -120,6 +153,13 @@
   height: 68px;
   border-radius: 50%;
   margin: 0 auto;
+}
+.artist[data-rank='1'] {
+  width: 92px;
+}
+.artist[data-rank='1'] [role='img'] {
+  width: 84px;
+  height: 84px;
 }
 .artistName {
   display: block;
