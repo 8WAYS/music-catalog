@@ -93,7 +93,11 @@ export function Home() {
   const swipe = useSwipeTabs(
     2,
     (i) => {
-      const query = location.hash.split('?')[1];
+      // routeQuery.value, а не location.hash: последний меняет сам браузер при «Назад»/«Вперёд»
+      // раньше, чем долетает hashchange — с ним этот колбэк (он идёт через эффект ниже, тот
+      // срабатывает не сразу после рендера) успевал прочитать уже новый hash при ещё старом
+      // route.value и переписывал историю поверх настоящей навигации (ADR 0008, добавление).
+      const query = routeQuery.value;
       const base = i === 1 ? href.showcase() : href.home();
       replaceHash(query ? `${base}?${query}` : base);
     },
