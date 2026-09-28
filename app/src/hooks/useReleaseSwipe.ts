@@ -4,6 +4,11 @@ import { reduceMotion } from '../store/app';
 const AXIS_TOLERANCE_PX = 10;
 const H_THRESHOLD_RATIO = 0.22;
 const V_THRESHOLD_PX = 120;
+// Тот же приём и по той же причине, что VERTICAL_BIAS в useSwipeTabs.ts: на настоящем touch (в
+// отличие от мыши, которой это проверялось при разработке) в первых пикселях свайпа вниз почти
+// всегда есть небольшое dx-дрожание руки, и без запаса ось иногда случайно запирается в «горизонталь»,
+// закрытие вниз молча не срабатывает — сообщили: «то работает, то нет».
+const VERTICAL_BIAS = 1.2;
 
 function motionReduced(): boolean {
   return reduceMotion.value || matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -67,11 +72,15 @@ export function useReleaseSwipe({ prevId, nextId, onNavigate, onDismiss }: Relea
     const dx = e.clientX - drag.current.startX;
     const dy = e.clientY - drag.current.startY;
     if (!drag.current.axis) {
-      if (Math.abs(dx) < AXIS_TOLERANCE_PX && Math.abs(dy) < AXIS_TOLERANCE_PX) return;
-      if (Math.abs(dx) > Math.abs(dy)) {
-        drag.current.axis = 'h';
-      } else if (dy > 0 && drag.current.atTop) {
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      if (absDx < AXIS_TOLERANCE_PX && absDy < AXIS_TOLERANCE_PX) return;
+      // Вертикаль должна явно перевешивать (VERTICAL_BIAS), не просто быть не меньше — иначе
+      // дрожание руки на touch запирает жест в горизонталь чаще, чем кажется на мыши.
+      if (dy > 0 && drag.current.atTop && absDy > absDx * VERTICAL_BIAS) {
         drag.current.axis = 'v';
+      } else if (absDx > absDy) {
+        drag.current.axis = 'h';
       } else {
         drag.current = null; // обычная прокрутка — дальше жест не наш
         endDrag(e);

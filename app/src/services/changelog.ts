@@ -9,6 +9,11 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.1',
+    date: '2026-09-29',
+    items: ['Починили: свайп вниз на карточке релиза срабатывал через раз на телефоне'],
+  },
+  {
     version: '0.18.0',
     date: '2026-09-29',
     items: [
