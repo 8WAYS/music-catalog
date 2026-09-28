@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 69,
-  "publishedAt": "2026-09-28T21:35:26.938Z",
+  "revision": 70,
+  "publishedAt": "2026-09-28T22:05:45.438Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -535,6 +535,29 @@
         "bg": "#2b1d0d",
         "accent": "#ba8b61",
         "text": "#f2ede9"
+      }
+    },
+    {
+      "id": "cc9878d7-acb4-4fb4-b69d-9732ba16ea6e",
+      "title": "STORM II",
+      "artist": "Gener8ion, Yung Lean",
+      "type": "single",
+      "tagIds": [],
+      "tracks": [],
+      "links": [
+        {
+          "service": "yandex",
+          "url": "https://music.yandex.ru/album/42534838/track/149941251?ref_id=A5B25DBA-69EB-4D93-BFA2-67EA01299957&utm_medium=copy_link"
+        }
+      ],
+      "createdAt": "2026-09-28T22:03:47.401Z",
+      "updatedAt": "2026-09-28T22:05:37.987Z",
+      "year": 2026,
+      "cover": "covers/cc9878d7-acb4-4fb4-b69d-9732ba16ea6e.jpg",
+      "coverColors": {
+        "bg": "#1f1f19",
+        "accent": "#ad8a60",
+        "text": "#f2f0e9"
       }
     }
   ],
