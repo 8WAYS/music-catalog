@@ -8,6 +8,7 @@ import { goBack, href, navigate, shareUrl } from '../router';
 import { EMPTY_FILTERS, filtersHash } from '../services/search';
 import { shareOrCopy } from '../services/share';
 import {
+  browsingOrder,
   tags as allTags,
   isOwner,
   ownerName,
@@ -19,6 +20,7 @@ import {
 } from '../store/app';
 import { isArtistPinned, pinArtist, pinErrorToast, toggleReleasePin, unpinArtist } from '../store/showcase';
 import { useLongPress } from '../hooks/useLongPress';
+import { useReleaseSwipe } from '../hooks/useReleaseSwipe';
 import { formatDuration, pluralize } from '../utils/normalize';
 import s from './Release.module.css';
 
@@ -43,6 +45,16 @@ export function Release({ id }: { id: string }) {
     void (artistPinned ? unpinArtist(release.artist) : pinArtist(release.artist, release.id))
       .then(() => toast(artistPinned ? 'Артист откреплён' : 'Артист закреплён на витрине'))
       .catch(pinErrorToast);
+  });
+  // Соседние релизы — в порядке, в котором их только что видели на Картотеке (browsingOrder);
+  // пусто или id не найден (прямая ссылка, минуя Картотеку) — соответствующая сторона свайпа не наша.
+  const order = browsingOrder.value;
+  const orderIdx = order.indexOf(id);
+  const swipe = useReleaseSwipe({
+    prevId: orderIdx > 0 ? order[orderIdx - 1]! : null,
+    nextId: orderIdx !== -1 && orderIdx < order.length - 1 ? order[orderIdx + 1]! : null,
+    onNavigate: (nextId) => navigate(href.release(nextId), { replace: true }),
+    onDismiss: () => goBack(),
   });
 
   if (!release) {
@@ -88,7 +100,11 @@ export function Release({ id }: { id: string }) {
   };
 
   return (
-    <div class={s.card}>
+    <div
+      class={`${s.card} ${swipe.settling ? s.settling : ''}`}
+      ref={swipe.cardRef}
+      {...swipe.pointerHandlers}
+    >
       <Aura colors={[release.coverColors]} />
       <div class="page">
         <header class={`topbar ${s.bar}`}>

@@ -19,6 +19,7 @@ import {
   type SortKey,
 } from '../services/search';
 import {
+  browsingOrder,
   isOwner,
   lastOpened,
   ownerName,
@@ -77,6 +78,11 @@ export function Home() {
   const list = selectReleases(all, f);
   const filtered = f.q.trim() !== '' || f.tagIds.length > 0;
   const [pick, setPick] = useState<Release | null>(null);
+  // Порядок для свайпа между релизами на карточке (browsingOrder, store/app.ts) — тот же список,
+  // что сейчас видно в сетке, с учётом поиска/тегов/сортировки.
+  useEffect(() => {
+    browsingOrder.value = list.map((r) => r.id);
+  }, [list]);
   // Аура — из свежих обложек на Картотеке, из закреплённого на Витрине (ADR 0011)
   const catalogAuraColors = [...all]
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
