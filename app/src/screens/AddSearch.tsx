@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import { useState } from 'preact/hooks';
+import { Aura } from '../components/Aura';
 import { Icon } from '../components/Icon';
 import { RELEASE_TYPE_LABEL, type Release, type Track } from '../data/schema';
 import { processCover } from '../services/image';
@@ -162,6 +163,8 @@ export function AddSearch() {
 
   return (
     <div class="page">
+      {/* Цветов ещё нет — обложка выбранного результата появится только в редакторе */}
+      <Aura colors={[]} />
       <header class="topbar">
         <button type="button" class="icon-btn" onClick={() => goBack()} aria-label="Назад">
           <Icon name="back" />

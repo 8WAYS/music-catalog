@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Aura } from '../components/Aura';
 import { BackupSettings } from '../components/BackupSettings';
 import { Icon } from '../components/Icon';
 import { ClaimOwnership, PublishSettings } from '../components/PublishSettings';
@@ -50,8 +51,16 @@ export function Settings() {
     }
   };
 
+  // Аура — из свежих обложек, тот же приём, что у Картотеки (Home.tsx)
+  const auraColors = [...releases.value]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map((r) => r.coverColors)
+    .filter(Boolean)
+    .slice(0, 3);
+
   return (
     <div class="page">
+      <Aura colors={auraColors} />
       <header class="topbar">
         <button type="button" class="icon-btn" onClick={() => goBack()} aria-label="Назад">
           <Icon name="back" />

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
+import { Aura } from '../components/Aura';
 import { Cover } from '../components/Cover';
 import { Icon } from '../components/Icon';
 import { LinksEditor } from '../components/LinksEditor';
@@ -151,9 +152,12 @@ export function Editor({ id }: { id?: string }) {
   const coverSrc = cover && cover !== 'remove' ? cover.url : undefined;
   const hasCover = cover === 'remove' ? false : !!(coverSrc || draft.cover);
   const favCount = draft.tracks.filter((t) => t.favorite).length;
+  // Аура — из черновика обложки, пока не сохранён; иначе из уже сохранённой (правка существующего)
+  const auraColors = cover && cover !== 'remove' ? cover.colors : original?.coverColors;
 
   return (
     <div class="page">
+      <Aura colors={[auraColors]} />
       <header class="topbar">
         <button type="button" class="icon-btn" onClick={() => goBack()} aria-label="Закрыть">
           <Icon name="close" />
