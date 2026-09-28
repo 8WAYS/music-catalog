@@ -78,8 +78,11 @@
   width: 200%;
   will-change: transform;
 }
+/* --ease-out, не --spring-soft: тот же вывод, что и для перехода между экранами (ADR 0008) —
+   перелёт ~6% хорош для маленького акцента, а на весь трек вкладок читается как рывок, а не
+   как гладкая доводка в духе iOS. */
 .track.animating {
-  transition: transform 380ms var(--spring-soft);
+  transition: transform 380ms var(--ease-out);
 }
 .panel {
   width: 50%;
@@ -191,10 +194,6 @@
   scrollbar-width: none;
   overscroll-behavior-x: contain;
   scroll-padding-inline: var(--s4);
-  /* Лента живёт внутри свайпаемой по горизонтали вкладки (.panel, touch-action: pan-y) — без
-     явного pan-x здесь горизонтальный тач-скролл ленты конкурирует со свайпом вкладок за один
-     и тот же жест, как было у полок Витрины (ADR 0011) до того же исправления. */
-  touch-action: pan-x;
 }
 .chips::-webkit-scrollbar {
   display: none;

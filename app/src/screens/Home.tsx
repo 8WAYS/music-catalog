@@ -336,7 +336,7 @@ function TagStrip(props: { tags: Tag[]; selected: string[]; onToggle: (id: strin
   if (!props.tags.length) return null;
   let prev: TagGroup | null = null;
   return (
-    <div class={s.chips} role="group" aria-label="Фильтр по тегам">
+    <div class={s.chips} data-hscroll role="group" aria-label="Фильтр по тегам">
       {props.tags.map((t) => {
         const label = t.group !== prev ? <span class={s.groupLabel}>{TAG_GROUP_LABEL[t.group]}</span> : null;
         prev = t.group;

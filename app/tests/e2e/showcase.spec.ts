@@ -87,6 +87,39 @@ test('свайп переключает Картотеку и Витрину', a
   await expect(page).toHaveURL(/#\/(\?.*)?$/);
 });
 
+/** Лента тегов (как и полки Витрины) — своя горизонтальная прокрутка, не свайп вкладок (`[data-hscroll]`
+ * в useSwipeTabs.ts): жаловались, что перетаскивание по тегам вместо прокрутки ленты свайпало весь экран. */
+test('перетаскивание по ленте тегов прокручивает её, а не свайпает вкладки', async ({
+  page,
+  browserName,
+}) => {
+  test.skip(
+    browserName === 'webkit',
+    'известное ограничение синтетического pointer-драга в Playwright WebKit',
+  );
+  const manyTags = Array.from({ length: 12 }, (_, i) => ({
+    id: `00000000-0000-4000-8000-00000000b0${String(i).padStart(2, '0')}`,
+    name: `тег-${i}`,
+    group: 'other' as const,
+  }));
+  await seed(page, {
+    tags: manyTags,
+    releases: RELEASES.map((r) => ({ ...r, tagIds: manyTags.map((t) => t.id) })),
+  });
+
+  const chips = page.getByRole('group', { name: 'Фильтр по тегам' });
+  const box = (await chips.boundingBox())!;
+
+  await page.mouse.move(box.x + box.width - 20, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 20, box.y + box.height / 2, { steps: 12 });
+  await page.mouse.up();
+
+  // Вкладка не переключилась и адрес не сменился на Витрину — жест не ушёл в useSwipeTabs
+  await expect(page.getByRole('tab', { name: 'Картотека', selected: true })).toBeVisible();
+  await expect(page).not.toHaveURL(/#\/showcase/);
+});
+
 test('долгое нажатие на имя исполнителя закрепляет артиста', async ({ page }) => {
   await seed(page, { tags: TAGS, releases: RELEASES });
   await page.goto(`./#/release/${ID.rainbows}`);

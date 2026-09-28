@@ -146,10 +146,6 @@
   list-style: none;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
-  /* Полка живёт внутри свайпаемой по горизонтали вкладки (Home.tsx, touch-action: pan-y на
-     .viewport) — без явного pan-x здесь горизонтальный тач-скролл полки конкурирует со свайпом
-     вкладок за один и тот же жест. */
-  touch-action: pan-x;
 }
 .shelf::-webkit-scrollbar {
   display: none;

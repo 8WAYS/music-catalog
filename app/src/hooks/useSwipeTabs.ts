@@ -34,6 +34,14 @@ function motionReduced(): boolean {
  * `onClickCapture` (перехват на фазе погружения, тот же приём, что `useLongPress.ts`) гасит этот клик,
  * если только что состоялся настоящий горизонтальный свайп — иначе он открывал бы карточку релиза
  * поверх уже переключившейся вкладки.
+ *
+ * Внутри вкладок есть свои горизонтальные ленты (теги, полки Витрины, помечены `[data-hscroll]`) —
+ * им нужен собственный горизонтальный скролл, а не свайп между вкладками. `touch-action` тут не
+ * спасает: это свойство решает, что сделает браузер сам по себе, а наш JS всё равно получает те же
+ * события и, не зная о вложенной ленте, забирал бы жест себе — оба скролла включались разом, и
+ * «выигрывал» трек вкладок (жаловались: «лента тегов не прокручивается, вместо неё свайпается весь
+ * экран»). Поэтому жест просто не стартует, если начался внутри `[data-hscroll]` — дальше событие
+ * целиком достаётся браузеру, который прокручивает ленту как обычный `overflow-x`.
  */
 export function useSwipeTabs(count: number, onSettle: (index: number) => void, initialIndex = 0) {
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -119,6 +127,9 @@ export function useSwipeTabs(count: number, onSettle: (index: number) => void, i
   }
 
   function onPointerDown(e: PointerEvent): void {
+    // Жест начался в своей горизонтальной ленте (теги, полки Витрины) — она сама себя прокручивает,
+    // трек вкладок в этот раз не наш.
+    if ((e.target as HTMLElement | null)?.closest('[data-hscroll]')) return;
     drag.current = { startX: e.clientX, startY: e.clientY, axis: null };
     setAnimating(false); // иначе CSS-переход тянется за пальцем вместо честного 1:1
     window.addEventListener('pointermove', onPointerMove);

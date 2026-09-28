@@ -173,7 +173,7 @@ function ArtistShelf({
   return (
     <section class={s.section}>
       <h2 class={s.title}>Топ-3 артиста</h2>
-      <ul class={`${s.shelf} ${podium ? s.podium : ''}`}>
+      <ul class={`${s.shelf} ${podium ? s.podium : ''}`} data-hscroll>
         {artists.map((a, i) => (
           <li
             key={a.name}
@@ -218,7 +218,7 @@ function ReleaseShelf({
   return (
     <section class={s.section}>
       <h2 class={s.title}>{title}</h2>
-      <ul class={`${s.shelf} ${podium ? s.podium : ''}`}>
+      <ul class={`${s.shelf} ${podium ? s.podium : ''}`} data-hscroll>
         {list.map((r, i) => (
           <li
             key={r.id}
