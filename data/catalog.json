@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 74,
-  "publishedAt": "2026-09-29T14:38:53.128Z",
+  "revision": 76,
+  "publishedAt": "2026-09-29T14:40:07.151Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -69,8 +69,7 @@
       "artist": "cardinparis",
       "type": "single",
       "tagIds": [
-        "6d749ad8-4502-407f-b37a-1f9393a8e27c",
-        "75424a05-2858-41d5-abe9-46b8fa909edd"
+        "6d749ad8-4502-407f-b37a-1f9393a8e27c"
       ],
       "tracks": [],
       "links": [
@@ -80,7 +79,7 @@
         }
       ],
       "createdAt": "2026-09-25T16:27:15.115Z",
-      "updatedAt": "2026-09-25T18:41:28.167Z",
+      "updatedAt": "2026-09-29T14:39:48.426Z",
       "year": 2025,
       "itunesId": 1843219808,
       "cover": "covers/fcfc90b9-9a33-4d8e-93bd-9f3abf617dd8.jpg",
@@ -379,8 +378,7 @@
       "artist": "cardinparis",
       "type": "album",
       "tagIds": [
-        "7a86942b-500c-45ca-a4b5-c542714c66af",
-        "75424a05-2858-41d5-abe9-46b8fa909edd"
+        "7a86942b-500c-45ca-a4b5-c542714c66af"
       ],
       "tracks": [
         {
@@ -455,7 +453,7 @@
         }
       ],
       "createdAt": "2026-09-25T20:08:00.128Z",
-      "updatedAt": "2026-09-28T16:53:39.846Z",
+      "updatedAt": "2026-09-29T14:40:03.149Z",
       "year": 2026,
       "cover": "covers/23acac90-378c-4eb5-afc6-3d23ed6bacee.jpg",
       "coverColors": {
