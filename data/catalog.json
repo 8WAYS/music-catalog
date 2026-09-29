@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 73,
-  "publishedAt": "2026-09-29T14:38:32.802Z",
+  "revision": 74,
+  "publishedAt": "2026-09-29T14:38:53.128Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -223,7 +223,9 @@
       "title": "Trip At Knight",
       "artist": "Trippie Redd",
       "type": "album",
-      "tagIds": [],
+      "tagIds": [
+        "f2f90203-5fa1-4bf7-bdd1-2a4544de6b37"
+      ],
       "tracks": [
         {
           "id": "f63197ac-ccc9-4984-9bd7-e692c7e9b59a",
@@ -359,7 +361,7 @@
         }
       ],
       "createdAt": "2026-09-25T18:38:15.522Z",
-      "updatedAt": "2026-09-27T10:59:48.773Z",
+      "updatedAt": "2026-09-29T14:38:46.049Z",
       "year": 2021,
       "itunesId": 1711600555,
       "cover": "covers/07a69893-f0c3-4aab-85db-91e989dd208c.jpg",
