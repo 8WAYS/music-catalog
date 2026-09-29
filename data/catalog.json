@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "revision": 72,
-  "publishedAt": "2026-09-28T22:06:16.608Z",
+  "revision": 73,
+  "publishedAt": "2026-09-29T14:38:32.802Z",
   "owner": {
     "name": "Повелитель_19"
   },
@@ -491,7 +491,9 @@
       "title": "overseas",
       "artist": "Ken Carson",
       "type": "single",
-      "tagIds": [],
+      "tagIds": [
+        "f2f90203-5fa1-4bf7-bdd1-2a4544de6b37"
+      ],
       "tracks": [
         {
           "id": "2a7213b0-33ed-4a80-8694-3a0f4cb63059",
@@ -503,7 +505,7 @@
       ],
       "links": [],
       "createdAt": "2026-09-25T22:37:14.598Z",
-      "updatedAt": "2026-09-28T21:35:19.715Z",
+      "updatedAt": "2026-09-29T14:38:25.528Z",
       "year": 2024,
       "itunesId": 1739186085,
       "cover": "covers/5df87844-2c61-40c1-abd1-9793952378f9.jpg",
