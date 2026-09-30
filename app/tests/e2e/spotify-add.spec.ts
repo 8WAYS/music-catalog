@@ -1,4 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
+import { vkSearchUrl, yandexSearchUrl } from '../../src/services/links';
+import { ID, RELEASES, TAGS, seed } from './seed';
 
 const CORS = { 'access-control-allow-origin': '*' };
 
@@ -101,4 +103,79 @@ test('настройки: подключённый Spotify показывает 
   await expect(page.getByRole('heading', { name: 'Отключить Spotify?' })).toBeVisible();
   await page.getByRole('dialog').getByRole('button', { name: 'Отключить' }).click();
   await expect(page.getByLabel('Client ID')).toBeVisible();
+});
+
+/**
+ * Кнопки «Найти на Spotify» / «Искать на Яндекс/VK Музыке» в редакторе ссылок (ADR 0014,
+ * LinksEditor.tsx) — переиспользуют mockSpotify/seedSpotifyConnected выше вместо нового файла.
+ */
+test.describe('LinksEditor: поиск ссылок на других площадках', () => {
+  test('без spotifyId — «Найти на Spotify» идёт в поиск и добавляет ссылку', async ({ page }) => {
+    await mockSpotify(page);
+    await seedSpotifyConnected(page);
+    await seed(page, { tags: TAGS, releases: [RELEASES[0]!] });
+
+    await page.goto(`./#/edit/${ID.rainbows}`);
+    await page.getByText('Ссылки «Слушать»').click();
+    await page.getByRole('button', { name: 'Найти на Spotify' }).click();
+
+    await expect(page.getByText(`open.spotify.com/album/${album.id}`)).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Найти на Spotify' })).toHaveCount(0);
+  });
+
+  test('с уже известным spotifyId — ссылка строится без обращения к поиску', async ({ page }) => {
+    let searchHits = 0;
+    await page.route('https://api.spotify.com/v1/search**', (r) => {
+      searchHits++;
+      return r.fulfill({ json: { albums: { items: [album] } }, headers: CORS });
+    });
+    await seed(page, {
+      tags: TAGS,
+      releases: [{ ...RELEASES[0]!, spotifyId: album.id }],
+    });
+
+    // Spotify не подключён вовсе — кнопка всё равно доступна: прямой id не требует сети/токена
+    await page.goto(`./#/edit/${ID.rainbows}`);
+    await page.getByText('Ссылки «Слушать»').click();
+    await page.getByRole('button', { name: 'Найти на Spotify' }).click();
+
+    await expect(page.getByText(`open.spotify.com/album/${album.id}`)).toBeVisible();
+    expect(searchHits).toBe(0);
+  });
+
+  test('Spotify не подключён и spotifyId нет — кнопки не видно', async ({ page }) => {
+    await seed(page, { tags: TAGS, releases: [RELEASES[0]!] });
+    await page.goto(`./#/edit/${ID.rainbows}`);
+    await page.getByText('Ссылки «Слушать»').click();
+    await expect(page.getByRole('button', { name: 'Найти на Spotify' })).toHaveCount(0);
+  });
+
+  test('Яндекс/VK — ссылки поиска с текстом «артист название», ничего не добавляют сами', async ({
+    page,
+  }) => {
+    await seed(page, { tags: TAGS, releases: [RELEASES[0]!] });
+    await page.goto(`./#/edit/${ID.rainbows}`);
+    await page.getByText('Ссылки «Слушать»').click();
+
+    const query = 'Radiohead In Rainbows';
+    await expect(page.getByRole('link', { name: 'Искать на Яндекс Музыке' })).toHaveAttribute(
+      'href',
+      yandexSearchUrl(query),
+    );
+    await expect(page.getByRole('link', { name: 'Искать в VK Музыке' })).toHaveAttribute(
+      'href',
+      vkSearchUrl(query),
+    );
+  });
+
+  test('кнопка сервиса исчезает, когда ссылка того сервиса уже добавлена', async ({ page }) => {
+    await seed(page, {
+      tags: TAGS,
+      releases: [{ ...RELEASES[0]!, links: [{ service: 'yandex', url: 'https://music.yandex.ru/album/1' }] }],
+    });
+    await page.goto(`./#/edit/${ID.rainbows}`);
+    // Секция уже раскрыта сама — в релизе есть хотя бы одна ссылка (Editor.tsx: open={draft.links.length > 0})
+    await expect(page.getByRole('link', { name: 'Искать на Яндекс Музыке' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Искать в VK Музыке' })).toBeVisible();
+  });
 });

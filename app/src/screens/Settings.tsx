@@ -5,9 +5,11 @@ import { Icon } from '../components/Icon';
 import { ClaimOwnership, PublishSettings } from '../components/PublishSettings';
 import { SpotifySettings } from '../components/SpotifySettings';
 import { WhatsNew } from '../components/WhatsNew';
+import { LINK_SERVICES, LINK_SERVICE_LABEL } from '../data/schema';
 import { goBack } from '../router';
 import { CHANGELOG } from '../services/changelog';
 import {
+  hiddenLinkServices,
   isOwner,
   localReleaseCount,
   ownerName,
@@ -16,6 +18,7 @@ import {
   reduceMotion,
   releases,
   repo,
+  setLinkServiceHidden,
   setPreferLocal,
   setReduceMotion,
   setTheme,
@@ -143,6 +146,18 @@ export function Settings() {
               onChange={(e) => setReduceMotion(e.currentTarget.checked)}
             />
           </label>
+          <p class={s.muted}>Показывать ссылки «Слушать»</p>
+          {LINK_SERVICES.map((service) => (
+            <label key={service} class={s.switch}>
+              <span>{LINK_SERVICE_LABEL[service]}</span>
+              <input
+                type="checkbox"
+                role="switch"
+                checked={!hiddenLinkServices.value.includes(service)}
+                onChange={(e) => setLinkServiceHidden(service, !e.currentTarget.checked)}
+              />
+            </label>
+          ))}
         </section>
 
         {owner && (

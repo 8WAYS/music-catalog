@@ -8,7 +8,14 @@ import { importPublished } from '../services/publisher';
 import { handleAuthCallback } from '../services/spotifyAuth';
 import { connect, startSync } from './sync';
 import { initSpotifyStatus } from './spotify';
-import type { CoverColors, PinnedArtist, Release, Tag } from '../data/schema';
+import {
+  LINK_SERVICES,
+  type CoverColors,
+  type LinkService,
+  type PinnedArtist,
+  type Release,
+  type Tag,
+} from '../data/schema';
 
 // ---------- Данные ----------
 
@@ -279,6 +286,33 @@ export function setReduceMotion(on: boolean): void {
     /* см. выше */
   }
   applyAppearance();
+}
+
+// ---------- Ссылки «Слушать»: какие площадки показывать ----------
+
+/** Личная настройка устройства (как theme/reduceMotion выше) — не часть catalog.json, у владельца
+ * и у зрителя может быть разный набор площадок, которыми они пользуются. */
+function readHiddenLinkServices(): LinkService[] {
+  try {
+    const raw: unknown = JSON.parse(localStorage.getItem('hiddenLinkServices') ?? '[]');
+    return Array.isArray(raw) ? raw.filter((s): s is LinkService => LINK_SERVICES.includes(s)) : [];
+  } catch {
+    return [];
+  }
+}
+
+export const hiddenLinkServices = signal<LinkService[]>(readHiddenLinkServices());
+
+export function setLinkServiceHidden(service: LinkService, hidden: boolean): void {
+  const next = hidden
+    ? [...hiddenLinkServices.value.filter((s) => s !== service), service]
+    : hiddenLinkServices.value.filter((s) => s !== service);
+  hiddenLinkServices.value = next;
+  try {
+    localStorage.setItem('hiddenLinkServices', JSON.stringify(next));
+  } catch {
+    /* хранилище недоступно — настройка живёт до перезагрузки */
+  }
 }
 
 matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {

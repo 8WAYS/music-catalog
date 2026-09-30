@@ -10,6 +10,7 @@ import { shareOrCopy } from '../services/share';
 import {
   browsingOrder,
   tags as allTags,
+  hiddenLinkServices,
   isOwner,
   ownerName,
   releasesById,
@@ -77,6 +78,8 @@ export function Release({ id }: { id: string }) {
     .map((t) => tagsById.value.get(t))
     .filter((t) => !!t)
     .sort((a, b) => TAG_GROUPS.indexOf(a.group) - TAG_GROUPS.indexOf(b.group));
+  // Какие площадки показывать — личная настройка устройства (store/app.ts), не catalog.json
+  const visibleLinks = release.links.filter((l) => !hiddenLinkServices.value.includes(l.service));
   const favCount = release.tracks.filter((t) => t.favorite).length;
   const totalSec = release.tracks.reduce((sum, t) => sum + (t.durationSec ?? 0), 0);
 
@@ -160,9 +163,9 @@ export function Release({ id }: { id: string }) {
               )}
             </p>
 
-            {release.links.length > 0 && (
+            {visibleLinks.length > 0 && (
               <div class={s.links}>
-                {release.links.map((l, i) => (
+                {visibleLinks.map((l, i) => (
                   <a key={i} class={s.listen} href={l.url} target="_blank" rel="noopener noreferrer">
                     <Icon name="play" size={16} filled />
                     {LINK_SERVICE_LABEL[l.service]}

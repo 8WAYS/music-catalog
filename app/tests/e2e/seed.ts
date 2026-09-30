@@ -18,6 +18,8 @@ export interface SeedRelease {
   createdAt: string;
   pinned?: boolean;
   pinnedAt?: string;
+  links?: { service: 'yandex' | 'vk' | 'spotify' | 'other'; url: string }[];
+  spotifyId?: string;
 }
 
 /** Кладёт релизы, теги и (если заданы) закреплённых артистов прямо в IndexedDB, перезагружает страницу. */

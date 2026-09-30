@@ -308,7 +308,13 @@ export function Editor({ id }: { id?: string }) {
           summary={draft.links.length ? String(draft.links.length) : ''}
           open={draft.links.length > 0}
         >
-          <LinksEditor value={draft.links} onChange={(v) => set('links', v)} />
+          <LinksEditor
+            value={draft.links}
+            onChange={(v) => set('links', v)}
+            title={draft.title}
+            artist={draft.artist}
+            spotifyId={draft.spotifyId}
+          />
         </Section>
 
         {original && (
